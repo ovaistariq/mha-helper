@@ -69,8 +69,8 @@ Let me show you an example of a configuration file:
 Pre-failover Steps During an Online Failover
 ============================================
 To make sure that the failover is safe and does not cause any data inconsistencies, mha-helper takes the following steps before the failover:  
-1. Set read_only on the new master to avoid any data inconsistencies
-2. Execute the following steps on the original master with binlogging disabled so that these are not replicated to the new master:
+1.  Set read_only on the new master to avoid any data inconsistencies
+2.  Execute the following steps on the original master with binlogging disabled so that these are not replicated to the new master:
    a. Revoke ALL privileges from the users on original master so that no one can write
    b. Wait upto 5 seconds for all connected threads to disconnect and then terminate the ones that are still connected
    c. Set read_only=1 on the original master
