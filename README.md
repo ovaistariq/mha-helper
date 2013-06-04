@@ -82,6 +82,7 @@ If any of the above steps fail, any changes made during pre-failover are rolledb
 Post-failover Steps During an Online Failover
 ============================================
 Once the failover is completed by MHA, mha-helper takes the following steps:
+
 1. Remove the read_only flag from the new master
 2. Regrant privileges that were revoked during the pre-failover steps
 
@@ -94,14 +95,15 @@ Currently nothing is done in the pre-failover stage.
 Post-failover Steps During Master Failover
 ==========================================
 Once the failover is completed by MHA, mha-helper script takes the following steps:
+
 1. Remove the read_only flag from the new master
 
 Usage Examples
 ==============
 Once everything is configured and running, doing the failover is pretty simple.
 
-Do a failover when the master db1 goes down:
+Do a failover when the master db1 goes down:  
 /usr/local/mha-helper/bin/mysql_failover db1
 
-Do an online failover:
+Do an online failover:  
 /usr/local/mha-helper/bin/mysql_online_failover
