@@ -102,8 +102,10 @@ Usage Examples
 ==============
 Once everything is configured and running, doing the failover is pretty simple.
 
-Do a failover when the master db1 goes down:  
-/usr/local/mha-helper/bin/mysql_failover db1
+Do a failover when the master db1 goes down:
 
-Do an online failover:  
-/usr/local/mha-helper/bin/mysql_online_failover
+    /usr/local/mha-helper/bin/mysql_failover db1
+
+Do an online failover:
+
+    /usr/local/mha-helper/bin/mysql_online_failover
