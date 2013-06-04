@@ -21,7 +21,7 @@ mha-helper assumes that it is installed in the location /usr/local/mha-helper an
 Please go through this URL for general MHA configuration guidelines: https://code.google.com/p/mysql-master-ha/wiki/Configuration  
 And take a look at this URL for all the available MHA configuration options: https://code.google.com/p/mysql-master-ha/wiki/Parameters  
 
-An important things to note is that the MySQL user you specify in the MHA config must have all the privileges together with the **GRANT option**.
+An important things to note is that the MySQL user you specify in the MHA config must have all the privileges together with the **GRANT option**
 
 The important MHA configuration options that tie in mha-helper with MHA are the following and make sure you have them specified in the MHA config:
 ---
