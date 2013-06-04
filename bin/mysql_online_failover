@@ -1,0 +1,7 @@
+#!/bin/bash
+
+/usr/bin/masterha_master_switch \
+--conf=/usr/local/mha-helper/conf/test_cluster.conf \
+--master_state=alive \
+--orig_master_is_new_slave \
+--interactive=0

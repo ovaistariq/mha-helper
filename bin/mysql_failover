@@ -1,0 +1,16 @@
+#!/bin/bash
+
+dead_master_host=$1
+
+if [[ -z $dead_master_host ]]
+then
+    echo "ERROR: Hostname of dead master not provided"
+    exit 1
+fi
+
+/usr/bin/masterha_master_switch \
+--conf=/usr/local/mha-helper/conf/test_cluster.conf \
+--master_state=dead \
+--interactive=0 \
+--ignore_last_failover \
+--dead_master_host=$dead_master_host
