@@ -24,6 +24,7 @@ And take a look at this URL for all the available MHA configuration options: htt
 An important things to note is that the MySQL user you specify in the MHA config must have all the privileges together with the **GRANT option**
 
 The important MHA configuration options that tie in mha-helper with MHA are the following and make sure you have them specified in the MHA config:
+
 ---
     master_ip_failover_script      = /usr/local/mha-helper/scripts/master_ip_failover.py
     master_ip_online_change_script = /usr/local/mha-helper/scripts/master_ip_online_change.py
