@@ -2,9 +2,9 @@ MHA Helper
 ==========
 MHA helper (mha-helper) is a set of helper scripts that supplement in doing proper failover using MHA (https://code.google.com/p/mysql-master-ha/). MHA is responsible for doing the actual failover like finding the most recent slave to failover to and applying differential logs, etc. But it does not deal with pre-failover and post-failover steps, such as the steps that need to be taken before doing a safe failover, such as killing connections, blocking apps from writing while the failover is in progress, etc.
 
-There are two functions of mha-helper:
-1. Execute pre-failover and post-failover steps during an online failover. An online failover is one in which the original master is not dead and the failover is performed for example for maintenance purposes.
-2. Execute pre-failover and post-failover steps during master failover. In this case the original master is dead, meaning either the host is dead or the MySQL server is dead.
+There are two functions of mha-helper: 
+1. Execute pre-failover and post-failover steps during an online failover. An online failover is one in which the original master is not dead and the failover is performed for example for maintenance purposes. 
+2. Execute pre-failover and post-failover steps during master failover. In this case the original master is dead, meaning either the host is dead or the MySQL server is dead. 
 
 Package Requirements and Dependencies
 =====================================
@@ -18,14 +18,16 @@ Configuration
 =============
 mha-helper assumes that it is installed in the location /usr/local/mha-helper and hence all paths in the config file and the helper script are relative to this particular location. You would also need to make sure that password-less SSH access using keys is setup. The MHA configuration file should be stored at the location /usr/local/mha-helper/conf/. Of course, if you need to change the location of the files you will have to modify the configs and the scripts. I will decouple the configuration locations in a later version. 
 
-Please go through this URL for general MHA configuration guidelines: https://code.google.com/p/mysql-master-ha/wiki/Configuration
-And take a look at this URL for all the available MHA configuration options: https://code.google.com/p/mysql-master-ha/wiki/Parameters
+Please go through this URL for general MHA configuration guidelines: https://code.google.com/p/mysql-master-ha/wiki/Configuration 
+And take a look at this URL for all the available MHA configuration options: https://code.google.com/p/mysql-master-ha/wiki/Parameters 
 
 An important things to note is that the MySQL user you specify in the MHA config must have all the privileges together with the **GRANT option**.
 
 The important MHA configuration options that tie in mha-helper with MHA are the following and make sure you have them specified in the MHA config:
-master_ip_failover_script      = /usr/local/mha-helper/scripts/master_ip_failover.py
-master_ip_online_change_script = /usr/local/mha-helper/scripts/master_ip_online_change.py
+---
+    master_ip_failover_script      = /usr/local/mha-helper/scripts/master_ip_failover.py
+    master_ip_online_change_script = /usr/local/mha-helper/scripts/master_ip_online_change.py
+---
 
 Let me show you an example of a configuration file:
 
