@@ -16,7 +16,13 @@ In addition to Python 2.6, you would need the following packages installed:
 
 Configuration
 =============
-mha-helper assumes that it is installed in the location /usr/local/mha-helper and hence all paths in the config file and the helper script are relative to this particular location. You would also need to make sure that password-less SSH access using keys is setup. The MHA configuration file should be stored at the location /usr/local/mha-helper/conf/. Of course, if you need to change the location of the files you will have to modify the configs and the scripts. I will decouple the configuration locations in a later version. 
+mha-helper assumes that it is installed in the location /usr/local/mha-helper and hence all paths in the config file and the helper script are relative to this particular location. You would also need to make sure that password-less SSH access using keys is setup. The MHA configuration file should be stored at the location /usr/local/mha-helper/conf/. Of course, if you need to change the location of the files you will have to modify the following scripts and library files:
+
++ bin/mysql_failover
++ bin/mysql_online_failover
++ scripts/lib/mha_config_helper.py
+
+I will decouple the configuration locations in a later version. 
 
 Please go through this URL for general MHA configuration guidelines: https://code.google.com/p/mysql-master-ha/wiki/Configuration  
 And take a look at this URL for all the available MHA configuration options: https://code.google.com/p/mysql-master-ha/wiki/Parameters  
