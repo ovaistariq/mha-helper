@@ -125,9 +125,14 @@ class MHA_online_change_helper(object):
 	        return False
 
 	    # Revoke ALL privileges from the users on original master so that no one can write
-	    self.debug_message("Revoking ALL PRIVILEGES of users ...")
-	    if self.revoke_all_user_privileges(self._orig_master) == False:
-	        return False
+	    #self.debug_message("Revoking ALL PRIVILEGES of users ...")
+	    #if self.revoke_all_user_privileges(self._orig_master) == False:
+	    #   return False
+
+            # Setting read_only=1 on the original master
+            self._orig_master.set_read_only()
+            if self._orig_master.is_read_only() == False:
+                return False
 
 	    # Wait upto 5 seconds for all connected threads to disconnect
             self.debug_message("Waiting 5s for all connected threads to disconnect")
@@ -149,11 +154,6 @@ class MHA_online_change_helper(object):
 	        self.debug_message("\tTerminating thread Id => %s, User => %s, Host => %s" % 
                                     (thread['Id'], thread['User'], thread['Host']))
 	        self._orig_master.kill_connection(connection_id=thread['Id'])
-
-	    # Setting read_only=1 on the original master
-	    self._orig_master.set_read_only()
-	    if self._orig_master.is_read_only() == False:
-                return False
 	finally:
 	    # Disconnect from the original master and restore binlogging
 	    self._orig_master.enable_log_bin()
@@ -176,13 +176,13 @@ class MHA_online_change_helper(object):
 	    rollback_error += 1
 
 	# if any grants were revoked, we need to regrant them
-	self.debug_message("Regranting the privileges that were revoked")
-	if len(self._user_grants_orig_master) > 0:
-	    for grant in self._user_grants_orig_master:
-		self.debug_message("\t%s" % grant)
-		if self._orig_master.execute_admin_query(grant) == False:
-		    self.debug_message("\t\tError, please try manually")
-		    rollback_error += 1
+	#self.debug_message("Regranting the privileges that were revoked")
+	#if len(self._user_grants_orig_master) > 0:
+	#    for grant in self._user_grants_orig_master:
+	#	self.debug_message("\t%s" % grant)
+	#	if self._orig_master.execute_admin_query(grant) == False:
+	#	    self.debug_message("\t\tError, please try manually")
+	#	    rollback_error += 1
 
 	return_val = True
 	if rollback_error > 0:
@@ -208,8 +208,8 @@ class MHA_online_change_helper(object):
 
         # Regrant the privileges for all the users so that they are recreated
         # on the old master
-        self.debug_message("Regranting privileges that were revoked")
-        self.regrant_all_user_privileges(self._new_master)
+        #self.debug_message("Regranting privileges that were revoked")
+        #self.regrant_all_user_privileges(self._new_master)
 
         # Disconnect from the new master
         self._new_master.disconnect()
