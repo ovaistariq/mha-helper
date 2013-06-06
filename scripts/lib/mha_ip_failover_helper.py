@@ -38,3 +38,22 @@ class MHA_IP_failover_helper(object):
 
         return True
 
+    def execute_status_command(self, orig_master_ip, ssh_user, ssh_options):
+        orig_master = MySQL_helper(host=orig_master_ip, user=self._user,
+                                    password=self._password)
+
+        # Connect to the original master
+        if orig_master.connect() == False:
+            return False
+
+        return_val = True
+
+        # Fetch the MySQL version
+        if orig_master.get_version() == False:
+            return_val = False
+
+        # Disconnect from the original master
+        orig_master.disconnect()
+    
+        return return_val
+

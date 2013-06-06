@@ -30,9 +30,14 @@ class MySQL_helper(object):
 
     def get_version(self):
         cursor = self._connection.cursor()
-        cursor.execute("SELECT VERSION()")
-        row = cursor.fetchone()
-	cursor.close()
+        try:
+            cursor.execute("SELECT VERSION()")
+            row = cursor.fetchone()
+        except MySQLdb.Error as e:
+            print "Error %d: %s" % (e.args[0], e.args[1])
+            return False
+        finally:
+	    cursor.close()
 
         return row[0]
 

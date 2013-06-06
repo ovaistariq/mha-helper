@@ -58,8 +58,15 @@ elif options.command == 'start':
             exit_code = 0
 
 elif options.command == 'status':
-    # We do not need to do anything here
-    exit_code = 0
+    if (options.orig_master_ip is not None and
+            options.ssh_user is not None and
+            options.ssh_options is not None):
+        return_val = mha_ip_failover_helper.execute_status_command(orig_master_ip=options.orig_master_ip,
+                                                ssh_user=options.ssh_user,
+                                                ssh_options=options.ssh_options)
+
+        if return_val == True:
+            exit_code = 0
 
 # exit the script with the appropriate code
 # if script exits with a 0 status code, MHA continues with the failover
