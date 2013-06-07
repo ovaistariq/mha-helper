@@ -3,6 +3,7 @@ from datetime import datetime
 import subprocess
 from mysql_helper import MySQL_helper
 from mha_config_helper import MHA_config_helper
+from mha_vip_helper import MHA_VIP_helper
 
 class MHA_IP_failover_helper(object):
     def debug_message(self, message):
@@ -27,15 +28,12 @@ class MHA_IP_failover_helper(object):
 
         # If we have to manage the VIP, then remove the VIP from the original master
         if config_helper.get_manage_vip() == 'yes':
-            ifconfig_cmd = "/sbin/ifconfig %s %s down" % (config_helper.get_cluster_interface(),
-                                                            config_helper.get_writer_vip())
+            return_val = MHA_VIP_helper.remove_vip(host=orig_master_host,
+                                                    host_ip=orig_master_ip,
+                                                    ssh_user=ssh_user,
+                                                    ssh_options=ssh_options)
 
-            cmd = ["ssh", "%s@%s" % (ssh_user, orig_master_ip), ssh_options, ifconfig_cmd]
-            cmd_return_code = subprocess.call(cmd)
-            if cmd_return_code > 0:
-                return False
-
-        return True
+        return return_val
 
     def execute_start_command(self, orig_master_host, orig_master_ip, 
                                 new_master_host, new_master_ip, 
@@ -52,16 +50,14 @@ class MHA_IP_failover_helper(object):
 
         # If we have to manage the VIP, then assign the VIP to the new master
         if config_helper.get_manage_vip() == 'yes':
-            ifconfig_cmd = "/sbin/ifconfig %s %s up" % (config_helper.get_cluster_interface(),
-                                                            config_helper.get_writer_vip())
+            return_val = MHA_VIP_helper.assign_vip(host=new_master_host,
+                                                    host_ip=new_master_ip,
+                                                    ssh_user=ssh_user,
+                                                    ssh_options=ssh_options)
 
-            arping_cmd = "/sbin/arping -q -c 3 -A -I %s %s" % (config_helper.get_cluster_interface(),
-                                                            config_helper.get_writer_vip())
-
-            cmd = ["ssh", "%s@%s" % (ssh_user, new_master_ip), ssh_options, "%s && %s" % (ifconfig_cmd, arping_cmd)]
-            cmd_return_code = subprocess.call(cmd)
-            if cmd_return_code > 0:
-                return False
+        if return_val == False:
+            new_master.disconnect()
+            return False
 
         # Remove the read_only flag
         self.debug_message("Removing the read_only flag from the new master")
