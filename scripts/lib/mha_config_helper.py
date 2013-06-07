@@ -15,7 +15,7 @@ class MHA_config_helper(object):
         return self.get_param_value(param_name='mysql_user')
 
     def get_mysql_password(self):
-        return self.get_param_value(param_name='mysql_pasword')
+        return self.get_param_value(param_name='mysql_password')
 
     def get_manage_vip(self):
         return self.get_param_value(param_name='manage_vip')
