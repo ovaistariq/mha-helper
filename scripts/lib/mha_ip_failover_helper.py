@@ -83,10 +83,10 @@ class MHA_IP_failover_helper(object):
         return_val = True
 
         # Check SSH connectivity
-        cmd = ["ssh", ssh_options, "-q", "%s@%s" % (ssh_user, orig_master_ip), "exit"]
-        cmd_return_code = subprocess.call(cmd)
-        if cmd_return_code > 0:
-            return False
+        #cmd = ["ssh", ssh_options, "-q", "%s@%s" % (ssh_user, orig_master_ip), "exit"]
+        #cmd_return_code = subprocess.call(cmd)
+        #if cmd_return_code > 0:
+        #    return False
 
         # Fetch the MySQL version to test MySQL connectivity
         if orig_master.get_version() == False:
