@@ -43,6 +43,7 @@ if (options.orig_master_host is not None and
                                                     orig_master_ip=options.orig_master_ip,
                                                     new_master_host=options.new_master_host,
 					            new_master_ip=options.new_master_ip,
+                                                    ssh_options=options.ssh_options,
                                                     privileged_users=privileged_users)
     if options.command == 'stop':
     	if mha_online_change_helper.execute_stop_command() == True:

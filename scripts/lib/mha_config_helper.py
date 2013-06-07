@@ -20,6 +20,9 @@ class MHA_config_helper(object):
     def get_mysql_password(self):
         return self.get_param_value(param_name='mysql_password')
 
+    def get_ssh_user(self):
+        return self.get_param_value(param_name='ssh_user')
+
     def get_manage_vip(self):
         return self.get_param_value(param_name='manage_vip')
 

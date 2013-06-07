@@ -28,10 +28,10 @@ class MHA_IP_failover_helper(object):
 
         # If we have to manage the VIP, then remove the VIP from the original master
         if config_helper.get_manage_vip() == 'yes':
-            return_val = MHA_VIP_helper.remove_vip(host=orig_master_host,
-                                                    host_ip=orig_master_ip,
-                                                    ssh_user=ssh_user,
-                                                    ssh_options=ssh_options)
+            return_val = MHA_VIP_helper.remove_vip(config_helper=config_helper,
+                                                host_ip=orig_master_ip,
+                                                ssh_user=ssh_user,
+                                                ssh_options=ssh_options)
 
         return return_val
 
@@ -50,10 +50,10 @@ class MHA_IP_failover_helper(object):
 
         # If we have to manage the VIP, then assign the VIP to the new master
         if config_helper.get_manage_vip() == 'yes':
-            return_val = MHA_VIP_helper.assign_vip(host=new_master_host,
-                                                    host_ip=new_master_ip,
-                                                    ssh_user=ssh_user,
-                                                    ssh_options=ssh_options)
+            return_val = MHA_VIP_helper.assign_vip(config_helper=config_helper,
+                                                host_ip=new_master_ip,
+                                                ssh_user=ssh_user,
+                                                ssh_options=ssh_options)
 
         if return_val == False:
             new_master.disconnect()
