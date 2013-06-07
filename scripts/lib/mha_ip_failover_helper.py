@@ -84,7 +84,7 @@ class MHA_IP_failover_helper(object):
 
         # Check SSH connectivity
         cmd = "ssh -q %s %s@%s exit" % (ssh_options, ssh_user, orig_master_ip)
-        cmd_return_code = subprocess.call(cmd)
+        cmd_return_code = subprocess.call(cmd, shell=True)
         if cmd_return_code > 0:
             return False
 
