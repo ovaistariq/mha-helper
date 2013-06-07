@@ -232,6 +232,8 @@ class MHA_online_change_helper(object):
         if self._new_master.connect() == False:
             return False
 
+        return_val = True
+
         # Remove the read_only flag
         self.debug_message("Removing the read_only flag from the new master")
         self._new_master.unset_read_only()
