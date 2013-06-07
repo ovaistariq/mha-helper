@@ -29,10 +29,16 @@ parser.add_option('--ssh_options', type='string')
 # do the actual work
 exit_code = 1
 
-if options.orig_master_ip is not None and options.new_master_ip is not None and options.command is not None:
-    mha_online_change_helper = MHA_online_change_helper(orig_master_ip=options.orig_master_ip, 
-					                new_master_ip=options.new_master_ip,
-                                                        privileged_users=privileged_users)
+if (options.orig_master_host is not None and 
+    options.orig_master_ip is not None and 
+    options.new_master_host is not None and
+    options.new_master_ip is not None and 
+    options.command is not None):
+    mha_online_change_helper = MHA_online_change_helper(orig_master_host=options.orig_master_host,
+                                                    orig_master_ip=options.orig_master_ip,
+                                                    new_master_host=options.new_master_host,
+					            new_master_ip=options.new_master_ip,
+                                                    privileged_users=privileged_users)
     if options.command == 'stop':
     	if mha_online_change_helper.execute_stop_command() == True:
 	    exit_code = 0
@@ -40,7 +46,6 @@ if options.orig_master_ip is not None and options.new_master_ip is not None and 
 	    mha_online_change_helper.rollback_stop_command()
     elif options.command == 'start':
         mha_online_change_helper.execute_start_command()
-        # TODO - tie in with the script here that changes the /etc/hosts file
         exit_code = 0
 
 # exit the script with the appropriate code

@@ -4,13 +4,17 @@ from mysql_helper import MySQL_helper
 from mha_config_helper import MHA_config_helper
 
 class MHA_online_change_helper(object):
-    def __init__(self, orig_master_ip, new_master_ip, privileged_users):
-        config_helper = MHA_config_helper()
-        user = config_helper.get_username()
-        password = config_helper.get_password()
+    def __init__(self, orig_master_host, orig_master_ip, new_master_host, new_master_ip, privileged_users):
+        self._orig_master_config_helper = MHA_config_helper(host=orig_master_host)
+        self._new_master_config_helper = MHA_config_helper(host=new_master_host)
 
-	self._orig_master = MySQL_helper(host=orig_master_ip, user=user, password=password)
-	self._new_master = MySQL_helper(host=new_master_ip, user=user, password=password)
+        self._orig_master = MySQL_helper(host=orig_master_ip, 
+                                        user=self._orig_master_config_helper.get_mysql_user(), 
+                                        password=self._orig_master_config_helper.get_mysql_password())
+
+        self._new_master = MySQL_helper(host=new_master_ip, 
+                                        user=self._new_master_config_helper.get_mysql_user(), 
+                                        password=self._new_master_config_helper.get_mysql_password())
 
         self._privileged_users = privileged_users
 	self._user_grants_orig_master = []

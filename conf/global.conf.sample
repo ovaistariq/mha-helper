@@ -1,0 +1,29 @@
+[default]
+mysql_user          = mha_helper
+mysql_pasword       = xxx
+writer_vip          = 192.168.1.100
+cluster_interface   = eth1:0
+
+[db1]
+cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
+manage_vip          = yes
+writer_vip          = 192.168.1.155
+cluster_interface   = eth0:0
+
+[db2]
+cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
+manage_vip          = yes
+writer_vip          = 192.168.1.155
+cluster_interface   = eth0:0
+
+[db3]
+cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
+manage_vip          = yes
+writer_vip          = 192.168.1.155
+cluster_interface   = eth0:0
+
+[db4]
+cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
+manage_vip          = yes
+writer_vip          = 192.168.1.155
+cluster_interface   = eth0:0

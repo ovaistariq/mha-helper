@@ -33,12 +33,24 @@ if options.command is None:
 
 mha_ip_failover_helper = MHA_IP_failover_helper()
 
-if options.command == 'stop' or options.command == 'stopssh':
+if options.command == 'stop':
     if (options.orig_master_ip is not None and
             options.ssh_user is not None and
             options.ssh_options is not None):
-        return_val = mha_ip_failover_helper.execute_stop_command(orig_master_ip=options.orig_master_ip,
+        return_val = mha_ip_failover_helper.execute_stop_command(orig_master_host=options.orig_master_host,
+                                                orig_master_ip=options.orig_master_ip,
                                                 ssh_user=options.ssh_user, 
+                                                ssh_options=options.ssh_options)
+        if return_val == True:
+            exit_code = 0
+
+if options.command == 'stopssh':
+    if (options.orig_master_ip is not None and
+            options.ssh_user is not None and
+            options.ssh_options is not None):
+        return_val = mha_ip_failover_helper.execute_stopssh_command(orig_master_host=options.orig_master_host,
+                                                orig_master_ip=options.orig_master_ip,
+                                                ssh_user=options.ssh_user,
                                                 ssh_options=options.ssh_options)
         if return_val == True:
             exit_code = 0
@@ -48,11 +60,12 @@ elif options.command == 'start':
             options.new_master_ip is not None and
             options.ssh_user is not None and
             options.ssh_options is not None):
-        return_val = mha_ip_failover_helper.execute_start_command(orig_master_ip=options.orig_master_ip,
+        return_val = mha_ip_failover_helper.execute_start_command(orig_master_host=options.orig_master_host,
+                                                orig_master_ip=options.orig_master_ip,
+                                                new_master_host=options.new_master_host,
                                                 new_master_ip=options.new_master_ip,
                                                 ssh_user=options.ssh_user,
                                                 ssh_options=options.ssh_options)
-        # TODO - tie in with the script here that changes the /etc/hosts file
 
         if return_val == True:
             exit_code = 0
@@ -61,7 +74,8 @@ elif options.command == 'status':
     if (options.orig_master_ip is not None and
             options.ssh_user is not None and
             options.ssh_options is not None):
-        return_val = mha_ip_failover_helper.execute_status_command(orig_master_ip=options.orig_master_ip,
+        return_val = mha_ip_failover_helper.execute_status_command(orig_master_host=options.orig_master_host,
+                                                orig_master_ip=options.orig_master_ip,
                                                 ssh_user=options.ssh_user,
                                                 ssh_options=options.ssh_options)
 
