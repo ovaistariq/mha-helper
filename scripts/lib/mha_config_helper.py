@@ -1,7 +1,7 @@
 import ConfigParser
 
 class MHA_config_helper(object):
-    CONFIG_PATH = "/usr/local/mha-helper/conf/global.conf.sample"
+    CONFIG_PATH = "/usr/local/mha-helper/conf/global.conf"
 
     def __init__(self, host):
        self._config = ConfigParser.RawConfigParser()
