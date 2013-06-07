@@ -1,6 +1,6 @@
 [default]
 mysql_user          = mha_helper
-mysql_pasword       = xxx
+mysql_password       = xxx
 writer_vip          = 192.168.1.100
 cluster_interface   = eth1:0
 
