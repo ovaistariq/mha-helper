@@ -7,7 +7,7 @@ class MHA_VIP_helper(object):
     SSH = "/usr/bin/ssh"
 
     @staticmethod
-     def remove_vip(host, host_ip, ssh_user, ssh_options):
+    def remove_vip(host, host_ip, ssh_user, ssh_options):
         config_helper = MHA_config_helper(host=host)
 
         cluster_interface = config_helper.get_cluster_interface()
