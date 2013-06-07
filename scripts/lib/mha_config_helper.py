@@ -2,6 +2,9 @@ import ConfigParser
 
 class MHA_config_helper(object):
     CONFIG_PATH = "/usr/local/mha-helper/conf/global.conf.sample"
+    IFCONFIG = "/sbin/ifconfig"
+    ARPING = "/sbin/arping"
+    SSH = "/usr/bin/ssh"
 
     def __init__(self, host):
        self._config = ConfigParser.RawConfigParser()
