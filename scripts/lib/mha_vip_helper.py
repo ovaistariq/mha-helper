@@ -3,11 +3,12 @@ from mha_config_helper import MHA_config_helper
 
 class MHA_VIP_helper(object):
     @staticmethod
-    def remove_vip(host, host_ip, ssh_user, ssh_options):
-        config_helper = MHA_config_helper(host=host)
-
+    def remove_vip(config_helper, host_ip, ssh_user, ssh_options):
         cluster_interface = config_helper.get_cluster_interface()
         writer_vip = config_helper.get_writer_vip()
+
+        if ssh_user == None:
+           ssh_user = config_helper.get_ssh_user()
 
         ifconfig_cmd = "%s %s %s down" % (MHA_config_helper.IFCONFIG, 
                                         cluster_interface, writer_vip)
@@ -22,11 +23,12 @@ class MHA_VIP_helper(object):
         return True
 
     @staticmethod
-    def assign_vip(host, host_ip, ssh_user, ssh_options):
-        config_helper = MHA_config_helper(host=host)
-
+    def assign_vip(config_helper, host_ip, ssh_user, ssh_options):
         cluster_interface = config_helper.get_cluster_interface()
         writer_vip = config_helper.get_writer_vip()
+
+        if ssh_user == None:
+            ssh_user = config_helper.get_ssh_user()
 
         ifconfig_cmd = "%s %s %s up" % (MHA_config_helper.IFCONFIG, 
                                         cluster_interface, writer_vip)

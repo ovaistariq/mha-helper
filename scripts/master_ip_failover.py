@@ -4,12 +4,10 @@ import sys
 from optparse import OptionParser
 from lib.mha_ip_failover_helper import MHA_IP_failover_helper
 
-# Current master shutdown phase
-# /usr/local/mha-helper/scripts/master_ip_failover.py
-# --orig_master_host=master1 --orig_master_ip=10.100.23.10
-# --orig_master_port=3306 --command=stopssh --ssh_user=root
-# --ssh_options='-o ServerAliveInterval=60 -o ServerAliveCountMax=20 -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o PasswordAuthentication=no -i /root/.ssh/id_rsa'
-
+#/usr/local/mha-helper/scripts/master_ip_failover.py \
+#        --command=status --ssh_user=mysql --orig_master_host=repl01 \
+#        --orig_master_ip=192.168.122.151 --orig_master_port=3306  \
+#        --ssh_options='-o ServerAliveInterval=60 -o ServerAliveCountMax=20 -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o PasswordAuthentication=no -o BatchMode=yes -i /home/mysql/.ssh/id_rsa'
 
 # parse comand line arguments
 parser = OptionParser()
