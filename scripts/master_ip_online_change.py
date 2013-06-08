@@ -47,7 +47,7 @@ if (options.orig_master_host is not None and
             orig_master_ssh_port=options.orig_master_ssh_port,
             new_master_host=options.new_master_host,
 	    new_master_ip=options.new_master_ip,
-            new_master_ssh_port=options.new_master_ssh_port
+            new_master_ssh_port=options.new_master_ssh_port,
             ssh_options=options.ssh_options,
             privileged_users=privileged_users)
     if options.command == 'stop':
