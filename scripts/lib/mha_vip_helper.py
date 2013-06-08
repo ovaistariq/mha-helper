@@ -19,6 +19,8 @@ class MHA_VIP_helper(object):
         cmd = "%s %s -t -q %s@%s \"%s\"" % (MHA_config_helper.SSH, ssh_options, 
                                 ssh_user, host_ip, ip_cmd)
 
+        print "Executing command %s" % cmd
+
         cmd_return_code = subprocess.call(cmd, shell=True)
         if cmd_return_code > 0:
             return False
@@ -46,6 +48,8 @@ class MHA_VIP_helper(object):
         cmd = "%s %s -t -q %s@%s \"%s && %s\"" % (MHA_config_helper.SSH,
                                         ssh_options, ssh_user, host_ip, 
                                         ip_cmd, arping_cmd)
+
+        print "Executing command %s" % cmd
 
         cmd_return_code = subprocess.call(cmd, shell=True)
         if cmd_return_code > 0:
