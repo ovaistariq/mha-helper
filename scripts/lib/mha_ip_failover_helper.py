@@ -27,7 +27,7 @@ class MHA_IP_failover_helper(object):
                                     password=config_helper.get_mysql_password())
 
         # If we have to manage the VIP, then remove the VIP from the original master
-        if config_helper.get_manage_vip() == 'yes':
+        if config_helper.get_manage_vip() == True:
             return_val = MHA_VIP_helper.remove_vip(config_helper=config_helper,
                                                 host_ip=orig_master_ip,
                                                 ssh_user=ssh_user,
@@ -49,7 +49,7 @@ class MHA_IP_failover_helper(object):
             return False
 
         # If we have to manage the VIP, then assign the VIP to the new master
-        if config_helper.get_manage_vip() == 'yes':
+        if config_helper.get_manage_vip() == True:
             return_val = MHA_VIP_helper.assign_vip(config_helper=config_helper,
                                                 host_ip=new_master_ip,
                                                 ssh_user=ssh_user,
