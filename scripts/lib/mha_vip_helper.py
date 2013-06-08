@@ -35,7 +35,7 @@ class MHA_VIP_helper(object):
         if ssh_user == None:
             ssh_user = config_helper.get_ssh_user()
 
-        ip_cmd = "%s addr add %s/ dev %s" % (MHA_config_helper.IP, 
+        ip_cmd = "%s addr add %s dev %s" % (MHA_config_helper.IP, 
                                             writer_vip, cluster_interface)
 
         arping_cmd = "%s -q -c 3 -A -I %s %s" % (MHA_config_helper.ARPING,
