@@ -1,7 +1,7 @@
 import ConfigParser
 
 class MHA_config_helper(object):
-    CONFIG_PATH = "/usr/local/mha-helper/conf/global.conf.sample"
+    CONFIG_PATH = "/usr/local/mha-helper/conf/global.conf"
     IP = "/sbin/ip"
     ARPING = "/sbin/arping"
     SSH = "/usr/bin/ssh"
