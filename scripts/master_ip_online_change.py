@@ -7,13 +7,6 @@ from lib.mha_online_change_helper import MHA_online_change_helper
 # set some config variables
 privileged_users = ['root']
 
-#/usr/local/mha-helper/scripts/master_ip_online_change.py \
-#        --command=stop --orig_master_host=repl01 --orig_master_ip=192.168.122.151 
-#        --orig_master_port=3306 --orig_master_user='mha_helper' --orig_master_password='xxx' 
-#        --new_master_host=repl02 --new_master_ip=192.168.122.152 --new_master_port=3306 
-#        --new_master_user='mha_helper' --new_master_password='xxx'  
-#        --ssh_options='-o ServerAliveInterval=60 -o ServerAliveCountMax=20 -o StrictHostKeyChecking=no -o ConnectionAttempts=5 -o PasswordAuthentication=no -o BatchMode=yes -i /root/.ssh/id_rsa' 
-
 # parse comand line arguments
 parser = OptionParser()
 parser.add_option('--command', type='string')
