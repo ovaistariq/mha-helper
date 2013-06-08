@@ -2,7 +2,7 @@ import ConfigParser
 
 class MHA_config_helper(object):
     CONFIG_PATH = "/usr/local/mha-helper/conf/global.conf"
-    IFCONFIG = "/sbin/ifconfig"
+    IP = "/sbin/ip"
     ARPING = "/sbin/arping"
     SSH = "/usr/bin/ssh"
     SUDO = "/usr/bin/sudo"
