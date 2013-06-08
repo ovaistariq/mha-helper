@@ -5,7 +5,9 @@ from mha_config_helper import MHA_config_helper
 from mha_vip_helper import MHA_VIP_helper
 
 class MHA_online_change_helper(object):
-    def __init__(self, orig_master_host, orig_master_ip, new_master_host, new_master_ip, ssh_options, privileged_users):
+    def __init__(self, orig_master_host, orig_master_ip, orig_master_ssh_port,
+            new_master_host, new_master_ip, new_master_ssh_port, 
+            ssh_options, privileged_users):
         self._orig_master_config_helper = MHA_config_helper(host=orig_master_host)
         self._new_master_config_helper = MHA_config_helper(host=new_master_host)
 
@@ -18,7 +20,19 @@ class MHA_online_change_helper(object):
                                         password=self._new_master_config_helper.get_mysql_password())
 
         self._orig_master_ip = orig_master_ip
+
+        if orig_master_ssh_port is None
+            self._orig_master_ssh_port = 22
+        else
+            self._orig_master_ssh_port = orig_master_ssh_port
+
         self._new_master_ip = new_master_ip
+
+        if new_master_ssh_port is None
+            self._new_master_ssh_port = 22
+        else
+            self._new_master_ssh_port = new_master_ssh_port
+
         self._ssh_options = ssh_options
 
         self._privileged_users = privileged_users
@@ -156,10 +170,12 @@ class MHA_online_change_helper(object):
             # If we have to manage the VIP, then remove the VIP from the original master
             if self._orig_master_config_helper.get_manage_vip() == True:
                 self.debug_message("Removing the VIP from the original master")
-                return_val = MHA_VIP_helper.remove_vip(config_helper=self._orig_master_config_helper,
-                                                    host_ip=self._orig_master_ip,
-                                                    ssh_user=None,
-                                                    ssh_options=self._ssh_options)
+                return_val = MHA_VIP_helper.remove_vip(
+                        config_helper=self._orig_master_config_helper,
+                        host_ip=self._orig_master_ip,
+                        ssh_user=None,
+                        ssh_port=self._orig_master_ssh_port,
+                        ssh_options=self._ssh_options)
 
                 if return_val == False:
                     return False
@@ -207,10 +223,12 @@ class MHA_online_change_helper(object):
         # If we have to manage the VIP, then add the VIP back on the original master
         if self._orig_master_config_helper.get_manage_vip() == True:
             self.debug_message("Assigning back the VIP to the original master")
-            return_val = MHA_VIP_helper.assign_vip(config_helper=self._orig_master_config_helper,
-                                                host_ip=self._orig_master_ip,
-                                                ssh_user=None,
-                                                ssh_options=self._ssh_options)
+            return_val = MHA_VIP_helper.assign_vip(
+                    config_helper=self._orig_master_config_helper,
+                    host_ip=self._orig_master_ip,
+                    ssh_user=None,
+                    ssh_port=self._orig_master_ssh_port,
+                    ssh_options=self._ssh_options)
 
             if return_val == False:
                 rollback_error += 1
@@ -247,10 +265,12 @@ class MHA_online_change_helper(object):
         # If we have to manage the VIP, then assign the VIP on the new master
         if self._new_master_config_helper.get_manage_vip() == True:
             self.debug_message("Assigning the VIP to the new master")
-            return_val = MHA_VIP_helper.assign_vip(config_helper=self._new_master_config_helper,
-                                                host_ip=self._new_master_ip,
-                                                ssh_user=None,
-                                                ssh_options=self._ssh_options)
+            return_val = MHA_VIP_helper.assign_vip(
+                    config_helper=self._new_master_config_helper,
+                    host_ip=self._new_master_ip,
+                    ssh_user=None,
+                    ssh_port=self._new_master_ssh_port,
+                    ssh_options=self._ssh_options)
 
         # Disconnect from the new master
         self._new_master.disconnect()
