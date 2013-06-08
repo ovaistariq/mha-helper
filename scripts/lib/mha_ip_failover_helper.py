@@ -11,20 +11,26 @@ class MHA_IP_failover_helper(object):
 	print "[%s] %s" % (current_datetime, message)
 
     def execute_stop_command(self, orig_master_host, orig_master_ip, 
-                                ssh_user, ssh_options, ssh_port=22):
+                                ssh_user, ssh_options, ssh_port):
         orig_master = MySQL_helper(host=orig_master_ip, user=self._user,
                                     password=self._password)
+
+        if ssh_port is None:
+            ssh_port = 22
 
 	# We do not really need to do anything here because there is no SSH access
 	return True
 
     def execute_stopssh_command(self, orig_master_host, orig_master_ip, 
-                                ssh_user, ssh_options, ssh_port=22):
+                                ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=orig_master_host)
 
         orig_master = MySQL_helper(host=orig_master_ip, 
                                     user=config_helper.get_mysql_user(),
                                     password=config_helper.get_mysql_password())
+
+        if ssh_port is None:
+            ssh_port = 22
 
         # If we have to manage the VIP, then remove the VIP from the original master
         if config_helper.get_manage_vip() == True:
@@ -38,12 +44,15 @@ class MHA_IP_failover_helper(object):
 
     def execute_start_command(self, orig_master_host, orig_master_ip, 
                                 new_master_host, new_master_ip, 
-                                ssh_user, ssh_options, ssh_port=22):
+                                ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=new_master_host)
         
         new_master = MySQL_helper(host=new_master_ip, 
                                     user=config_helper.get_mysql_user(),
                                     password=config_helper.get_mysql_password())
+
+        if ssh_port is None:
+            ssh_port = 22
 
         # Connect to the new master
         if new_master.connect() == False:
@@ -71,12 +80,15 @@ class MHA_IP_failover_helper(object):
         return True
 
     def execute_status_command(self, orig_master_host, orig_master_ip, 
-                                ssh_user, ssh_options, ssh_port=22):
+                                ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=orig_master_host)
 
         orig_master = MySQL_helper(host=orig_master_ip, 
                                     user=config_helper.get_mysql_user(),
                                     password=config_helper.get_mysql_password())
+
+        if ssh_port is None:
+            ssh_port = 22
 
         # Connect to the original master
         if orig_master.connect() == False:
