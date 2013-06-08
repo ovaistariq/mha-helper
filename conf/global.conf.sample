@@ -3,29 +3,34 @@ mysql_user          = mha_helper
 mysql_password      = xxx
 ssh_user            = mha_helper
 requires_sudo       = yes
-writer_vip          = 192.168.1.100/24
+writer_vip_cidr     = 192.168.1.100/24
+writer_vip          = 192.168.1.100
 cluster_interface   = eth1
 
 [db1]
 cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
 manage_vip          = yes
-writer_vip          = 192.168.1.155/24
+writer_vip_cidr     = 192.168.1.155/24
+writer_vip          = 192.168.1.155
 cluster_interface   = eth0
 
 [db2]
 cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
 manage_vip          = yes
-writer_vip          = 192.168.1.155/24
+writer_vip_cidr     = 192.168.1.155/24
+writer_vip          = 192.168.1.155
 cluster_interface   = eth0
 
 [db3]
 cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
 manage_vip          = yes
-writer_vip          = 192.168.1.155/24
+writer_vip_cidr     = 192.168.1.155/24
+writer_vip          = 192.168.1.155
 cluster_interface   = eth0
 
 [db4]
 cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
 manage_vip          = yes
-writer_vip          = 192.168.1.155/24
+writer_vip_cidr     = 192.168.1.155/24
+writer_vip          = 192.168.1.155
 cluster_interface   = eth0
