@@ -11,7 +11,7 @@ class MHA_IP_failover_helper(object):
 	print "[%s] %s" % (current_datetime, message)
 
     def execute_stop_command(self, orig_master_host, orig_master_ip, 
-                                ssh_user, ssh_options):
+                                ssh_user, ssh_port=22, ssh_options):
         orig_master = MySQL_helper(host=orig_master_ip, user=self._user,
                                     password=self._password)
 
@@ -19,7 +19,7 @@ class MHA_IP_failover_helper(object):
 	return True
 
     def execute_stopssh_command(self, orig_master_host, orig_master_ip, 
-                                ssh_user, ssh_options):
+                                ssh_user, ssh_port=22, ssh_options):
         config_helper = MHA_config_helper(host=orig_master_host)
 
         orig_master = MySQL_helper(host=orig_master_ip, 
@@ -31,13 +31,14 @@ class MHA_IP_failover_helper(object):
             return_val = MHA_VIP_helper.remove_vip(config_helper=config_helper,
                                                 host_ip=orig_master_ip,
                                                 ssh_user=ssh_user,
+                                                ssh_port=ssh_port,
                                                 ssh_options=ssh_options)
 
         return return_val
 
     def execute_start_command(self, orig_master_host, orig_master_ip, 
                                 new_master_host, new_master_ip, 
-                                ssh_user, ssh_options):
+                                ssh_user, ssh_port=22, ssh_options):
         config_helper = MHA_config_helper(host=new_master_host)
         
         new_master = MySQL_helper(host=new_master_ip, 
@@ -53,6 +54,7 @@ class MHA_IP_failover_helper(object):
             return_val = MHA_VIP_helper.assign_vip(config_helper=config_helper,
                                                 host_ip=new_master_ip,
                                                 ssh_user=ssh_user,
+                                                ssh_port=ssh_port,
                                                 ssh_options=ssh_options)
 
         if return_val == False:
@@ -69,7 +71,7 @@ class MHA_IP_failover_helper(object):
         return True
 
     def execute_status_command(self, orig_master_host, orig_master_ip, 
-                                ssh_user, ssh_options):
+                                ssh_user, ssh_port=22, ssh_options):
         config_helper = MHA_config_helper(host=orig_master_host)
 
         orig_master = MySQL_helper(host=orig_master_ip, 
@@ -85,7 +87,8 @@ class MHA_IP_failover_helper(object):
         # Check SSH connectivity
         self.debug_message("Checking SSH connectivity to original master %s" % orig_master_host)
 
-        cmd = "%s -q %s %s@%s exit" % (MHA_config_helper.SSH, ssh_options, ssh_user, orig_master_ip)
+        cmd = "%s -q -p %s %s %s@%s exit" % (MHA_config_helper.SSH, ssh_port, 
+                ssh_options, ssh_user, orig_master_ip)
         cmd_return_code = subprocess.call(cmd, shell=True)
         if cmd_return_code > 0:
             self.debug_message("SSH connection to %s failed" % orig_master_host)

@@ -3,7 +3,7 @@ from mha_config_helper import MHA_config_helper
 
 class MHA_VIP_helper(object):
     @staticmethod
-    def remove_vip(config_helper, host_ip, ssh_user, ssh_options):
+    def remove_vip(config_helper, host_ip, ssh_user, ssh_port, ssh_options):
         cluster_interface = config_helper.get_cluster_interface()
         writer_vip_cidr = config_helper.get_writer_vip_cidr()
 
@@ -16,8 +16,8 @@ class MHA_VIP_helper(object):
         if config_helper.get_requires_sudo() == True:
             ip_cmd = "%s %s" % (MHA_config_helper.SUDO, ip_cmd)
 
-        cmd = "%s %s -t -q %s@%s \"%s\"" % (MHA_config_helper.SSH, ssh_options, 
-                                ssh_user, host_ip, ip_cmd)
+        cmd = "%s %s -t -q -p %s %s@%s \"%s\"" % (MHA_config_helper.SSH, 
+                ssh_options, ssh_port, ssh_user, host_ip, ip_cmd)
 
         print "Executing command %s" % cmd
 
@@ -28,7 +28,7 @@ class MHA_VIP_helper(object):
         return True
 
     @staticmethod
-    def assign_vip(config_helper, host_ip, ssh_user, ssh_options):
+    def assign_vip(config_helper, host_ip, ssh_user, ssh_port, ssh_options):
         cluster_interface = config_helper.get_cluster_interface()
         writer_vip_cidr = config_helper.get_writer_vip_cidr()
         writer_vip = config_helper.get_writer_vip()
@@ -46,9 +46,8 @@ class MHA_VIP_helper(object):
             ip_cmd = "%s %s" % (MHA_config_helper.SUDO, ip_cmd)
             arping_cmd = "%s %s" % (MHA_config_helper.SUDO, arping_cmd)
 
-        cmd = "%s %s -t -q %s@%s \"%s && %s\"" % (MHA_config_helper.SSH,
-                                        ssh_options, ssh_user, host_ip, 
-                                        ip_cmd, arping_cmd)
+        cmd = "%s %s -t -q -p %s %s@%s \"%s && %s\"" % (MHA_config_helper.SSH, 
+                ssh_options, ssh_port, ssh_user, host_ip, ip_cmd, arping_cmd)
 
         print "Executing command %s" % cmd
 

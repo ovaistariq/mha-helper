@@ -19,6 +19,7 @@ parser.add_option('--new_master_host', type='string')
 parser.add_option('--new_master_ip', type='string')
 parser.add_option('--new_master_port', type='string')
 parser.add_option('--ssh_user', type='string')
+parser.add_option('--orig_master_ssh_port', type='string')
 parser.add_option('--ssh_options', type='string')
 
 (options, args) = parser.parse_args()
@@ -38,6 +39,7 @@ if options.command == 'stop':
         return_val = mha_ip_failover_helper.execute_stop_command(orig_master_host=options.orig_master_host,
                                                 orig_master_ip=options.orig_master_ip,
                                                 ssh_user=options.ssh_user, 
+                                                ssh_port=options.orig_master_ssh_port,
                                                 ssh_options=options.ssh_options)
         if return_val == True:
             exit_code = 0
@@ -49,6 +51,7 @@ if options.command == 'stopssh':
         return_val = mha_ip_failover_helper.execute_stopssh_command(orig_master_host=options.orig_master_host,
                                                 orig_master_ip=options.orig_master_ip,
                                                 ssh_user=options.ssh_user,
+                                                ssh_port=options.orig_master_ssh_port,
                                                 ssh_options=options.ssh_options)
         if return_val == True:
             exit_code = 0
@@ -63,6 +66,7 @@ elif options.command == 'start':
                                                 new_master_host=options.new_master_host,
                                                 new_master_ip=options.new_master_ip,
                                                 ssh_user=options.ssh_user,
+                                                ssh_port=new_master_ssh_port,
                                                 ssh_options=options.ssh_options)
 
         if return_val == True:
@@ -75,6 +79,7 @@ elif options.command == 'status':
         return_val = mha_ip_failover_helper.execute_status_command(orig_master_host=options.orig_master_host,
                                                 orig_master_ip=options.orig_master_ip,
                                                 ssh_user=options.ssh_user,
+                                                ssh_port=options.orig_master_ssh_port,
                                                 ssh_options=options.ssh_options)
 
         if return_val == True:
