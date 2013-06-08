@@ -10,7 +10,7 @@ class MHA_VIP_helper(object):
         if ssh_user == None:
            ssh_user = config_helper.get_ssh_user()
 
-        ip_cmd = "%s addr delete %s/32 dev %s" % (MHA_config_helper.IP, 
+        ip_cmd = "%s addr delete %s dev %s" % (MHA_config_helper.IP, 
                                             writer_vip, cluster_interface)
 
         if config_helper.get_requires_sudo() == True:
@@ -35,7 +35,7 @@ class MHA_VIP_helper(object):
         if ssh_user == None:
             ssh_user = config_helper.get_ssh_user()
 
-        ip_cmd = "%s addr add %s/32 dev %s" % (MHA_config_helper.IP, 
+        ip_cmd = "%s addr add %s/ dev %s" % (MHA_config_helper.IP, 
                                             writer_vip, cluster_interface)
 
         arping_cmd = "%s -q -c 3 -A -I %s %s" % (MHA_config_helper.ARPING,
