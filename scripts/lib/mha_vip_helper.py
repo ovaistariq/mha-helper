@@ -13,7 +13,10 @@ class MHA_VIP_helper(object):
         ifconfig_cmd = "%s %s %s down" % (MHA_config_helper.IFCONFIG, 
                                         cluster_interface, writer_vip)
 
-        cmd = "%s %s %s@%s \"%s\"" % (MHA_config_helper.SSH, ssh_options, 
+        if config_helper.get_requires_sudo() == True:
+            ifconfig_cmd = "%s %s" % (MHA_config_helper.SUDO, ifconfig_cmd)
+
+        cmd = "%s %s -t -q %s@%s \"%s\"" % (MHA_config_helper.SSH, ssh_options, 
                                 ssh_user, host_ip, ifconfig_cmd)
 
         cmd_return_code = subprocess.call(cmd, shell=True)
@@ -36,7 +39,11 @@ class MHA_VIP_helper(object):
         arping_cmd = "%s -q -c 3 -A -I %s %s" % (MHA_config_helper.ARPING,
                                         cluster_interface, writer_vip)
 
-        cmd = "%s %s %s@%s \"%s && %s\"" % (MHA_config_helper.SSH,
+        if config_helper.get_requires_sudo() == True:
+            ifconfig_cmd = "%s %s" % (MHA_config_helper.SUDO, ifconfig_cmd)
+            arping_cmd = "%s %s" % (MHA_config_helper.SUDO, arping_cmd)
+
+        cmd = "%s %s -t -q %s@%s \"%s && %s\"" % (MHA_config_helper.SSH,
                                         ssh_options, ssh_user, host_ip, 
                                         ifconfig_cmd, arping_cmd)
 

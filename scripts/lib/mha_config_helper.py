@@ -5,6 +5,7 @@ class MHA_config_helper(object):
     IFCONFIG = "/sbin/ifconfig"
     ARPING = "/sbin/arping"
     SSH = "/usr/bin/ssh"
+    SUDO = "/usr/bin/sudo"
 
     def __init__(self, host):
        self._config = ConfigParser.RawConfigParser()
@@ -23,8 +24,23 @@ class MHA_config_helper(object):
     def get_ssh_user(self):
         return self.get_param_value(param_name='ssh_user')
 
+    def get_requires_sudo(self):
+        param_value = self.get_param_value(param_name='requires_sudo')
+
+        return_val = False
+        if param_value.lower() == "yes"
+            return_val = True
+
+        return return_val
+
     def get_manage_vip(self):
-        return self.get_param_value(param_name='manage_vip')
+        param_value = self.get_param_value(param_name='manage_vip')
+
+        return_val = False
+        if param_value.lower() == "yes"
+            return_val = True
+
+        return return_val
 
     def get_writer_vip(self):
         return self.get_param_value(param_name='writer_vip')
