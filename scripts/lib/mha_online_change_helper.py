@@ -23,14 +23,14 @@ class MHA_online_change_helper(object):
 
         if orig_master_ssh_port is None:
             self._orig_master_ssh_port = 22
-        else
+        else:
             self._orig_master_ssh_port = orig_master_ssh_port
 
         self._new_master_ip = new_master_ip
 
         if new_master_ssh_port is None:
             self._new_master_ssh_port = 22
-        else
+        else:
             self._new_master_ssh_port = new_master_ssh_port
 
         self._ssh_options = ssh_options
