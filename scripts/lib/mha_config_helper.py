@@ -28,7 +28,7 @@ class MHA_config_helper(object):
         param_value = self.get_param_value(param_name='requires_sudo')
 
         return_val = False
-        if param_value.lower() == "yes"
+        if param_value.lower() == "yes":
             return_val = True
 
         return return_val
@@ -37,7 +37,7 @@ class MHA_config_helper(object):
         param_value = self.get_param_value(param_name='manage_vip')
 
         return_val = False
-        if param_value.lower() == "yes"
+        if param_value.lower() == "yes":
             return_val = True
 
         return return_val
