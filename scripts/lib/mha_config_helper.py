@@ -42,6 +42,9 @@ class MHA_config_helper(object):
 
         return return_val
 
+    def get_writer_vip_cidr(self):
+        return self.get_param_value(param_name='writer_vip_cidr')
+
     def get_writer_vip(self):
         return self.get_param_value(param_name='writer_vip')
 
