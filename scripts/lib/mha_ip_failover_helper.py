@@ -91,33 +91,33 @@ class MHA_IP_failover_helper(object):
             ssh_port = 22
 
         # Connect to the original master
-        if orig_master.connect() == False:
-            return False
+        #if orig_master.connect() == False:
+        #    return False
 
         return_val = True
 
         # Check SSH connectivity
-        self.debug_message("Checking SSH connectivity to original master %s" % orig_master_host)
+        #self.debug_message("Checking SSH connectivity to original master %s" % orig_master_host)
 
-        cmd = "%s -q -p %s %s %s@%s exit" % (MHA_config_helper.SSH, ssh_port, 
-                ssh_options, ssh_user, orig_master_ip)
-        cmd_return_code = subprocess.call(cmd, shell=True)
-        if cmd_return_code > 0:
-            self.debug_message("SSH connection to %s failed" % orig_master_host)
-            return False
+        #cmd = "%s -q -p %s %s %s@%s exit" % (MHA_config_helper.SSH, ssh_port, 
+        #        ssh_options, ssh_user, orig_master_ip)
+        #cmd_return_code = subprocess.call(cmd, shell=True)
+        #if cmd_return_code > 0:
+        #    self.debug_message("SSH connection to %s failed" % orig_master_host)
+        #    return False
 
-        self.debug_message("SSH connection to %s successfull" % orig_master_host)
+        #self.debug_message("SSH connection to %s successfull" % orig_master_host)
 
         # Fetch the MySQL version to test MySQL connectivity
-        self.debug_message("Checking MySQL connection on original master %s" % orig_master_host)
+        #self.debug_message("Checking MySQL connection on original master %s" % orig_master_host)
 
-        if orig_master.get_version() == False:
-            self.debug_message("MySQL connection to %s failed" % orig_master_host)
-            return_val = False
+        #if orig_master.get_version() == False:
+        #    self.debug_message("MySQL connection to %s failed" % orig_master_host)
+        #    return_val = False
 
-        self.debug_message("MySQL connection to %s successfull" % orig_master_host)
+        #self.debug_message("MySQL connection to %s successfull" % orig_master_host)
 
         # Disconnect from the original master
-        orig_master.disconnect()
+        #orig_master.disconnect()
     
         return return_val
