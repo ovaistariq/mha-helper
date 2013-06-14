@@ -15,6 +15,8 @@ parser.add_option('--new_master_host', type='string')
 parser.add_option('--new_master_ip', type='string')
 parser.add_option('--new_master_port', type='string')
 parser.add_option('--new_master_ssh_port', type='string')
+parser.add_option('--new_master_user', type='string')
+parser.add_option('--new_master_password', type='string')
 parser.add_option('--ssh_user', type='string')
 parser.add_option('--ssh_options', type='string')
 
