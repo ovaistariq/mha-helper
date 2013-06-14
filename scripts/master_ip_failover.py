@@ -64,7 +64,7 @@ elif options.command == 'start':
                                                 new_master_host=options.new_master_host,
                                                 new_master_ip=options.new_master_ip,
                                                 ssh_user=options.ssh_user,
-                                                ssh_port=new_master_ssh_port,
+                                                ssh_port=options.new_master_ssh_port,
                                                 ssh_options=options.ssh_options)
 
         if return_val == True:
