@@ -1,5 +1,4 @@
 import subprocess
-import shlex
 from mha_config_helper import MHA_config_helper
 
 class MHA_VIP_helper(object):
@@ -22,8 +21,7 @@ class MHA_VIP_helper(object):
 
         print "Executing command %s" % cmd
 
-        cmd_list = shlex.split(cmd)
-        cmd_return_code = subprocess.call(cmd_list)
+        cmd_return_code = subprocess.call(cmd, shell=True)
         if cmd_return_code > 0:
             return False
 
