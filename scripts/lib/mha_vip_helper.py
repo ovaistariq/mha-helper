@@ -16,7 +16,7 @@ class MHA_VIP_helper(object):
         if config_helper.get_requires_sudo() == True:
             ip_cmd = "%s %s" % (MHA_config_helper.SUDO, ip_cmd)
 
-        cmd = "%s %s -t -q -p %s %s@%s \"%s\"" % (MHA_config_helper.SSH, 
+        cmd = "%s %s -q -p %s %s@%s \"%s\"" % (MHA_config_helper.SSH, 
                 ssh_options, ssh_port, ssh_user, host_ip, ip_cmd)
 
         print "Executing command %s" % cmd
@@ -46,7 +46,7 @@ class MHA_VIP_helper(object):
             ip_cmd = "%s %s" % (MHA_config_helper.SUDO, ip_cmd)
             arping_cmd = "%s %s" % (MHA_config_helper.SUDO, arping_cmd)
 
-        cmd = "%s %s -t -q -p %s %s@%s \"%s && %s\"" % (MHA_config_helper.SSH, 
+        cmd = "%s %s -q -p %s %s@%s \"%s && %s\"" % (MHA_config_helper.SSH, 
                 ssh_options, ssh_port, ssh_user, host_ip, ip_cmd, arping_cmd)
 
         print "Executing command %s" % cmd
