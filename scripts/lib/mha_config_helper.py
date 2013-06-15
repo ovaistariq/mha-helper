@@ -42,7 +42,11 @@ class MHA_config_helper(object):
         if self._config.has_section('server default') == False:
             return False
 
-        param_value = self._config.get('server default', param_name)
+        param_value = False
+
+        if self._config.has_option('server default', param_name):
+            param_value = self._config.get('server default', param_name)
+
         for section in self._config.sections():
             if(self._host is not None and 
                     section == self._host and 
@@ -93,7 +97,11 @@ class MHA_global_config_helper(object):
         if self._config.has_section('default') == False:
             return False
 
-        param_value = self._config.get('default', param_name)
+        param_value = False
+
+        if self._config.has_option('default', param_name):
+            param_value = self._config.get('default', param_name)
+
         for section in self._config.sections():
             if(self._host is not None and
                     section == self._host and
