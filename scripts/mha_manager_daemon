@@ -57,7 +57,7 @@ class MHA_manager_daemon(Unix_daemon):
         return subprocess.call(cmd)
 
     def start_manager(self):
-        cmd = [MASTERHA_MANAGER, 
+        cmd = [MHA_manager_daemon.MASTERHA_MANAGER, 
                 "--conf=%s" % self._conf_path,
                 "--wait_on_monitor_error=60",
                 "--ignore_fail_on_start",
