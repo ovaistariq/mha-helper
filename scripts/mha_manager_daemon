@@ -52,8 +52,8 @@ class MHA_manager_daemon(Unix_daemon):
             time.sleep(sleep_seconds)
 
     def stop(self):
-        self.stop_manager()
         super(MHA_manager_daemon, self).stop()
+        self.stop_manager()
 
     def check_manager_state(self):
         cmd = [MHA_manager_daemon.MASTERHA_CHECK_STATUS, 
