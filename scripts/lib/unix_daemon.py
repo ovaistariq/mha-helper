@@ -4,7 +4,7 @@ import time
 import atexit
 import signal
 
-class Unix_daemon:
+class Unix_daemon(object):
     """
     A generic daemon class.
     

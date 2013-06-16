@@ -32,8 +32,8 @@ class MHA_manager_daemon(Unix_daemon):
         self._workdir = self.get_manager_workdir()
         self._log = self.get_manager_log()
 
-        Unix_daemon.__init__(self, pidfile=self._pidfile, stdout=self._log, 
-                stderr=self._log, home_dir=self._workdir)
+        super(MHA_manager_daemon, self).__init__(pidfile=self._pidfile, 
+                stdout=self._log, stderr=self._log, home_dir=self._workdir)
 
     def run(self):
         while True:
@@ -50,6 +50,10 @@ class MHA_manager_daemon(Unix_daemon):
                 sleep_seconds = 5
 
             time.sleep(sleep_seconds)
+
+    def stop(self):
+        self.stop_manager()
+        super(MHA_manager_daemon, self).stop()
 
     def check_manager_state(self):
         cmd = [MHA_manager_daemon.MASTERHA_CHECK_STATUS, 
