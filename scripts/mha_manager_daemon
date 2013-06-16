@@ -2,12 +2,29 @@
 
 import sys
 import time
+import subprocess
 import ConfigParser
 from optparse import OptionParser
 from lib.unix_daemon import Unix_daemon
 
 class MHA_manager_daemon(Unix_daemon):
+    MASTERHA_CHECK_STATUS = "/usr/bin/masterha_check_status"
+    MASTERHA_MANAGER = "/usr/bin/masterha_manager"
+    MASTERHA_STOP = "/usr/bin/masterha_stop"
+
+    # masterha_manager states
+    STATE_PING_OK = 0
+    STATE_UNKONWN = 1
+    STATE_NOT_RUNNING = 2
+    STATE_PARTIALLY_RUNNING = 3
+    STATE_INITIALIZING_MONITOR = 10
+    STATE_CONFIG_ERROR = 31
+    STATE_FAILOVER_RUNNING = 50
+    STATE_FAILOVER_ERROR = 51
+
     def __init__(self, conf_path):
+        self._conf_path = conf_path
+
         self._config = ConfigParser.RawConfigParser()
         self._config.read(conf_path)
 
@@ -20,7 +37,78 @@ class MHA_manager_daemon(Unix_daemon):
 
     def run(self):
         while True:
+            manager_state = self.check_manager_state()
+            sleep_seconds = 1
+
+            if manager_state == MHA_manager_daemon.STATE_NOT_RUNNING:
+                self.start_manager()
+            
+            if manager_state == MHA_manager_daemon.STATE_PARTIALLY_RUNNING:
+                self.restart_manager()
+            
+            if manager_state == MHA_manager_daemon.STATE_INITIALIZING_MONITOR:
+                sleep_seconds = 5
+
+            time.sleep(sleep_seconds)
+
+    def check_manager_state(self):
+        cmd = [MHA_manager_daemon.MASTERHA_CHECK_STATUS, 
+                "--conf=%s" % self._conf_path]
+        return subprocess.call(cmd)
+
+    def start_manager(self):
+        cmd = [MASTERHA_MANAGER, 
+                "--conf=%s" % self._conf_path,
+                "--wait_on_monitor_error=60",
+                "--ignore_fail_on_start",
+                "--last_failover_minute=60",
+                "--wait_on_failover_error=60"]
+
+        sys.stdout.write("[INFO] Starting masterha_manager: %s" % " ".join(cmd))
+        
+        subprocess.Popen(cmd)
+        return True
+
+    def stop_manager(self):
+        while True:
+            manager_state = self.check_manager_state()
+
+            # We try to stop the manager only when its not doing a failover
+            # Otherwise we wait for the failover to finish
+            if manager_state != MHA_manager_daemon.STATE_FAILOVER_RUNNING:
+                cmd = [MHA_manager_daemon.MASTERHA_STOP, 
+                        "--conf=%s" % self._conf_path]
+
+                sys.stdout.write("[INFO] Stopping masterha_manager: %s" % " ".join(cmd))
+                proc = subprocess.Popen(cmd)
+
+                # Give manager 30 seconds to terminate
+                check_seconds=1
+                while check_seconds <= 30:
+                    return_code = proc.poll()
+                    if return_code is not None: # masterha_stop finished
+                        sys.stdout.write("[INFO] masterha_manager stopped")
+                        return return_code
+
+                    check_seconds += 1
+                    time.sleep(1)
+
+                # Manager could not be stopped in 30 seconds so we abort
+                cmd = [MHA_manager_daemon.MASTERHA_STOP, 
+                        "--conf=%s" % self._conf_path, "--abort"]
+
+                sys.stderr.write("[ERROR] masterha_manager could not be stopped")
+                sys.stderr.write("[ERROR] Sending abort command: %s" % " ".join(cmd))
+
+                return subprocess.call(cmd)
+
+            # We came here meaning that manager is doing a failover
+            sys.stdout.write("[INFO] Waiting for masterha_manager to complete failover")
             time.sleep(1)
+
+    def restart_manager(self):
+        self.stop_manager()
+        self.start_manager()
 
     def get_manager_pidfile(self):
         return "/var/run/mha_manager_daemon_test.pid"
@@ -66,7 +154,7 @@ def main():
 
         sys.exit(0)
     else:
-        parser.error("incorrect number of arguments")
+        parser.error("Incorrect number of arguments")
         sys.exit(2)
 
 if __name__ == "__main__":
