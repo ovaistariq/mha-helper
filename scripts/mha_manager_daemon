@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+
+import sys
+import time
+import ConfigParser
+from optparse import OptionParser
+from lib.unix_daemon import Unix_daemon
+
+class MHA_manager_daemon(Unix_daemon):
+    def __init__(self, conf_path):
+        self._config = ConfigParser.RawConfigParser()
+        self._config.read(conf_path)
+
+        self._pidfile = self.get_manager_pidfile()
+        self._workdir = self.get_manager_workdir()
+        self._log = self.get_manager_log()
+
+        Unix_daemon.__init__(self, pidfile=self._pidfile, stdout=self._log, 
+                stderr=self._log, home_dir=self._workdir)
+
+    def run(self):
+        while True:
+            time.sleep(1)
+
+    def get_manager_pidfile(self):
+        return "/var/run/mha_manager_daemon_test.pid"
+
+    def get_manager_workdir(self):
+        return self.get_param_value(param_name='manager_workdir')
+
+    def get_manager_log(self):
+        return self.get_param_value(param_name='manager_log')
+
+    def get_param_value(self, param_name):
+        if self._config.has_section('server default') == False:
+            return False
+
+        param_value = False
+
+        if self._config.has_option('server default', param_name):
+            param_value = self._config.get('server default', param_name)
+
+        return param_value
+
+def main():
+    usage = "usage: %prog --conf=CONF start|stop|restart"
+    parser = OptionParser(usage)
+    parser.add_option('--conf', type='string')
+    (options, args) = parser.parse_args()
+
+    if len(args) == 1 and options.conf is not None:
+        manager_daemon = MHA_manager_daemon(conf_path=options.conf)
+
+        if args[0] == "start":
+            print "Starting daemon"
+            manager_daemon.start()
+        elif args[0] == "stop":
+            print "Stopping daemon"
+            manager_daemon.stop()
+        elif args[0] == "restart":
+            print "Restarting daemon"
+            manager_daemon.restart()
+        else:
+            parser.error("Unknown command")
+            sys.exit(2)
+
+        sys.exit(0)
+    else:
+        parser.error("incorrect number of arguments")
+        sys.exit(2)
+
+if __name__ == "__main__":
+    main()
