@@ -32,8 +32,8 @@ class MHA_manager_daemon(Unix_daemon):
         self._workdir = self.get_manager_workdir()
         self._log = self.get_manager_log()
 
-        Unix_daemon.__init__(self, pidfile=self._pidfile, stdout=self._log, 
-                stderr=self._log, home_dir=self._workdir)
+        super(MHA_manager_daemon, self).__init__(pidfile=self._pidfile, 
+                stdout=self._log, stderr=self._log, home_dir=self._workdir)
 
     def run(self):
         while True:
@@ -51,10 +51,18 @@ class MHA_manager_daemon(Unix_daemon):
 
             time.sleep(sleep_seconds)
 
+    def stop(self):
+        self.stop_manager()
+        super(MHA_manager_daemon, self).stop()
+
     def check_manager_state(self):
         cmd = [MHA_manager_daemon.MASTERHA_CHECK_STATUS, 
                 "--conf=%s" % self._conf_path]
-        return subprocess.call(cmd)
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
+        (stdout, stderr) = proc.communicate()
+
+        return proc.returncode
 
     def start_manager(self):
         cmd = [MHA_manager_daemon.MASTERHA_MANAGER, 
@@ -64,7 +72,7 @@ class MHA_manager_daemon(Unix_daemon):
                 "--last_failover_minute=60",
                 "--wait_on_failover_error=60"]
 
-        sys.stdout.write("[INFO] Starting masterha_manager: %s" % " ".join(cmd))
+        print "[INFO] Starting masterha_manager: %s" % " ".join(cmd)
         
         subprocess.Popen(cmd)
         return True
@@ -79,7 +87,7 @@ class MHA_manager_daemon(Unix_daemon):
                 cmd = [MHA_manager_daemon.MASTERHA_STOP, 
                         "--conf=%s" % self._conf_path]
 
-                sys.stdout.write("[INFO] Stopping masterha_manager: %s" % " ".join(cmd))
+                print "[INFO] Stopping masterha_manager: %s" % " ".join(cmd)
                 proc = subprocess.Popen(cmd)
 
                 # Give manager 30 seconds to terminate
@@ -87,7 +95,7 @@ class MHA_manager_daemon(Unix_daemon):
                 while check_seconds <= 30:
                     return_code = proc.poll()
                     if return_code is not None: # masterha_stop finished
-                        sys.stdout.write("[INFO] masterha_manager stopped")
+                        print "[INFO] masterha_manager stopped"
                         return return_code
 
                     check_seconds += 1
@@ -97,13 +105,13 @@ class MHA_manager_daemon(Unix_daemon):
                 cmd = [MHA_manager_daemon.MASTERHA_STOP, 
                         "--conf=%s" % self._conf_path, "--abort"]
 
-                sys.stderr.write("[ERROR] masterha_manager could not be stopped")
-                sys.stderr.write("[ERROR] Sending abort command: %s" % " ".join(cmd))
+                print "[ERROR] masterha_manager could not be stopped"
+                print "[ERROR] Sending abort command: %s" % " ".join(cmd)
 
                 return subprocess.call(cmd)
 
             # We came here meaning that manager is doing a failover
-            sys.stdout.write("[INFO] Waiting for masterha_manager to complete failover")
+            print "[INFO] Waiting for masterha_manager to complete failover"
             time.sleep(1)
 
     def restart_manager(self):
