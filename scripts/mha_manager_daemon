@@ -6,6 +6,8 @@ import subprocess
 import ConfigParser
 import os.path
 from optparse import OptionParser
+
+sys.path.append("/usr/local/mha-helper")
 from lib.unix_daemon import Unix_daemon
 
 class MHA_manager_daemon(Unix_daemon):
