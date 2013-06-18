@@ -119,7 +119,12 @@ class MHA_manager_daemon(Unix_daemon):
         self.start_manager()
 
     def get_manager_pidfile(self):
-        return "/var/run/mha_manager_daemon_test.pid"
+        paths = os.path.splitext(self._conf_path)
+        if len(paths) < 2:
+            return False
+
+        cluster_name = os.path.basename(paths[0])
+        return "/var/run/mha_manager_daemon_" + cluster_name + ".pid"
 
     def get_manager_workdir(self):
         return self.get_param_value(param_name='manager_workdir')
