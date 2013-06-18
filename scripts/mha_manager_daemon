@@ -4,6 +4,7 @@ import sys
 import time
 import subprocess
 import ConfigParser
+import os.path
 from optparse import OptionParser
 from lib.unix_daemon import Unix_daemon
 
