@@ -17,17 +17,67 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-dead_master_host=$1
+dead_master_host=""
+conf=""
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -h | --help | -\?)
+            # Call usage() function here @TODO
+            exit 0 
+            ;;
+        -c | --conf)
+            conf="$2"
+            shift
+            ;;
+        --conf=*)
+            conf=${1#*=}
+            shift
+            ;;
+        -d | --dead-host)
+            dead_master_host="$2"
+            shift
+            ;;
+        --dead-host=*)
+            dead_master_host=${1#*=}
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            echo "WARN: Unknown option (ignored): $1" >&2
+            shift
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
 
 if [[ -z $dead_master_host ]]
 then
-    echo "ERROR: Hostname of dead master not provided"
+    echo "ERROR: option '--dead-host HOST' (hostname of dead master) not given. See --help" >&2
     exit 1
 fi
 
-/usr/bin/masterha_master_switch \
---conf=/usr/local/mha-helper/conf/test_cluster.conf \
+if [[ -z "$conf" ]]
+then
+    echo "ERROR: option '--conf CONF' not given. See --help" >&2
+    exit 1
+fi
+
+if [[ ! -e "$conf" ]]
+then
+    echo "ERROR: $conf does not exist"
+    exit 1
+fi
+
+echo "/usr/bin/masterha_master_switch \
+--conf=${conf} \
 --master_state=dead \
 --interactive=0 \
 --ignore_last_failover \
---dead_master_host=$dead_master_host
+--dead_master_host=${dead_master_host}"
