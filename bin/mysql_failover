@@ -21,7 +21,7 @@ dead_master_host=""
 conf=""
 
 OPTIND=1 # Reset is necessary if getopts was used previously in the script.  It is a good idea to make this local in a function.
-while getopts "h?vf:" opt; do
+while getopts "h?c:d:" opt; do
     case "$opt" in
         h|\?)
             #show_help
@@ -37,7 +37,7 @@ shift $((OPTIND-1)) # Shift off the options and optional --.
 
 if [[ -z $dead_master_host ]]
 then
-    echo "ERROR: option '-d HOST' (hostname of dead master) not given. See --help" >&2
+    echo "ERROR: option '-d HOST' (hostname of dead master) not given. See -h" >&2
     exit 1
 fi
 
