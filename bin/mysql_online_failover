@@ -19,38 +19,22 @@
 
 conf=""
 
-while [ $# -gt 0 ]
-do
-    case "$1" in
-        -h | --help | -\?)
-            # Call usage() function here @TODO
-            exit 0 
-            ;;
-        -c | --conf)
-            conf="$2"
-            shift
-            ;;
-        --conf=*)
-            conf=${1#*=}
-            shift
-            ;;
-        --)
-            shift
-            break
-            ;;
-        -*)
-            echo "WARN: Unknown option (ignored): $1" >&2
-            shift
-            ;;
-        *)
-            break
-            ;;
+OPTIND=1 
+while getopts "h?c:" opt; do
+    case "$opt" in
+        h|\?)
+            #show_help
+            exit 0
+            ;;  
+        c)  conf=$OPTARG
+            ;;  
     esac
 done
+shift $((OPTIND-1)) # Shift off the options and optional --.
 
 if [[ -z "$conf" ]]
 then
-    echo "ERROR: option '--conf CONF' not given. See --help" >&2
+    echo "ERROR: option '-c CONF' not given. See -h" >&2
     exit 1
 fi
 
