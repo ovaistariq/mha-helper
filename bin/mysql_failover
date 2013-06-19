@@ -31,18 +31,18 @@ do
             conf="$2"
             shift
             ;;
-        --conf=*)
-            conf=${1#*=}
-            shift
-            ;;
+#        --conf=*)
+#            conf=${1#*=}
+#            shift
+#            ;;
         -d | --dead-host)
             dead_master_host="$2"
             shift
             ;;
-        --dead-host=*)
-            dead_master_host=${1#*=}
-            shift
-            ;;
+#        --dead-host=*)
+#            dead_master_host=${1#*=}
+#            shift
+#            ;;
         --)
             shift
             break
