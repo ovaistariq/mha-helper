@@ -32,5 +32,14 @@ def main():
             sep=',')
     
     email_helper = Email_helper()
-    email_helper.send_email(subject=options.subject, msg=options.body, 
+    return_val = email_helper.send_email(subject=options.subject, msg=options.body, 
             to_email_list=report_email_list)
+
+    if return_val == True:
+        exit_code = 0
+
+    # exit the script with the appropriate code
+    sys.exit(exit_code)
+
+if __name__ == "__main__":
+    main()
