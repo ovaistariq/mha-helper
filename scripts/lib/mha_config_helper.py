@@ -38,6 +38,9 @@ class MHA_config_helper(object):
     def get_cluster_interface(self):
         return self._global_config_helper.get_cluster_interface()
 
+    def get_report_email(self):
+        return self._global_config_helper.get_report_email()
+
     def get_param_value(self, param_name):
         if self._config.has_section('server default') == False:
             return False
@@ -92,6 +95,9 @@ class MHA_global_config_helper(object):
 
     def get_cluster_interface(self):
         return self.get_param_value(param_name='cluster_interface')
+
+    def get_report_email(self):
+        return self.get_param_value(param_name='report_email')
 
     def get_param_value(self, param_name):
         if self._config.has_section('default') == False:
