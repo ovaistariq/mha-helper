@@ -83,41 +83,24 @@ class MHA_IP_failover_helper(object):
                                 ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=orig_master_host)
 
-        orig_master = MySQL_helper(host=orig_master_ip, 
-                                    user=config_helper.get_mysql_user(),
-                                    password=config_helper.get_mysql_password())
-
         if ssh_port is None:
             ssh_port = 22
 
-        # Connect to the original master
-        #if orig_master.connect() == False:
-        #    return False
+        self.debug_message("Doing sanity checks")
 
-        return_val = True
+        mysql_user = config_helper.get_mysql_user()
+        mysql_password = config_helper.get_mysql_password()
 
-        # Check SSH connectivity
-        #self.debug_message("Checking SSH connectivity to original master %s" % orig_master_host)
+        if mysql_user == False or mysql_password == False:
+            self.debug_message("Error accessing MySQL credentials from config")
+            return False
 
-        #cmd = "%s -q -p %s %s %s@%s exit" % (MHA_config_helper.SSH, ssh_port, 
-        #        ssh_options, ssh_user, orig_master_ip)
-        #cmd_return_code = subprocess.call(cmd, shell=True)
-        #if cmd_return_code > 0:
-        #    self.debug_message("SSH connection to %s failed" % orig_master_host)
-        #    return False
+        if config_helper.get_manage_vip() == True:
+            cluster_interface = config_helper.get_cluster_interface()
+            writer_vip_cidr = config_helper.get_writer_vip_cidr()
 
-        #self.debug_message("SSH connection to %s successfull" % orig_master_host)
+            if cluster_interface == False or writer_vip_cidr == False:
+                self.debug_message("Error fetching cluster_interface and "
+                    "writer_vip_cidr from config")
 
-        # Fetch the MySQL version to test MySQL connectivity
-        #self.debug_message("Checking MySQL connection on original master %s" % orig_master_host)
-
-        #if orig_master.get_version() == False:
-        #    self.debug_message("MySQL connection to %s failed" % orig_master_host)
-        #    return_val = False
-
-        #self.debug_message("MySQL connection to %s successfull" % orig_master_host)
-
-        # Disconnect from the original master
-        #orig_master.disconnect()
-    
-        return return_val
+        return True
