@@ -29,12 +29,6 @@ class MHA_IP_failover_helper(object):
 
     def execute_stop_command(self, orig_master_host, orig_master_ip, 
                                 ssh_user, ssh_options, ssh_port):
-        orig_master = MySQL_helper(host=orig_master_ip, user=self._user,
-                                    password=self._password)
-
-        if ssh_port is None:
-            ssh_port = 22
-
 	# We do not really need to do anything here because there is no SSH access
 	return True
 
