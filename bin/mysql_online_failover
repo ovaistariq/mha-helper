@@ -17,8 +17,52 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+conf=""
+
+while [ $# -gt 0 ]
+do
+    case "$1" in
+        -h | --help | -\?)
+            # Call usage() function here @TODO
+            exit 0 
+            ;;
+        -c | --conf)
+            conf="$2"
+            shift
+            ;;
+        --conf=*)
+            conf=${1#*=}
+            shift
+            ;;
+        --)
+            shift
+            break
+            ;;
+        -*)
+            echo "WARN: Unknown option (ignored): $1" >&2
+            shift
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
+if [[ -z "$conf" ]]
+then
+    echo "ERROR: option '--conf CONF' not given. See --help" >&2
+    exit 1
+fi
+
+if [[ ! -e "$conf" ]]
+then
+    echo "ERROR: $conf does not exist"
+    exit 1
+fi
+
+
 /usr/bin/masterha_master_switch \
---conf=/usr/local/mha-helper/conf/test_cluster.conf \
+--conf=${conf} \
 --master_state=alive \
 --orig_master_is_new_slave \
 --interactive=0
