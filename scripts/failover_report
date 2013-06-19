@@ -9,6 +9,7 @@ from lib.email_helper import Email_helper
 def main():
     # parse comand line arguments
     parser = OptionParser()
+    parser.add_option('--conf', type='string')
     parser.add_option('--orig_master_host', type='string')
     parser.add_option('--new_master_host', type='string')
     parser.add_option('--new_slave_hosts', type='string')
