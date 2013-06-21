@@ -174,8 +174,9 @@ Once everything is configured and running, doing the failover is pretty simple.
 
 Do a failover when the master db1 goes down:
 
-    /usr/local/mha-helper/bin/mysql_failover db1
+    /usr/local/mha-helper/bin/mysql_failover -d db1 -c /usr/local/mha-helper/conf/test_cluster.conf
 
 Do an online failover:
 
-    /usr/local/mha-helper/bin/mysql_online_failover
+    /usr/local/mha-helper/bin/mysql_online_failover -c /usr/local/mha-helper/conf/test_cluster.conf
+
