@@ -98,8 +98,8 @@ Let me show you an example application configuration file:
     [server default]
     user                            = mha_helper
     password                        = helper
-    ssh_user                        = mysql
-    ssh_options                     = '-i /home/mysql/.ssh/id_rsa'
+    ssh_user                        = mha_helper
+    ssh_options                     = '-i /home/mha_helper/.ssh/id_rsa'
     ssh_port                        = 2202
     repl_user                       = repl
     repl_password                   = repl
@@ -112,17 +112,21 @@ Let me show you an example application configuration file:
     report_script                   = /usr/local/mha-helper/scripts/failover_report
 
     [server1]
-    hostname            = repl01
+    hostname            = db1
     candidate_master    = 1
     check_repl_delay    = 0
 
     [server2]
-    hostname            = repl02
+    hostname            = db2
     candidate_master    = 1
     check_repl_delay    = 0
 
     [server3]
-    hostname            = repl03
+    hostname            = db3
+    no_master           = 1
+
+    [server4]
+    hostname            = db4
     no_master           = 1
 ---
 
@@ -168,7 +172,7 @@ Once the failover is completed by MHA, mha-helper script takes the following ste
 2. Remove the read_only flag from the new master
 
 
-Automated failover and monitoring via MHA manager daemon
+Automated Failover and Monitoring via MHA Manager Daemon
 ========================================================
 The daemon that daemonizes the MHA manager which monitors the master-slave hosts is available in the support-files directory. It supports 'start', 'stop' and 'restart' commands.  
 
@@ -185,7 +189,7 @@ And you can restart the daemon like this:
     /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf restart
 
 
-Manual failover Examples
+Manual Failover Examples
 ========================
 Once everything is configured and running, doing the failover is pretty simple.
 
@@ -196,4 +200,18 @@ Do a failover when the master db1 goes down:
 Do an online failover:
 
     /usr/local/mha-helper/bin/mysql_online_failover -c /usr/local/mha-helper/conf/test_cluster.conf
+
+
+Using Non-root User
+===================
+If you are using non-root user for connecting to master-slave hosts via ssh (the user that you use for this purpose is taken from the **ssh_user** option) then you need to make sure that the user can execute the following commands:
++ /sbin/ip
++ /sbin/arping
+
+The user should be able to execute the above commands using sudo, and should not have to provide a password. This can accomplished by editing the file /etc/sudoers using visudo and adding the following lines:
+
+    mha_helper   ALL=NOPASSWD: /sbin/ip, /sbin/arping
+    Defaults:mha_helper !requiretty
+
+In the example above I am assuming that ssh_user=mha_helper.
 
