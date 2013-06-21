@@ -2,7 +2,8 @@ MHA Helper
 ==========
 MHA helper (mha-helper) is a set of helper scripts that supplement in doing proper failover using MHA (https://code.google.com/p/mysql-master-ha/). MHA is responsible for executing the important failover steps such as finding the most recent slave to failover to, applying differential logs, monitoring master for failure, etc. But it does not deal with additional steps that need to be taken before and after failover. These would include steps such as setting the read-only flag, killing connections, moving writer virtual IP, etc. Furthermore, the monitor that does the monitoring of masters to test for failure is not daemonized and exits after performing the failover which might not be intended, because of course we need the monitor to keep monitoring even after failover.
 
-There are three functions of mha-helper:  
+There are three functions of mha-helper:
+
 1. Execute pre-failover and post-failover steps during an online failover. An online failover is one in which the original master is not dead and the failover is performed for example for maintenance purposes.  
 2. Execute pre-failover and post-failover steps during master failover. In this case the original master is dead, meaning either the host is dead or the MySQL server is dead.  
 3. Daemonize the monitor that monitors the masters for failure.  
