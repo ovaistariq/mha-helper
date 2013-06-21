@@ -21,6 +21,8 @@ https://code.google.com/p/mysql-master-ha/wiki/Requirements
 
 Configuration
 =============
+mha-helper uses ini-style configuration files.  
+
 There are two configuration files needed by mha-helper, one of them is the mha-helper specific global configuration file named **global.conf** and the other is the MHA specific application configuration file. Currently mha-helper always assumes that the global configuration file is available in the conf directory inside the mha-helper directory. So if you have mha-helper at the location /usr/local/mha-helper, then the global configuration file will be available at /usr/local/mha-helper/conf/global.conf  
 
 The **global configuration** file has a section named **'default'** and also has other sections named after the hostnames of the master and slave servers that are being managed by MHA. Moreover the options defined in the host sections override the options defined in the default section.  
