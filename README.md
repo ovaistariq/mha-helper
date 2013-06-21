@@ -36,7 +36,10 @@ All the options above can also be specified in the host specific sections and th
 + cluster_conf_path
 
 
-Note that you must have separate sections defined for each of the master-slave servers that MHA is managing. Let me show you an example global configuration file:
+Note that you must have separate sections defined for each of the master-slave servers that MHA is managing.  
+
+
+Let me show you an example global configuration file:
 
 ---
     [default]
@@ -62,7 +65,13 @@ Note that you must have separate sections defined for each of the master-slave s
 
 Note that this **global configuration** file is specific to mha-helper and is different from the global configuration file specific to MHA.  
 
-Apart from the global configuration file is the MHA specific application configuration file which basically defines the master-slave hosts. Please read the content at this link to see how the application configuration file should be written: https://code.google.com/p/mysql-master-ha/wiki/Configuration#Writing_an_application_configuration_file and go through this URL to see all the available MHA configuration options: https://code.google.com/p/mysql-master-ha/wiki/Parameters
+Apart from the global configuration file is the MHA specific application configuration file which basically defines the master-slave hosts.  
+
+Please read the content at this link to see how the application configuration file should be written:  
+https://code.google.com/p/mysql-master-ha/wiki/Configuration#Writing_an_application_configuration_file  
+
+I would also suggesting that you go through this URL to see all the available MHA configuration options:  
+https://code.google.com/p/mysql-master-ha/wiki/Parameters
 
 
 Following are the important options that must be specified in the MHA application configuration file:  
