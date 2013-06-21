@@ -2,7 +2,8 @@ MHA Helper
 ==========
 MHA helper (mha-helper) is a set of helper scripts that supplement in doing proper failover using MHA (https://code.google.com/p/mysql-master-ha/). MHA is responsible for executing the important failover steps such as finding the most recent slave to failover to, applying differential logs, monitoring master for failure, etc. But it does not deal with additional steps that need to be taken before and after failover. These would include steps such as setting the read-only flag, killing connections, moving writer virtual IP, etc. Furthermore, the monitor that does the monitoring of masters to test for failure is not daemonized and exits after performing the failover which might not be intended, because of course we need the monitor to keep monitoring even after failover.
 
-There are three functions of mha-helper:  
+There are three functions of mha-helper:
+
 1. Execute pre-failover and post-failover steps during an online failover. An online failover is one in which the original master is not dead and the failover is performed for example for maintenance purposes.  
 2. Execute pre-failover and post-failover steps during master failover. In this case the original master is dead, meaning either the host is dead or the MySQL server is dead.  
 3. Daemonize the monitor that monitors the masters for failure.  
@@ -13,10 +14,15 @@ mha-helper is written using Python 2.6 so if you have an older version of Python
 
 In addition to Python 2.6, you would need the following packages installed:
 + **MHA** - Of course you need the MHA manager and node packages installed. You can read more about installing MHA and its dependencies here: http://code.google.com/p/mysql-master-ha/wiki/Installation
-+ **MySQL-python**
++ **MySQL-python** on RHEL 6.0 and above, or **python26-mysqldb** on RHEL versions less than 6.0, or **python-mysqldb** on Debian6 / Ubuntu Lucid and above
+
+In addition there are other MHA specific requirements, please go through the link below to read about them:  
+https://code.google.com/p/mysql-master-ha/wiki/Requirements
 
 Configuration
 =============
+mha-helper uses ini-style configuration files.  
+
 There are two configuration files needed by mha-helper, one of them is the mha-helper specific global configuration file named **global.conf** and the other is the MHA specific application configuration file. Currently mha-helper always assumes that the global configuration file is available in the conf directory inside the mha-helper directory. So if you have mha-helper at the location /usr/local/mha-helper, then the global configuration file will be available at /usr/local/mha-helper/conf/global.conf  
 
 The **global configuration** file has a section named **'default'** and also has other sections named after the hostnames of the master and slave servers that are being managed by MHA. Moreover the options defined in the host sections override the options defined in the default section.  
@@ -92,8 +98,8 @@ Let me show you an example application configuration file:
     [server default]
     user                            = mha_helper
     password                        = helper
-    ssh_user                        = mysql
-    ssh_options                     = '-i /home/mysql/.ssh/id_rsa'
+    ssh_user                        = mha_helper
+    ssh_options                     = '-i /home/mha_helper/.ssh/id_rsa'
     ssh_port                        = 2202
     repl_user                       = repl
     repl_password                   = repl
@@ -106,17 +112,21 @@ Let me show you an example application configuration file:
     report_script                   = /usr/local/mha-helper/scripts/failover_report
 
     [server1]
-    hostname            = repl01
+    hostname            = db1
     candidate_master    = 1
     check_repl_delay    = 0
 
     [server2]
-    hostname            = repl02
+    hostname            = db2
     candidate_master    = 1
     check_repl_delay    = 0
 
     [server3]
-    hostname            = repl03
+    hostname            = db3
+    no_master           = 1
+
+    [server4]
+    hostname            = db4
     no_master           = 1
 ---
 
@@ -129,11 +139,13 @@ Pre-failover Steps During an Online Failover
 To make sure that the failover is safe and does not cause any data inconsistencies, mha-helper takes the following steps before the failover:
 
 1. Set read_only on the new master to avoid any data inconsistencies
-2. Execute the following steps on the original master with binlogging disabled so that these are not replicated to the new master:
-   1. Revoke ALL privileges from the users on original master so that no one can write
-   2. Wait upto 5 seconds for all connected threads to disconnect and then terminate the ones that are still connected
-   3. Set read_only=1 on the original master
-   4. Disconnect from the original master and restore binlogging
+2. Execute the following steps on the original master:
+   1. Set read_only=1 on the original master
+   2. Wait upto 5 seconds for all connected threads to disconnect
+   3. Remove the writer VIP if manage_vip=yes in the global.conf file
+   4. Terminate all the threads still connected except the replication related threads
+   5. Disconnect from the original master
+
 
 If any of the above steps fail, any changes made during pre-failover are rolledback.
 
@@ -142,28 +154,64 @@ Post-failover Steps During an Online Failover
 Once the failover is completed by MHA, mha-helper takes the following steps:
 
 1. Remove the read_only flag from the new master
-2. Regrant privileges that were revoked during the pre-failover steps
+2. Assign the writer VIP if manage_vip=yes in the global.conf file
 
-**Note that the pre-failover and post-failover steps revoke and grant user privileges respectively. For the user accounts to be safely restored on post-failover, its important to make sure that the users that exist on both the original master and the current master are the same.**
 
 Pre-failover Steps During Master Failover
 =========================================
-Currently nothing is done in the pre-failover stage.
+If the original master is accessible via SSH, i.e. in cases where MySQL crashed and stopped but the host is still up, then mha-helper takes the following step:
+
+1. Remove the writer VIP if manage_vip=yes in the global.conf file
+
 
 Post-failover Steps During Master Failover
 ==========================================
 Once the failover is completed by MHA, mha-helper script takes the following steps:
 
-1. Remove the read_only flag from the new master
+1. Assign the writer VIP if manage_vip=yes in the global.conf file
+2. Remove the read_only flag from the new master
 
-Usage Examples
-==============
+
+Automated Failover and Monitoring via MHA Manager Daemon
+========================================================
+The daemon that daemonizes the MHA manager which monitors the master-slave hosts is available in the support-files directory. It supports 'start', 'stop' and 'restart' commands.  
+
+You can start the daemon like this:
+ 
+    /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf start
+
+You can stop the daemon like this:
+
+    /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf stop
+
+And you can restart the daemon like this:
+
+    /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf restart
+
+
+Manual Failover Examples
+========================
 Once everything is configured and running, doing the failover is pretty simple.
 
 Do a failover when the master db1 goes down:
 
-    /usr/local/mha-helper/bin/mysql_failover db1
+    /usr/local/mha-helper/bin/mysql_failover -d db1 -c /usr/local/mha-helper/conf/test_cluster.conf
 
 Do an online failover:
 
-    /usr/local/mha-helper/bin/mysql_online_failover
+    /usr/local/mha-helper/bin/mysql_online_failover -c /usr/local/mha-helper/conf/test_cluster.conf
+
+
+Using Non-root User
+===================
+If you are using non-root user for connecting to master-slave hosts via ssh (the user that you use for this purpose is taken from the **ssh_user** option) then you need to make sure that the user can execute the following commands:
++ /sbin/ip
++ /sbin/arping
+
+The user should be able to execute the above commands using sudo, and should not have to provide a password. This can accomplished by editing the file /etc/sudoers using visudo and adding the following lines:
+
+    mha_helper   ALL=NOPASSWD: /sbin/ip, /sbin/arping
+    Defaults:mha_helper !requiretty
+
+In the example above I am assuming that ssh_user=mha_helper.
+

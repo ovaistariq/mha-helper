@@ -1,14 +1,15 @@
 [server default]
-user			= mha_helper
-password		= xxx
-ssh_user		= mha_helper
-ssh_options		= '-i /home/mha_helper/.ssh/id_rsa'
-repl_user		= repl
-repl_password		= repl
-master_binlog_dir	= /var/lib/mysql
-manager_workdir		= /var/log/mha/test_cluster
-manager_log		= /var/log/mha/test_cluster/test_cluster.log
-remote_workdir		= /var/log/mha/test_cluster
+user			        = mha_helper
+password		        = xxx
+ssh_user		        = mha_helper
+ssh_options		        = '-i /home/mha_helper/.ssh/id_rsa'
+ssh_port                        = 2202
+repl_user		        = repl
+repl_password		        = repl
+master_binlog_dir	        = /var/lib/mysql
+manager_workdir		        = /var/log/mha/test_cluster
+manager_log		        = /var/log/mha/test_cluster/test_cluster.log
+remote_workdir		        = /var/log/mha/test_cluster
 master_ip_failover_script       = /usr/local/mha-helper/scripts/master_ip_failover
 master_ip_online_change_script  = /usr/local/mha-helper/scripts/master_ip_online_change
 report_script                   = /usr/local/mha-helper/scripts/failover_report
