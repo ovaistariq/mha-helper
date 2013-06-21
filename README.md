@@ -168,6 +168,10 @@ Once the failover is completed by MHA, mha-helper script takes the following ste
 2. Remove the read_only flag from the new master
 
 
+MHA manager daemon
+==================
+
+
 Usage Examples
 ==============
 Once everything is configured and running, doing the failover is pretty simple.
