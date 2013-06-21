@@ -172,13 +172,13 @@ MHA manager daemon
 ==================
 The daemon that daemonizes the MHA manager which monitors the master-slave hosts is available in the support-files directory. It supports 'start', 'stop' and 'restart' commands.  
 
-You can start the daemon like this:
+You can start the daemon like this:  
     /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf start
 
-You can stop the daemon like this:
+You can stop the daemon like this:  
     /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf stop
 
-And you can restart the daemon like this:
+And you can restart the daemon like this:  
     /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf restart
 
 
