@@ -153,13 +153,18 @@ Once the failover is completed by MHA, mha-helper takes the following steps:
 
 Pre-failover Steps During Master Failover
 =========================================
-Currently nothing is done in the pre-failover stage.
+If the original master is accessible via SSH, i.e. in cases where MySQL crashed and stopped but the host is still up, then mha-helper takes the following step:
+
+1. Remove the writer VIP if manage_vip=yes in the global.conf file
+
 
 Post-failover Steps During Master Failover
 ==========================================
 Once the failover is completed by MHA, mha-helper script takes the following steps:
 
-1. Remove the read_only flag from the new master
+1. Assign the writer VIP if manage_vip=yes in the global.conf file
+2. Remove the read_only flag from the new master
+
 
 Usage Examples
 ==============
