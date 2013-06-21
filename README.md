@@ -133,11 +133,13 @@ Pre-failover Steps During an Online Failover
 To make sure that the failover is safe and does not cause any data inconsistencies, mha-helper takes the following steps before the failover:
 
 1. Set read_only on the new master to avoid any data inconsistencies
-2. Execute the following steps on the original master with binlogging disabled so that these are not replicated to the new master:
-   1. Revoke ALL privileges from the users on original master so that no one can write
-   2. Wait upto 5 seconds for all connected threads to disconnect and then terminate the ones that are still connected
-   3. Set read_only=1 on the original master
-   4. Disconnect from the original master and restore binlogging
+2. Execute the following steps on the original master:
+   1. Set read_only=1 on the original master
+   2. Wait upto 5 seconds for all connected threads to disconnect
+   3. Remove the writer VIP if manage_vip=yes in the global.conf file
+   4. Terminate all the threads still connected except the replication related threads
+   5. Disconnect from the original master
+
 
 If any of the above steps fail, any changes made during pre-failover are rolledback.
 
@@ -146,9 +148,8 @@ Post-failover Steps During an Online Failover
 Once the failover is completed by MHA, mha-helper takes the following steps:
 
 1. Remove the read_only flag from the new master
-2. Regrant privileges that were revoked during the pre-failover steps
+2. Assign the writer VIP if manage_vip=yes in the global.conf file
 
-**Note that the pre-failover and post-failover steps revoke and grant user privileges respectively. For the user accounts to be safely restored on post-failover, its important to make sure that the users that exist on both the original master and the current master are the same.**
 
 Pre-failover Steps During Master Failover
 =========================================
