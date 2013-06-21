@@ -9,7 +9,7 @@ There are three functions of mha-helper:
 
 Package Requirements and Dependencies
 =====================================
-mha-helper is written using Python 2.6 so if you an older version of Python running you must upgrade to Python 2.6 or change the shebang line to point to the appropriate python 2.6 binary.
+mha-helper is written using Python 2.6 so if you have an older version of Python running you must upgrade to Python 2.6 or change the shebang line to point to the appropriate python 2.6 binary.
 
 In addition to Python 2.6, you would need the following packages installed:
 + **MHA** - Of course you need the MHA manager and node packages installed. You can read more about installing MHA and its dependencies here: http://code.google.com/p/mysql-master-ha/wiki/Installation
