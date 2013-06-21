@@ -16,6 +16,9 @@ In addition to Python 2.6, you would need the following packages installed:
 + **MHA** - Of course you need the MHA manager and node packages installed. You can read more about installing MHA and its dependencies here: http://code.google.com/p/mysql-master-ha/wiki/Installation
 + **MySQL-python**
 
+In addition there are other MHA specific requirements, please go through the link below to read about them:  
+https://code.google.com/p/mysql-master-ha/wiki/Requirements
+
 Configuration
 =============
 There are two configuration files needed by mha-helper, one of them is the mha-helper specific global configuration file named **global.conf** and the other is the MHA specific application configuration file. Currently mha-helper always assumes that the global configuration file is available in the conf directory inside the mha-helper directory. So if you have mha-helper at the location /usr/local/mha-helper, then the global configuration file will be available at /usr/local/mha-helper/conf/global.conf  
