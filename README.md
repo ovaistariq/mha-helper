@@ -14,7 +14,7 @@ mha-helper is written using Python 2.6 so if you have an older version of Python
 
 In addition to Python 2.6, you would need the following packages installed:
 + **MHA** - Of course you need the MHA manager and node packages installed. You can read more about installing MHA and its dependencies here: http://code.google.com/p/mysql-master-ha/wiki/Installation
-+ **MySQL-python**
++ **MySQL-python** on RHEL 6.0 and above, or **python26-mysqldb** on RHEL versions less than 6.0, or **python-mysqldb** on Debian6 / Ubuntu Lucid and above
 
 In addition there are other MHA specific requirements, please go through the link below to read about them:  
 https://code.google.com/p/mysql-master-ha/wiki/Requirements
