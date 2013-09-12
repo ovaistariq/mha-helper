@@ -192,6 +192,10 @@ And you can check the status of the MHA Manager process like this:
 
     /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf status
 
+There is also a sample SySV style init script available, you only need to change the name of the script and modify the configuration path:
+
+    /usr/local/mha-helper/support-files/mha_manager_daemon-test_cluster-init
+
 
 Manual Failover Examples
 ========================
