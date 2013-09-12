@@ -174,7 +174,7 @@ Once the failover is completed by MHA, mha-helper script takes the following ste
 
 Automated Failover and Monitoring via MHA Manager Daemon
 ========================================================
-The daemon that daemonizes the MHA manager which monitors the master-slave hosts is available in the support-files directory. It supports 'start', 'stop' and 'restart' commands.  
+The daemon that daemonizes the MHA manager which monitors the master-slave hosts is available in the support-files directory. It supports 'start', 'stop', 'restart' and 'status' commands.  
 
 You can start the daemon like this:
  
@@ -187,6 +187,10 @@ You can stop the daemon like this:
 And you can restart the daemon like this:
 
     /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf restart
+
+And you can check the status of the MHA Manager process like this:
+
+    /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf status
 
 
 Manual Failover Examples

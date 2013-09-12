@@ -1,0 +1,38 @@
+#!/bin/sh
+#
+### BEGIN INIT INFO
+# Provides:             mha_manager_daemon-test_cluster
+# Default-Start:        2 3 4 5
+# Default-Stop:         0 1 6
+# Short-Description:    This is mha_manager_daemon for test_cluster
+# Description:          There can be multiple instances of mha_manager_daemon
+#                       running each monitoring a different MySQL master-slave 
+#                       cluster. The purpose of this init-script is to provide
+#                       a controlling the daemon specific to the cluster named
+#                       test_cluster.
+### END INIT INFO
+
+# Get function from functions library
+. /etc/init.d/functions
+
+CONF=/usr/local/mha-helper/conf/test_cluster.conf
+DAEMON=/usr/local/mha-helper/support-files/mha_manager_daemon
+
+case "$1" in
+    start)
+        ${DAEMON} --conf=${CONF} start
+        ;;
+    stop)
+        ${DAEMON} --conf=${CONF} stop
+        ;;
+    status)
+        ${DAEMON} --conf=${CONF} status
+        ;;
+    restart)
+        ${DAEMON} --conf=${CONF} restart
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac
