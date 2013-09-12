@@ -86,6 +86,16 @@ class MHA_manager_daemon(Unix_daemon):
         super(MHA_manager_daemon, self).stop()
         self.stop_manager()
 
+    def status(self):
+        cmd = [MHA_manager_daemon.MASTERHA_CHECK_STATUS,
+                "--conf=%s" % self._conf_path]
+        proc = subprocess.Popen(cmd, stdout=subprocess.PIPE,
+                stderr=subprocess.STDOUT)
+        (stdout_data, stderr_data) = proc.communicate()
+
+        print stdout_data
+        return True
+
     def check_manager_state(self):
         cmd = [MHA_manager_daemon.MASTERHA_CHECK_STATUS, 
                 "--conf=%s" % self._conf_path]
@@ -175,7 +185,7 @@ class MHA_manager_daemon(Unix_daemon):
         return param_value
 
 def main():
-    usage = "usage: %prog --conf=CONF start|stop|restart"
+    usage = "usage: %prog --conf=CONF start|stop|restart|status"
     parser = OptionParser(usage)
     parser.add_option('--conf', type='string')
     (options, args) = parser.parse_args()
@@ -196,6 +206,8 @@ def main():
         elif args[0] == "restart":
             print "Restarting daemon"
             manager_daemon.restart()
+        elif args[0] == "status":
+            manager_daemon.status()
         else:
             parser.error("Unknown command")
             sys.exit(2)

@@ -148,3 +148,8 @@ class Unix_daemon(object):
         daemonized by start() or restart().
         """
 
+    def status(self):
+        """
+        You should override this method when you subclass Daemon.
+        """
+
