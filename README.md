@@ -141,9 +141,9 @@ To make sure that the failover is safe and does not cause any data inconsistenci
 1. Set read_only on the new master to avoid any data inconsistencies
 2. Execute the following steps on the original master:
    1. Set read_only=1 on the original master
-   2. Wait upto 5 seconds for all connected threads to disconnect
-   3. Remove the writer VIP if manage_vip=yes in the global.conf file
-   4. Terminate all the threads still connected except the replication related threads
+   2. Remove the writer VIP if manage_vip=yes in the global.conf file
+   3. Wait upto 5 seconds for all connected threads to disconnect
+   4. Terminate all the threads still connected except the replication related threads, the thread corresponding to the connection made by mha-helper and those threads which have been sleeping for more than 1 second as these threads would automatically be closed by MySQL server after wait_timeout seconds have elapsed.
    5. Disconnect from the original master
 
 
@@ -191,6 +191,10 @@ And you can restart the daemon like this:
 And you can check the status of the MHA Manager process like this:
 
     /usr/local/mha-helper/support-files/mha_manager_daemon --conf=/usr/local/mha-helper/conf/test_cluster.conf status
+
+There is also a sample SySV style init script available, you only need to change the name of the script and modify the configuration path:
+
+    /usr/local/mha-helper/support-files/mha_manager_daemon-test_cluster-init
 
 
 Manual Failover Examples

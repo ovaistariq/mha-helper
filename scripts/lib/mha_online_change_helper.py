@@ -174,16 +174,6 @@ class MHA_online_change_helper(object):
             if self._orig_master.is_read_only() == False:
                 return False
 
-	    # Wait upto 5 seconds for all connected threads to disconnect
-            self.debug_message("Waiting 5s for all connected threads to disconnect")
-	    slept_seconds = 0
-	    while slept_seconds < 5:
-	        threads = self.get_connected_threads(self._orig_master)
-	        if len(threads) > 0:
-		    time.sleep(1)
-	        else:
-		    break
-
             # If we have to manage the VIP, then remove the VIP from the original master
             if self._orig_master_config_helper.get_manage_vip() == True:
                 self.debug_message("Removing the VIP from the original master")
@@ -196,6 +186,17 @@ class MHA_online_change_helper(object):
 
                 if return_val == False:
                     return False
+
+	    # Wait upto 5 seconds for all connected threads to disconnect
+            self.debug_message("Waiting 5s for all connected threads to disconnect")
+	    slept_seconds = 0
+	    while slept_seconds < 5:
+	        threads = self.get_connected_threads(self._orig_master)
+	        if len(threads) > 0:
+		    time.sleep(1)
+                    slept_seconds += 1
+	        else:
+		    break
 
 	    # Terminate all threads
 	    self.debug_message("Terminating all application threads ...")
