@@ -22,6 +22,10 @@ from mha_config_helper import MHA_config_helper
 from mha_vip_helper import MHA_VIP_helper
 
 class MHA_online_change_helper(object):
+    CODE_SUCCESS = 0 
+    CODE_ERR_GENERAL = 1 
+    CODE_ERR_NO_SSH = 10
+
     def __init__(self, orig_master_host, orig_master_ip, orig_master_ssh_port,
             new_master_host, new_master_ip, new_master_ssh_port, 
             ssh_options, privileged_users):
@@ -142,50 +146,41 @@ class MHA_online_change_helper(object):
     def execute_stop_command(self):
 	# Connect to the new master
 	if self._new_master.connect() == False:
-	    return False
+	    return MHA_online_change_helper.CODE_ERR_GENERAL
 
 	# Set read_only=1 on the new master to avoid any data inconsistency
 	self.debug_message("Setting read_only=1 on the new master ...")
 	self._new_master.set_read_only()
 	if self._new_master.is_read_only() == False:
-	    return False
+	    return MHA_online_change_helper.CODE_ERR_GENERAL
 
 	# Disconnect from the new master because we do not want to change anything on it now
 	self._new_master.disconnect()
 
 	# Connect to the original master
 	if self._orig_master.connect() == False:
-	    return False
+	    return MHA_online_change_helper.CODE_ERR_GENERAL
 
 	# we execute everything below in try..finally because we have to 
         # disconnect and enable log_bin at all cost
 	try:
-	    # Disable binlogging on the original master
-	    #if self._orig_master.disable_log_bin() == False:
-	    #    return False
-
-	    # Revoke ALL privileges from the users on original master so that no one can write
-	    #self.debug_message("Revoking ALL PRIVILEGES of users ...")
-	    #if self.revoke_all_user_privileges(self._orig_master) == False:
-	    #   return False
-
             # Setting read_only=1 on the original master
             self._orig_master.set_read_only()
             if self._orig_master.is_read_only() == False:
-                return False
+                return MHA_online_change_helper.CODE_ERR_GENERAL
 
             # If we have to manage the VIP, then remove the VIP from the original master
             if self._orig_master_config_helper.get_manage_vip() == True:
                 self.debug_message("Removing the VIP from the original master")
-                return_val = MHA_VIP_helper.remove_vip(
+                is_vip_removed = MHA_VIP_helper.remove_vip(
                         config_helper=self._orig_master_config_helper,
                         host_ip=self._orig_master_ip,
                         ssh_user=None,
                         ssh_port=self._orig_master_ssh_port,
                         ssh_options=self._ssh_options)
 
-                if return_val == False:
-                    return False
+                if is_vip_removed == False:
+                    return MHA_online_change_helper.CODE_ERR_GENERAL
 
 	    # Wait upto 5 seconds for all connected threads to disconnect
             self.debug_message("Waiting 5s for all connected threads to disconnect")
@@ -202,7 +197,7 @@ class MHA_online_change_helper(object):
 	    self.debug_message("Terminating all application threads ...")
 	    threads = self.get_connected_threads(self._orig_master)
 	    if threads == False:
-	        return False
+	        return MHA_online_change_helper.CODE_ERR_GENERAL
 
 	    for thread in threads:
 	        self.debug_message("\tTerminating thread Id => %s, User => %s, Host => %s" % 
@@ -210,18 +205,16 @@ class MHA_online_change_helper(object):
 	        self._orig_master.kill_connection(connection_id=thread['Id'])
 	finally:
 	    # Disconnect from the original master and restore binlogging
-	    #self._orig_master.enable_log_bin()
 	    self._orig_master.disconnect()
 
-	return True
+	return MHA_online_change_helper.CODE_SUCCESS
 
     def rollback_stop_command(self):
 	# Connect to the original master
         if self._orig_master.connect() == False:
-            return False
+            return MHA_online_change_helper.CODE_ERR_GENERAL
 	
 	rollback_error = 0
-	#self._orig_master.disable_log_bin()
 
 	# remove the read_only flag from the orignal master
 	self.debug_message("Removing the read_only flag from original master")
@@ -229,66 +222,52 @@ class MHA_online_change_helper(object):
 	    self.debug_message("\tError, please try manually")
 	    rollback_error += 1
 
-	# if any grants were revoked, we need to regrant them
-	#self.debug_message("Regranting the privileges that were revoked")
-	#if len(self._user_grants_orig_master) > 0:
-	#    for grant in self._user_grants_orig_master:
-	#	self.debug_message("\t%s" % grant)
-	#	if self._orig_master.execute_admin_query(grant) == False:
-	#	    self.debug_message("\t\tError, please try manually")
-	#	    rollback_error += 1
-
         # If we have to manage the VIP, then add the VIP back on the original master
         if self._orig_master_config_helper.get_manage_vip() == True:
             self.debug_message("Assigning back the VIP to the original master")
-            return_val = MHA_VIP_helper.assign_vip(
+            is_vip_assigned = MHA_VIP_helper.assign_vip(
                     config_helper=self._orig_master_config_helper,
                     host_ip=self._orig_master_ip,
                     ssh_user=None,
                     ssh_port=self._orig_master_ssh_port,
                     ssh_options=self._ssh_options)
 
-            if return_val == False:
+            if is_vip_assigned == False:
                 rollback_error += 1
 
-	return_val = True
 	if rollback_error > 0:
 	    self.debug_message("Rollback FAILED, there were %s errors" % rollback_error)
-	    return_val = False
 	else:
 	    self.debug_message("Rollback completed OK")
 
 	# Disconnect from the original master and restore binlogging
-	#self._orig_master.enable_log_bin()
 	self._orig_master.disconnect()
 
-	return return_val
+	return MHA_online_change_helper.CODE_ERR_GENERAL
 
     def execute_start_command(self):
         # Connect to the new master
         if self._new_master.connect() == False:
-            return False
+            return MHA_online_change_helper.CODE_ERR_GENERAL
 
-        return_val = True
+        return_val = MHA_online_change_helper.CODE_SUCCESS
 
         # Remove the read_only flag
         self.debug_message("Removing the read_only flag from the new master")
         self._new_master.unset_read_only()
 
-        # Regrant the privileges for all the users so that they are recreated
-        # on the old master
-        #self.debug_message("Regranting privileges that were revoked")
-        #self.regrant_all_user_privileges(self._new_master)
-
         # If we have to manage the VIP, then assign the VIP on the new master
         if self._new_master_config_helper.get_manage_vip() == True:
             self.debug_message("Assigning the VIP to the new master")
-            return_val = MHA_VIP_helper.assign_vip(
+            is_vip_assigned = MHA_VIP_helper.assign_vip(
                     config_helper=self._new_master_config_helper,
                     host_ip=self._new_master_ip,
                     ssh_user=None,
                     ssh_port=self._new_master_ssh_port,
                     ssh_options=self._ssh_options)
+
+            if is_vip_assigned == False:
+                return_val = MHA_online_change_helper.CODE_ERR_GENERAL
 
         # Disconnect from the new master
         self._new_master.disconnect()

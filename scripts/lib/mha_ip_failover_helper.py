@@ -23,6 +23,10 @@ from mha_config_helper import MHA_config_helper
 from mha_vip_helper import MHA_VIP_helper
 
 class MHA_IP_failover_helper(object):
+    CODE_SUCCESS = 0
+    CODE_ERR_GENERAL = 1
+    CODE_ERR_NO_SSH = 10
+
     def debug_message(self, message):
 	current_datetime = datetime.now().strftime("%Y-%m-%-d %H:%M:%S")
 	print "[%s] %s" % (current_datetime, message)
@@ -30,7 +34,7 @@ class MHA_IP_failover_helper(object):
     def execute_stop_command(self, orig_master_host, orig_master_ip, 
                                 ssh_user, ssh_options, ssh_port):
 	# We do not really need to do anything here because there is no SSH access
-	return True
+	return MHA_IP_failover_helper.CODE_ERR_NO_SSH
 
     def execute_stopssh_command(self, orig_master_host, orig_master_ip, 
                                 ssh_user, ssh_options, ssh_port):
@@ -50,8 +54,12 @@ class MHA_IP_failover_helper(object):
                                                 ssh_user=ssh_user,
                                                 ssh_port=ssh_port,
                                                 ssh_options=ssh_options)
+        if return_val == True:
+            exit_code = MHA_IP_failover_helper.CODE_SUCCESS
+        else:
+            exit_code = MHA_IP_failover_helper.CODE_ERR_GENERAL
 
-        return return_val
+        return exit_code
 
     def execute_start_command(self, orig_master_host, orig_master_ip, 
                                 new_master_host, new_master_ip, 
@@ -67,7 +75,7 @@ class MHA_IP_failover_helper(object):
 
         # Connect to the new master
         if new_master.connect() == False:
-            return False
+            return MHA_IP_failover_helper.CODE_ERR_GENERAL
 
         # If we have to manage the VIP, then assign the VIP to the new master
         if config_helper.get_manage_vip() == True:
@@ -79,7 +87,7 @@ class MHA_IP_failover_helper(object):
 
         if return_val == False:
             new_master.disconnect()
-            return False
+            return MHA_IP_failover_helper.CODE_ERR_GENERAL
 
         # Remove the read_only flag
         self.debug_message("Removing the read_only flag from the new master")
@@ -88,7 +96,7 @@ class MHA_IP_failover_helper(object):
         # Disconnect from the new master
         new_master.disconnect()
 
-        return True
+        return MHA_IP_failover_helper.CODE_SUCCESS
 
     def execute_status_command(self, orig_master_host, orig_master_ip, 
                                 ssh_user, ssh_options, ssh_port):
@@ -104,7 +112,7 @@ class MHA_IP_failover_helper(object):
 
         if mysql_user == False or mysql_password == False:
             self.debug_message("Error accessing MySQL credentials from config")
-            return False
+            return MHA_IP_failover_helper.CODE_ERR_GENERAL
 
         if config_helper.get_manage_vip() == True:
             cluster_interface = config_helper.get_cluster_interface()
@@ -113,5 +121,6 @@ class MHA_IP_failover_helper(object):
             if cluster_interface == False or writer_vip_cidr == False:
                 self.debug_message("Error fetching cluster_interface and "
                     "writer_vip_cidr from config")
+                return MHA_IP_failover_helper.CODE_ERR_GENERAL
 
-        return True
+        return MHA_IP_failover_helper.CODE_SUCCESS

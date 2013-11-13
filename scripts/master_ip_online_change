@@ -63,13 +63,11 @@ def main():
                 privileged_users=privileged_users)
 
         if options.command == 'stop':
-    	    if mha_online_change_helper.execute_stop_command() == True:
-	        exit_code = 0
-	    else:
-	        mha_online_change_helper.rollback_stop_command()
+            exit_code = mha_online_change_helper.execute_stop_command()
+            if exit_code != 0:
+                mha_online_change_helper.rollback_stop_command()
         elif options.command == 'start':
-            mha_online_change_helper.execute_start_command()
-            exit_code = 0
+            exit_code = mha_online_change_helper.execute_start_command()
 
     # exit the script with the appropriate code
     # if script exits with a 0 status code, MHA executes FLUSH TABLES WITH READ LOCK 
