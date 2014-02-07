@@ -67,6 +67,15 @@ class MHA_config_helper(object):
     def get_slave_check_listen_port(self):
         return self._global_config_helper.get_slave_check_listen_port()
 
+    def get_slave_check_daemon_log(self):
+        return self._global_config_helper.get_slave_check_daemon_log()
+
+    def get_slave_check_daemon_pid(self):
+        return self._global_config_helper.get_slave_check_daemon_pid()
+
+    def get_slave_check_daemon_workdir(self):
+        return self._global_config_helper.get_slave_check_daemon_workdir()
+
     def get_param_value(self, param_name):
         if self._config.has_section('server default') == False:
             return False
@@ -148,6 +157,15 @@ class MHA_global_config_helper(object):
             slave_check_listen_port = int(slave_check_listen_port)
 
         return slave_check_listen_port
+
+    def get_slave_check_daemon_log(self):
+        return self.get_param_value(param_name='slave_check_daemon_log')
+
+    def get_slave_check_daemon_pid(self):
+        return self.get_param_value(param_name='slave_check_daemon_pid')
+
+    def get_slave_check_daemon_workdir(self):
+        return self.get_param_value(param_name='slave_check_daemon_workdir')
 
     def get_param_value(self, param_name):
         if self._config.has_section('default') == False:
