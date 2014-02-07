@@ -77,7 +77,8 @@ class MHA_config_helper(object):
         for section in self._config.sections():
             if(self._host is not None and 
                     self._config.has_option(section, 'hostname') and
-                    self._config.get(section, 'hostname') == self._host):
+                    self._config.get(section, 'hostname') == self._host and
+                    self._config.has_option(section, param_name)):
                 param_value = self._config.get(section, param_name)
 
         return param_value
