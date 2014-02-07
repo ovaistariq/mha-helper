@@ -21,8 +21,6 @@ import httplib
 import BaseHTTPServer
 import sys
 import time
-import subprocess
-import os.path
 import socket
 from optparse import OptionParser
 
@@ -162,7 +160,7 @@ class Slave_health_check_daemon(Unix_daemon):
         print ("[INFO] Stopping slave_health_check daemon, listening on port %s" % 
                 self._listen_port)
 
-        conn = httplib.HTTPConnection("localhost:%d" % self._listen_port)
+        conn = httplib.HTTPConnection("localhost", self._listen_port)
         conn.request("QUIT", "/")
         conn.getresponse()
         conn.close()
