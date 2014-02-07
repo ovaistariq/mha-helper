@@ -16,18 +16,22 @@ report_script                   = /usr/local/mha-helper/scripts/failover_report
 
 [server1]
 hostname            = db1
+ip                  = 192.168.10.1
 candidate_master    = 1
 check_repl_delay    = 0
 
 [server2]
 hostname            = db2
+ip                  = 192.168.10.2
 candidate_master    = 1
 check_repl_delay    = 0
 
 [server3]
 hostname            = db3
+ip                  = 192.168.10.3
 no_master           = 1
 
 [server4]
 hostname            = db4
+ip                  = 192.168.10.4
 no_master           = 1

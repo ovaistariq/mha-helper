@@ -40,6 +40,9 @@ class MHA_config_helper(object):
     def get_ssh_user(self):
         return self.get_param_value(param_name='ssh_user')
 
+    def get_host_ip(self):
+        return self.get_param_value(param_name='ip')
+
     def get_requires_sudo(self):
         return self._global_config_helper.get_requires_sudo()
 
