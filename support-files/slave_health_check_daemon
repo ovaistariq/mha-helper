@@ -142,6 +142,9 @@ class Slave_health_check_daemon(Unix_daemon):
             return False
 
     def start_server(self):
+        if self.is_server_running() == True:
+            return True
+
         server_class = StoppableHttpServer
         handler_class = Slave_health_check_server
         server_address = ('', self._listen_port)

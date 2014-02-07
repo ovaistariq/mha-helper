@@ -1,4 +1,22 @@
 #!/bin/sh
+
+# (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
+#
+# This file is part of mha-helper
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 #
 ### BEGIN INIT INFO
 # Provides:             mha_manager_daemon-test_cluster
@@ -16,20 +34,25 @@
 . /etc/init.d/functions
 
 CONF=/usr/local/mha-helper/conf/test_cluster.conf
-DAEMON=/usr/local/mha-helper/support-files/mha_manager_daemon
+MHA_DAEMON=/usr/local/mha-helper/support-files/mha_manager_daemon
+SLAVE_CHECK_DAEMON=/usr/local/mha-helper/support-files/slave_health_check_daemon
 
 case "$1" in
     start)
-        ${DAEMON} --conf=${CONF} start
+        ${MHA_DAEMON} --conf=${CONF} start
+        ${SLAVE_CHECK_DAEMON} start
         ;;
     stop)
-        ${DAEMON} --conf=${CONF} stop
+        ${MHA_DAEMON} --conf=${CONF} stop
+        ${SLAVE_CHECK_DAEMON} stop
         ;;
     status)
-        ${DAEMON} --conf=${CONF} status
+        ${MHA_DAEMON} --conf=${CONF} status
+        ${SLAVE_CHECK_DAEMON} status
         ;;
     restart)
-        ${DAEMON} --conf=${CONF} restart
+        ${MHA_DAEMON} --conf=${CONF} restart
+        ${SLAVE_CHECK_DAEMON} restart
         ;;
     *)
         echo "Usage: $0 {start|stop|restart|status}"
