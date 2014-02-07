@@ -61,6 +61,9 @@ class MHA_config_helper(object):
     def get_report_email(self):
         return self._global_config_helper.get_report_email()
 
+    def get_slave_lag_threshold(self):
+        return self.__global_config_helper.get_slave_lag_threshold()
+
     def get_param_value(self, param_name):
         if self._config.has_section('server default') == False:
             return False
@@ -123,6 +126,9 @@ class MHA_global_config_helper(object):
 
     def get_report_email(self):
         return self.get_param_value(param_name='report_email')
+
+    def get_slave_lag_threshold(self):
+        return self.get_param_value(param_name='slave_lag_threshold')
 
     def get_param_value(self, param_name):
         if self._config.has_section('default') == False:

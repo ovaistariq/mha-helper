@@ -5,6 +5,7 @@ writer_vip_cidr     = 192.168.1.155/24
 writer_vip          = 192.168.1.155
 cluster_interface   = eth0
 report_email        = ovaistariq@gmail.com
+slave_lag_threshold = 60
 
 [db1]
 cluster_conf_path   = /usr/local/mha-helper/conf/test_cluster.conf.sample
