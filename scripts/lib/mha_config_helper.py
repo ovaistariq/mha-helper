@@ -128,7 +128,13 @@ class MHA_global_config_helper(object):
         return self.get_param_value(param_name='report_email')
 
     def get_slave_lag_threshold(self):
-        return self.get_param_value(param_name='slave_lag_threshold')
+        slave_lag_threshold = self.get_param_value(
+                param_name='slave_lag_threshold')
+
+        if slave_lag_threshold != False or slave_lag_threshold is not None:
+            slave_lag_threshold = int(slave_lag_threshold)
+
+        return slave_lag_threshold
 
     def get_param_value(self, param_name):
         if self._config.has_section('default') == False:
