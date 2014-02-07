@@ -160,6 +160,9 @@ class Slave_health_check_daemon(Unix_daemon):
         print ("[INFO] Stopping slave_health_check daemon, listening on port %s" % 
                 self._listen_port)
 
+        if self.is_server_running() == False:
+            return True
+
         conn = httplib.HTTPConnection("localhost", self._listen_port)
         conn.request("QUIT", "/")
         conn.getresponse()
