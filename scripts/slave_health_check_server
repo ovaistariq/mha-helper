@@ -1,0 +1,92 @@
+#!/usr/bin/env python
+
+from SimpleHTTPServer import SimpleHTTPRequestHandler
+import SocketServer
+import BaseHTTPServer
+import socket
+import sys
+from datetime import datetime
+from lib.mha_slave_helper import MHA_slave_helper
+from lib.mha_config_helper import MHA_global_config_helper
+
+class Slave_health_check_server(BaseHTTPServer.BaseHTTPRequestHandler):
+    # HTTP response codes sent by the server
+    HTTP_ERROR_CODE = 503
+    HTTP_SUCCESS_CODE = 200
+
+    def do_OPTIONS(self):
+        self.do_GET()
+
+    def do_GET(self):
+        slave_hostname = self.headers.get('Slave_host')
+
+        # Run the test to see if slave is healthy
+        slave = MHA_slave_helper(slave_host=slave_hostname)
+        return_code = slave.is_healthy()
+        return_message = slave.get_return_code_string(return_code)
+
+        if return_code == MHA_slave_helper.CODE_SUCCESS:
+            response_code = Slave_health_check_server.HTTP_SUCCESS_CODE
+        else:
+            response_code = Slave_health_check_server.HTTP_ERROR_CODE
+
+        # Send back the HTTP response
+        try:
+            self.send_response(response_code)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(return_message)
+        except socket.error:
+            pass
+
+    def do_QUIT(self):
+        """send 200 OK response, and set server.stop to True"""
+        self.send_response(200)
+        self.end_headers()
+        self.server.stop = True
+
+    def finish(self, *args, **kw):
+        try:
+            if not self.wfile.closed:
+                self.wfile.flush()
+                self.wfile.close()
+        except socket.error:
+            pass
+
+        self.rfile.close()
+
+class StoppableHttpServer(BaseHTTPServer.HTTPServer):
+    """http server that reacts to self.stop flag"""
+
+    def serve_forever (self):
+        """Handle one request at a time until stopped."""
+        self.stop = False
+        while not self.stop:
+            self.handle_request()
+
+def debug_message(message):
+    current_datetime = datetime.now().strftime("%Y-%m-%-d %H:%M:%S")
+    print "[%s] %s" % (current_datetime, message)
+
+def main():
+    # Setup the listen port
+    config_helper = MHA_global_config_helper(host=None)
+    listen_port = config_helper.get_slave_check_listen_port()
+
+    server_class = StoppableHttpServer
+    handler_class = Slave_health_check_server
+
+    server_address = ('', listen_port)
+
+    httpd = server_class(server_address, handler_class)
+
+    debug_message("slave_health_check started, listening on port %s" %
+            listen_port)
+
+    httpd.serve_forever()
+
+    debug_message("slave_health_check shutting down ... bye")
+
+if __name__ == "__main__":
+    main()
+
