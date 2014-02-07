@@ -64,6 +64,9 @@ class MHA_config_helper(object):
     def get_slave_lag_threshold(self):
         return self._global_config_helper.get_slave_lag_threshold()
 
+    def get_slave_check_listen_port(self):
+        return self._global_config_helper.get_slave_check_listen_port()
+
     def get_param_value(self, param_name):
         if self._config.has_section('server default') == False:
             return False
@@ -135,6 +138,16 @@ class MHA_global_config_helper(object):
             slave_lag_threshold = int(slave_lag_threshold)
 
         return slave_lag_threshold
+
+    def get_slave_check_listen_port(self):
+        slave_check_listen_port = self.get_param_value(
+                param_name='slave_check_listen_port')
+
+        if (slave_check_listen_port != False or 
+                slave_check_listen_port is not None):
+            slave_check_listen_port = int(slave_check_listen_port)
+
+        return slave_check_listen_port
 
     def get_param_value(self, param_name):
         if self._config.has_section('default') == False:
