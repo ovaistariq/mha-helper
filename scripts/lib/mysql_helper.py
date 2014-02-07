@@ -164,6 +164,19 @@ class MySQL_helper(object):
 
 	return grants
 
+    def get_slave_status(self):
+        cursor = self._connection.cursor(MySQLdb.cursors.DictCursor)
+        try:
+            cursor.execute("SHOW SLAVE STATUS")
+            row = cursor.fetchone()
+        except MySQLdb.Error as e:
+            print "Error %d: %s" % (e.args[0], e.args[1])
+            return False
+        finally:
+            cursor.close()
+
+        return row
+
     def kill_connection(self, connection_id):
 	cursor = self._connection.cursor()
 	try:
