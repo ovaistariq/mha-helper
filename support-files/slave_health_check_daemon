@@ -95,15 +95,15 @@ class Slave_health_check_daemon(Unix_daemon):
 
         self._listen_port = config_helper.get_slave_check_listen_port()
 
-        self._pidfile = "/tmp/slave_health_check.pid"
+        self._pidfile = config_helper.get_slave_check_daemon_pid()
         if self._pidfile == False:
             raise ValueError("Problems generating pid path")
 
-        self._workdir = "/tmp"
+        self._workdir = config_helper.get_slave_check_daemon_workdir()
         if self._workdir == False:
             raise ValueError("Error determining slave_check_server_workdir from config")
 
-        self._log = "/tmp/slave_health_check.log"
+        self._log = config_helper.get_slave_check_daemon_log()
         if self._log == False:
             raise ValueError("Error determining slave_check_server_log from config")
 
