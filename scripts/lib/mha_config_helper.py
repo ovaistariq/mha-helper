@@ -67,13 +67,17 @@ class MHA_config_helper(object):
 
         param_value = False
 
+        # Try to fetch the parameter value from the [server default]
+        # section first
         if self._config.has_option('server default', param_name):
             param_value = self._config.get('server default', param_name)
 
+        # Try to fetch the parameter value from the relevant
+        # [serverN] section next
         for section in self._config.sections():
             if(self._host is not None and 
-                    section == self._host and 
-                    self._config.has_option(section, param_name)):
+                    self._config.has_option(section, 'hostname') and
+                    self._config.get(section, 'hostname') == self._host):
                 param_value = self._config.get(section, param_name)
 
         return param_value
