@@ -21,18 +21,24 @@ import BaseHTTPServer
 import socket
 from datetime import datetime
 from lib.mha_slave_helper import MHA_slave_helper
-from lib.mha_config_helper import MHA_global_config_helper
+from lib.mha_config_helper import MHA_config_helper
 
 class Slave_health_check_server(BaseHTTPServer.BaseHTTPRequestHandler):
     # HTTP response codes sent by the server
     HTTP_ERROR_CODE = 503
     HTTP_SUCCESS_CODE = 200
 
+    def __init__(self, request, client_addr, server):
+        self._slave_host_port_dict = MHA_config_helper.get_host_slave_health_check_port_dict()
+
+        BaseHTTPServer.BaseHTTPRequestHandler.__init__(
+                self, request, client_addr, server)
+
     def do_OPTIONS(self):
         self.do_GET()
 
     def do_GET(self):
-        slave_hostname = self.headers.get('Slave_host')
+        slave_hostname = self._get_slave_host()
 
         # Run the test to see if slave is healthy
         slave = MHA_slave_helper(slave_host=slave_hostname)
@@ -70,6 +76,16 @@ class Slave_health_check_server(BaseHTTPServer.BaseHTTPRequestHandler):
 
         self.rfile.close()
 
+    def _get_slave_host(self):
+        server_port = self.server.server_port
+
+        for slave_host, slave_listen_port in self._slave_host_port_dict.iteritems():
+            if slave_listen_port == server_port:
+                return slave_host
+
+        return False
+
+
 class StoppableHttpServer(BaseHTTPServer.HTTPServer):
     """http server that reacts to self.stop flag"""
 
@@ -84,21 +100,19 @@ def debug_message(message):
     print "[%s] %s" % (current_datetime, message)
 
 def main():
-    # Setup the listen port
-    config_helper = MHA_global_config_helper(host=None)
-    listen_port = config_helper.get_slave_check_listen_port()
-
     server_class = StoppableHttpServer
     handler_class = Slave_health_check_server
 
-    server_address = ('', listen_port)
+    host_slave_port_dict = MHA_config_helper.get_host_slave_health_check_port_dict()
 
-    httpd = server_class(server_address, handler_class)
+    for slave_host, slave_listen_port in host_slave_port_dict.iteritems():
+        server_address = ('', slave_listen_port)
+        httpd = server_class(server_address, handler_class)
 
-    debug_message("slave_health_check started, listening on port %s" %
-            listen_port)
+        debug_message("slave health_check started listening on port %s" %
+                slave_listen_port)
 
-    httpd.serve_forever()
+        httpd.serve_forever()
 
     debug_message("slave_health_check shutting down ... bye")
 
