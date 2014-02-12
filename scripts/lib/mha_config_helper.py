@@ -127,7 +127,7 @@ class MHA_global_config_helper(object):
             if section == 'server default':
                 continue
 
-            host.append(section)
+            hosts.append(section)
 
         return hosts
 
