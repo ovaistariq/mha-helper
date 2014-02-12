@@ -23,6 +23,14 @@ class MHA_config_helper(object):
     SSH = "/usr/bin/ssh"
     SUDO = "/usr/bin/sudo"
 
+    @staticmethod
+    def get_all_hosts():
+        return MHA_global_config_helper.get_all_hosts()
+
+    @staticmethod
+    def get_host_slave_health_check_port_dict():
+        return MHA_global_config_helper.get_host_slave_health_check_port_dict()
+
     def __init__(self, host):
         self._host = host
         self._global_config_helper = MHA_global_config_helper(host=host)
