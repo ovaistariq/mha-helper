@@ -27,6 +27,9 @@ class MHA_slave_helper(object):
 
     def __init__(self, slave_host):
         self._slave_host_config_helper = MHA_config_helper(host=slave_host)
+
+        self._slave_hostname = slave_host
+
         mysql_user = self._slave_host_config_helper.get_mysql_user()
         mysql_password = self._slave_host_config_helper.get_mysql_password()
         host_ip = self._slave_host_config_helper.get_host_ip()
@@ -67,18 +70,18 @@ class MHA_slave_helper(object):
 
     def get_return_code_string(self, code):
         if code == MHA_slave_helper.CODE_SUCCESS:
-            return "Slave is in SYNC"
+            return "[%s] Slave is in SYNC" % self._slave_hostname
 
         if code == MHA_slave_helper.CODE_ERR_MYSQL_CONN:
-            return "Error connecting to MySQL on the slave"
+            return "[%s] Error connecting to MySQL on the slave" % self._slave_hostname
 
         if code == MHA_slave_helper.CODE_ERR_READ_ONLY:
-            return "READ_ONLY flag is not set on the slave"
+            return "[%s] READ_ONLY flag is not set on the slave" % self._slave_hostname
 
         if code == MHA_slave_helper.CODE_ERR_SLAVE_RUNNING:
-            return "IO and/or SQL threads are not running on the slave"
+            return "[%s] IO and/or SQL threads are not running on the slave" % self._slave_hostname
 
         if code == MHA_slave_helper.CODE_ERR_SLAVE_LAG:
-            return "Slave lag is more than the allowed threshold"
+            return "[%s] Slave lag is more than the allowed threshold" % self._slave_hostname
 
-        return "Unknown error code"
+        return "[%s] Unknown error code" % self._slave_hostname
