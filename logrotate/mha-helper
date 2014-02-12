@@ -1,0 +1,9 @@
+/var/log/mha/slave_health_check_daemon.log /var/log/mha/test_cluster/test_cluster.log {
+       weekly
+       rotate 10
+       copytruncate
+       delaycompress
+       compress
+       notifempty
+       missingok
+}
