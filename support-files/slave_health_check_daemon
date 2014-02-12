@@ -22,6 +22,7 @@ import BaseHTTPServer
 import sys
 import time
 import socket
+import thread
 from optparse import OptionParser
 
 sys.path.append("/usr/local/mha-helper/scripts/")
@@ -177,8 +178,11 @@ class Slave_health_check_daemon(Unix_daemon):
 
         print ("[INFO] Starting %s slave_health_check daemon, listening on port %s" % 
                 (slave_host, slave_listen_port))
-        
-        httpd.serve_forever()
+
+        try:
+            thread.start_new_thread(httpd.serve_forever, ())
+        except:
+            print "[ERROR] Could not start %s slave_health_check daemon" % slave_host
 
         return True
 
