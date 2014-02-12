@@ -101,10 +101,46 @@ class MHA_config_helper(object):
 class MHA_global_config_helper(object):
     CONFIG_PATH = "/usr/local/mha-helper/conf/global.conf"
 
+    @staticmethod
+    def parse_config():
+        config = ConfigParser.RawConfigParser()
+        config.read(MHA_global_config_helper.CONFIG_PATH)
+
+        return config
+
+    @staticmethod
+    def get_all_hosts():
+        # We fetch all the hostnames by looping through the sections
+        # Avoiding the [server default] section
+        config = MHA_global_config_helper.parse_config()
+
+        hosts = []
+        for section in config.sections():
+            if section == 'server default':
+                continue
+
+            host.append(section)
+
+        return hosts
+
+    @staticmethod
+    def get_host_slave_health_check_port_dict():
+        # We loop through all the sections avoiding the [server default]
+        # section and return a dictionary with the keys being the hostname
+        # and values being port numbers
+        hosts_slave_port_dict = dict()
+        hosts_list = MHA_global_config_helper.get_all_hosts()
+
+        for host in hosts_list:
+            host_config = MHA_global_config_helper(host=host)
+            host_slave_port = host_config.get_slave_check_listen_port()
+            hosts_slave_port_dict[host] = host_slave_port
+
+        return hosts_slave_port_dict
+
     def __init__(self, host):
-       self._config = ConfigParser.RawConfigParser()
-       self._config.read(MHA_global_config_helper.CONFIG_PATH)
-       self._host = host
+        self._config = MHA_global_config_helper.parse_config()
+        self._host = host
 
     def get_cluster_conf_path(self):
         return self.get_param_value(param_name='cluster_conf_path')
