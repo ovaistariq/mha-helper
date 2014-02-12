@@ -26,6 +26,7 @@ from optparse import OptionParser
 
 sys.path.append("/usr/local/mha-helper/scripts/")
 from lib.unix_daemon import Unix_daemon
+from lib.mha_config_helper import MHA_config_helper
 from lib.mha_config_helper import MHA_global_config_helper
 from lib.mha_slave_helper import MHA_slave_helper
 
@@ -36,11 +37,18 @@ class Slave_health_check_server(BaseHTTPServer.BaseHTTPRequestHandler):
     HTTP_ERROR_CODE = 503
     HTTP_SUCCESS_CODE = 200
 
+    def __init__(self, request, client_addr, server):
+        self._slave_host_port_dict = MHA_config_helper.get_host_slave_health_check_port_dict()
+
+        BaseHTTPServer.BaseHTTPRequestHandler.__init__(
+                self, request, client_addr, server)
+
+
     def do_OPTIONS(self):
         self.do_GET()
 
     def do_GET(self):
-        slave_hostname = self.headers.get('Slave_host')
+        slave_hostname = self._get_slave_host()
 
         # Run the test to see if slave is healthy
         slave = MHA_slave_helper(slave_host=slave_hostname)
@@ -77,6 +85,16 @@ class Slave_health_check_server(BaseHTTPServer.BaseHTTPRequestHandler):
 
         self.rfile.close()
 
+    def _get_slave_host(self):
+        server_port = self.server.server_port
+
+        for slave_host, slave_listen_port in self._slave_host_port_dict.iteritems():
+            if slave_listen_port == server_port:
+                return slave_host
+
+        return False
+
+
 # Override the BaseHTTPServer so that the HTTP server can be 
 # stopped on demand
 class StoppableHttpServer(BaseHTTPServer.HTTPServer):
@@ -91,9 +109,9 @@ class StoppableHttpServer(BaseHTTPServer.HTTPServer):
 
 class Slave_health_check_daemon(Unix_daemon):
     def __init__(self):
-        config_helper = MHA_global_config_helper(host=None)
+        self._host_slave_port_dict = MHA_config_helper.get_host_slave_health_check_port_dict()
 
-        self._listen_port = config_helper.get_slave_check_listen_port()
+        config_helper = MHA_global_config_helper(host=None)
 
         self._pidfile = config_helper.get_slave_check_daemon_pid()
         if self._pidfile == False:
@@ -114,69 +132,78 @@ class Slave_health_check_daemon(Unix_daemon):
         while True:
             sleep_seconds = 1
 
-            if self.is_server_running() == False:
-                self.start_server()
+            for host, port in self._host_slave_port_dict.iteritems():
+                if self.is_server_running(slave_listen_port=port) == False:
+                    self.start_server(slave_host=host, slave_listen_port=port)
 
             time.sleep(sleep_seconds)
 
     def stop(self):
         super(Slave_health_check_daemon, self).stop()
-        self.stop_server()
+
+        for host, port in self._host_slave_port_dict.iteritems():
+            self.stop_server(slave_host=host, slave_listen_port=port)
+
+        return True
 
     def status(self):
-        if self.is_server_running() == False:
-            print "slave_health_check stopped"
-        else:
-            print ("slave_health_check daemon listening on port %s" %
-                    self._listen_port)
+        for host, port in self._host_slave_port_dict.iteritems():
+            if self.is_server_running(slave_listen_port=port) == False:
+                print "%s slave_health_check stopped" % host
+            else:
+                print ("%s slave_health_check daemon listening on port %s" %
+                    (host, port))
         
         return True
 
-    def is_server_running(self):
+    def is_server_running(self, slave_listen_port):
         try:
             sock = socket.socket()
-            sock.connect(('localhost', self._listen_port))
+            sock.connect(('localhost', slave_listen_port))
             sock.close()
             return True
         except:
             return False
 
-    def start_server(self):
-        if self.is_server_running() == True:
+    def start_server(self, slave_host, slave_listen_port):
+        if self.is_server_running(slave_listen_port=slave_listen_port) == True:
             return True
 
         server_class = StoppableHttpServer
         handler_class = Slave_health_check_server
-        server_address = ('', self._listen_port)
+        server_address = ('', slave_listen_port)
 
         httpd = server_class(server_address, handler_class)
 
-        print ("[INFO] Starting slave_health_check daemon, listening on port %s" % 
-                self._listen_port)
+        print ("[INFO] Starting %s slave_health_check daemon, listening on port %s" % 
+                (slave_host, slave_listen_port))
         
         httpd.serve_forever()
 
         return True
 
-    def stop_server(self):
+    def stop_server(self, slave_host, slave_listen_port):
         # Send QUIT command to HTTP server so that it stops gracefully
-        print ("[INFO] Stopping slave_health_check daemon, listening on port %s" % 
-                self._listen_port)
+        print ("[INFO] Stopping %s slave_health_check daemon, listening on port %s" % 
+                (slave_host, slave_listen_port))
 
-        if self.is_server_running() == False:
+        if self.is_server_running(slave_listen_port=slave_listen_port) == False:
             return True
 
-        conn = httplib.HTTPConnection("localhost", self._listen_port)
+        conn = httplib.HTTPConnection("localhost", slave_listen_port)
         conn.request("QUIT", "/")
         conn.getresponse()
         conn.close()
 
-        print "[INFO] slave_health_check daemon stopped"
+        print "[INFO] %s slave_health_check daemon stopped" % slave_host
         return True
 
     def restart_server(self):
-        self.start_server()
-        self.stop_server()
+        for host, port in self._host_slave_port_dict.iteritems():
+            self.start_server(slave_host=host, slave_listen_port=port)
+            self.stop_server(slave_host=host, slave_listen_port=port)
+
+        return True
 
 
 def main():
