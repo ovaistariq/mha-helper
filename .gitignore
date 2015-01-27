@@ -47,3 +47,7 @@ Thumbs.db
 #############
 id_rsa
 id_rsa.pub
+
+# IDE generated files #
+#######################
+.idea/
