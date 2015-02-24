@@ -1,6 +1,6 @@
 # (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
 #
-# This file is part of mha-helper
+# This file is part of mha_helper
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -34,7 +34,7 @@ class MHA_config_helper(object):
     def __init__(self, host):
         self._host = host
         self._global_config_helper = MHA_global_config_helper(host=host)
-        
+
         cluster_conf_path = self._global_config_helper.get_cluster_conf_path()
         self._config = ConfigParser.RawConfigParser()
         self._config.read(cluster_conf_path)
@@ -98,7 +98,7 @@ class MHA_config_helper(object):
         # Try to fetch the parameter value from the relevant
         # [serverN] section next
         for section in self._config.sections():
-            if(self._host is not None and 
+            if(self._host is not None and
                     self._config.has_option(section, 'hostname') and
                     self._config.get(section, 'hostname') == self._host and
                     self._config.has_option(section, param_name)):
@@ -196,7 +196,7 @@ class MHA_global_config_helper(object):
         slave_check_listen_port = self.get_param_value(
                 param_name='slave_check_listen_port')
 
-        if (slave_check_listen_port != False or 
+        if (slave_check_listen_port != False or
                 slave_check_listen_port is not None):
             slave_check_listen_port = int(slave_check_listen_port)
 

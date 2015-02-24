@@ -1,6 +1,6 @@
 # (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
 #
-# This file is part of mha-helper
+# This file is part of mha_helper
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -22,22 +22,22 @@ from mha_config_helper import MHA_config_helper
 from mha_vip_helper import MHA_VIP_helper
 
 class MHA_online_change_helper(object):
-    CODE_SUCCESS = 0 
-    CODE_ERR_GENERAL = 1 
+    CODE_SUCCESS = 0
+    CODE_ERR_GENERAL = 1
     CODE_ERR_NO_SSH = 10
 
     def __init__(self, orig_master_host, orig_master_ip, orig_master_ssh_port,
-            new_master_host, new_master_ip, new_master_ssh_port, 
+            new_master_host, new_master_ip, new_master_ssh_port,
             ssh_options, privileged_users):
         self._orig_master_config_helper = MHA_config_helper(host=orig_master_host)
         self._new_master_config_helper = MHA_config_helper(host=new_master_host)
 
-        self._orig_master = MySQL_helper(host=orig_master_ip, 
-                                        user=self._orig_master_config_helper.get_mysql_user(), 
+        self._orig_master = MySQL_helper(host=orig_master_ip,
+                                        user=self._orig_master_config_helper.get_mysql_user(),
                                         password=self._orig_master_config_helper.get_mysql_password())
 
-        self._new_master = MySQL_helper(host=new_master_ip, 
-                                        user=self._new_master_config_helper.get_mysql_user(), 
+        self._new_master = MySQL_helper(host=new_master_ip,
+                                        user=self._new_master_config_helper.get_mysql_user(),
                                         password=self._new_master_config_helper.get_mysql_password())
 
         self._orig_master_ip = orig_master_ip
@@ -85,9 +85,9 @@ class MHA_online_change_helper(object):
             state = row['State']
             query_time = row['Time']
             info = row['Info']
-            if (my_connection_id == connection_id or 
+            if (my_connection_id == connection_id or
                 command == "Binlog Dump" or
-                user == "system user" or 
+                user == "system user" or
                 (command == "Sleep" and query_time >= 1)):
                 continue
             threads.append(row)
@@ -96,14 +96,14 @@ class MHA_online_change_helper(object):
 
     def revoke_all_user_privileges(self, master_obj):
 	users = master_obj.get_all_users()
-	
+
 	if users == False or len(users) < 1:
 	    return False
 
 	for user in users:
-            if (user['User'] in self._privileged_users or 
-                user['User'] == master_obj.get_current_user() or 
-                user['Repl_slave_priv'] == 'Y' or 
+            if (user['User'] in self._privileged_users or
+                user['User'] == master_obj.get_current_user() or
+                user['Repl_slave_priv'] == 'Y' or
                 user['Repl_client_priv'] == 'Y'):
 		continue
 	    username = "'%s'@'%s'" % (user['User'], user['Host'])
@@ -114,19 +114,19 @@ class MHA_online_change_helper(object):
 	    for grant in user_grants:
 	    	self._user_grants_orig_master.append(grant)
 	    	self.debug_message("\t%s" % grant)
-	
+
 	return True
 
     def regrant_all_user_privileges(self, master_obj):
         users = master_obj.get_all_users()
-        
+
         if users == False or len(users) < 1:
             return False
 
         for user in users:
-            if (user['User'] in self._privileged_users or 
-                user['User'] == master_obj.get_current_user() or 
-                user['Repl_slave_priv'] == 'Y' or 
+            if (user['User'] in self._privileged_users or
+                user['User'] == master_obj.get_current_user() or
+                user['Repl_slave_priv'] == 'Y' or
                 user['Repl_client_priv'] == 'Y'):
                 continue
             username = "'%s'@'%s'" % (user['User'], user['Host'])
@@ -161,7 +161,7 @@ class MHA_online_change_helper(object):
 	if self._orig_master.connect() == False:
 	    return MHA_online_change_helper.CODE_ERR_GENERAL
 
-	# we execute everything below in try..finally because we have to 
+	# we execute everything below in try..finally because we have to
         # disconnect and enable log_bin at all cost
 	try:
             # Setting read_only=1 on the original master
@@ -200,7 +200,7 @@ class MHA_online_change_helper(object):
 	        return MHA_online_change_helper.CODE_ERR_GENERAL
 
 	    for thread in threads:
-	        self.debug_message("\tTerminating thread Id => %s, User => %s, Host => %s" % 
+	        self.debug_message("\tTerminating thread Id => %s, User => %s, Host => %s" %
                                     (thread['Id'], thread['User'], thread['Host']))
 	        self._orig_master.kill_connection(connection_id=thread['Id'])
 	finally:
@@ -213,7 +213,7 @@ class MHA_online_change_helper(object):
 	# Connect to the original master
         if self._orig_master.connect() == False:
             return MHA_online_change_helper.CODE_ERR_GENERAL
-	
+
 	rollback_error = 0
 
 	# remove the read_only flag from the orignal master

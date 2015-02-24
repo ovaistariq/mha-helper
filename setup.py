@@ -23,7 +23,7 @@ test_requirements = [
 ]
 
 setup(
-    name='mha-helper',
+    name='mha_helper',
     version='0.4.0',
     description=("MHA helper (mha-helper) is a set of helper scripts that supplement in doing proper failover using "
                  "MHA (https://code.google.com/p/mysql-master-ha/). MHA is responsible for executing the important "
@@ -39,15 +39,15 @@ setup(
     author_email='me@ovaistariq.net',
     url='https://github.com/ovaistariq/mha-helper',
     packages=[
-        'mha-helper',
+        'mha_helper',
     ],
-    package_dir={'mha-helper':
-                 'mha-helper'},
+    package_dir={'mha_helper':
+                 'mha_helper'},
     include_package_data=True,
     install_requires=requirements,
     license="BSD",
     zip_safe=False,
-    keywords='mha-helper',
+    keywords='mha_helper, mha',
     classifiers=[
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',

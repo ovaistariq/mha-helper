@@ -1,6 +1,6 @@
 # (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
 #
-# This file is part of mha-helper
+# This file is part of mha_helper
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -27,13 +27,13 @@ class MHA_VIP_helper(object):
         if ssh_user == None:
            ssh_user = config_helper.get_ssh_user()
 
-        ip_cmd = "%s addr delete %s dev %s" % (MHA_config_helper.IP, 
+        ip_cmd = "%s addr delete %s dev %s" % (MHA_config_helper.IP,
                                             writer_vip_cidr, cluster_interface)
 
         if config_helper.get_requires_sudo() == True:
             ip_cmd = "%s %s" % (MHA_config_helper.SUDO, ip_cmd)
 
-        cmd = "%s %s -q -p %s %s@%s \"%s\"" % (MHA_config_helper.SSH, 
+        cmd = "%s %s -q -p %s %s@%s \"%s\"" % (MHA_config_helper.SSH,
                 ssh_options, ssh_port, ssh_user, host_ip, ip_cmd)
 
         print "Executing command %s" % cmd
@@ -53,7 +53,7 @@ class MHA_VIP_helper(object):
         if ssh_user == None:
             ssh_user = config_helper.get_ssh_user()
 
-        ip_cmd = "%s addr add %s dev %s" % (MHA_config_helper.IP, 
+        ip_cmd = "%s addr add %s dev %s" % (MHA_config_helper.IP,
                                         writer_vip_cidr, cluster_interface)
 
         arping_cmd = "%s -q -c 3 -A -I %s %s" % (MHA_config_helper.ARPING,
@@ -63,7 +63,7 @@ class MHA_VIP_helper(object):
             ip_cmd = "%s %s" % (MHA_config_helper.SUDO, ip_cmd)
             arping_cmd = "%s %s" % (MHA_config_helper.SUDO, arping_cmd)
 
-        cmd = "%s %s -q -p %s %s@%s \"%s && %s\"" % (MHA_config_helper.SSH, 
+        cmd = "%s %s -q -p %s %s@%s \"%s && %s\"" % (MHA_config_helper.SSH,
                 ssh_options, ssh_port, ssh_user, host_ip, ip_cmd, arping_cmd)
 
         print "Executing command %s" % cmd

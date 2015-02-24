@@ -1,12 +1,12 @@
 ===============================
-mha-helper
+mha_helper
 ===============================
 
-.. image:: https://img.shields.io/travis/ovaistariq/mha-helper.svg
-        :target: https://travis-ci.org/ovaistariq/mha-helper
+.. image:: https://img.shields.io/travis/ovaistariq/mha_helper.svg
+        :target: https://travis-ci.org/ovaistariq/mha_helper
 
-.. image:: https://img.shields.io/pypi/v/mha-helper.svg
-        :target: https://pypi.python.org/pypi/mha-helper
+.. image:: https://img.shields.io/pypi/v/mha_helper.svg
+        :target: https://pypi.python.org/pypi/mha_helper
 
 
 MHA helper (mha-helper) is a set of helper scripts that supplement in doing proper failover using MHA (https://code.google.com/p/mysql-master-ha/). MHA is responsible for executing the important failover steps such as finding the most recent slave to failover to, applying differential logs, monitoring master for failure, etc. But it does not deal with additional steps that need to be taken before and after failover. These would include steps such as setting the read-only flag, killing connections, moving writer virtual IP, etc. Furthermore, the monitor that does the monitoring of masters to test for failure is not daemonized and exits after performing the failover which might not be intended, because of course we need the monitor to keep monitoring even after failover.

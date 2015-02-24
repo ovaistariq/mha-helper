@@ -35,7 +35,7 @@ clean-test:
 	rm -fr htmlcov/
 
 lint:
-	flake8 mha-helper tests
+	flake8 mha_helper tests
 
 test:
 	python setup.py test
@@ -44,15 +44,15 @@ test-all:
 	tox
 
 coverage:
-	coverage run --source mha-helper setup.py test
+	coverage run --source mha_helper setup.py test
 	coverage report -m
 	coverage html
 	open htmlcov/index.html
 
 docs:
-	rm -f docs/mha-helper.rst
+	rm -f docs/mha_helper.rst
 	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ mha-helper
+	sphinx-apidoc -o docs/ mha_helper
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
 	open docs/_build/html/index.html

@@ -1,9 +1,9 @@
-.. mha-helper documentation master file, created by
+.. mha_helper documentation master file, created by
    sphinx-quickstart on Tue Jul  9 22:26:36 2013.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to mha-helper's documentation!
+Welcome to mha_helper's documentation!
 ======================================
 
 Contents:

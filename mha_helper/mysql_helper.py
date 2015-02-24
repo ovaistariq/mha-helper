@@ -1,6 +1,6 @@
 # (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
 #
-# This file is part of mha-helper
+# This file is part of mha_helper
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -47,9 +47,14 @@ class MySQL_helper(object):
 
     def get_version(self):
         cursor = self._connection.cursor()
-        cursor.execute("SELECT VERSION()")
-        row = cursor.fetchone()
-	cursor.close()
+        try:
+            cursor.execute("SELECT VERSION()")
+            row = cursor.fetchone()
+        except MySQLdb.Error as e:
+            print "Error %d: %s" % (e.args[0], e.args[1])
+            return False
+        finally:
+	    cursor.close()
 
         return row[0]
 
@@ -88,8 +93,6 @@ class MySQL_helper(object):
 	cursor.execute("SELECT @@read_only")
 	row = cursor.fetchone()
 	cursor.close()
-
-	print "[debug] is_read_only =", row[0]
 
 	if row[0] == 1:
 	    return True
@@ -131,9 +134,6 @@ class MySQL_helper(object):
         finally:
 	    cursor.close()
 
-	print "[debug] PROCESSLIST"
-	print threads
-
 	return threads
 
     def get_all_users(self):
@@ -153,7 +153,7 @@ class MySQL_helper(object):
 	cursor = self._connection.cursor()
         grants = []
 	try:
-            cursor.execute("SHOW GRANTS FOR " + username)
+            cursor.execute("SHOW GRANTS FOR %s" % username)
             for row in cursor.fetchall():
                 grants.append(row[0])
         except MySQLdb.Error as e:
@@ -164,10 +164,23 @@ class MySQL_helper(object):
 
 	return grants
 
+    def get_slave_status(self):
+        cursor = self._connection.cursor(MySQLdb.cursors.DictCursor)
+        try:
+            cursor.execute("SHOW SLAVE STATUS")
+            row = cursor.fetchone()
+        except MySQLdb.Error as e:
+            print "Error %d: %s" % (e.args[0], e.args[1])
+            return False
+        finally:
+            cursor.close()
+
+        return row
+
     def kill_connection(self, connection_id):
 	cursor = self._connection.cursor()
 	try:
-	    print "KILL CONNECTION " + connection_id
+	    cursor.execute("KILL CONNECTION %d" % connection_id)
 	except MySQLdb.Error as e:
             print "Error %d: %s" % (e.args[0], e.args[1])
             return False
@@ -179,7 +192,7 @@ class MySQL_helper(object):
     def revoke_all_privileges(self, user):
 	cursor = self._connection.cursor()
 	try:
-	    print "REVOKE ALL PRIVILEGES, GRANT OPTION FROM " + user
+	    cursor.execute("REVOKE ALL PRIVILEGES, GRANT OPTION FROM %s" % user)
 	except MySQLdb.Error as e:
             print "Error %d: %s" % (e.args[0], e.args[1])
             return False
@@ -191,7 +204,7 @@ class MySQL_helper(object):
     def execute_admin_query(self, sql):
 	cursor = self._connection.cursor()
 	try:
-	    print sql
+	    cursor.execute(sql)
 	except MySQLdb.Error as e:
             print "Error %d: %s" % (e.args[0], e.args[1])
             return False

@@ -1,6 +1,6 @@
 # (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
 #
-# This file is part of mha-helper
+# This file is part of mha_helper
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

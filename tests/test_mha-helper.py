@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 """
-test_mha-helper
+test_mha_helper
 ----------------------------------
 
-Tests for `mha-helper` module.
+Tests for `mha_helper` module.
 """
 
 import unittest
 
-from mha-helper import mha-helper
+from mha_helper import mha_helper
 
 
-class TestMha-helper(unittest.TestCase):
+class TestMha_helper(unittest.TestCase):
 
     def setUp(self):
         pass

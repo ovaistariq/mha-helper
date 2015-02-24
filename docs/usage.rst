@@ -2,6 +2,6 @@
 Usage
 ========
 
-To use mha-helper in a project::
+To use mha_helper in a project::
 
-    import mha-helper
+    import mha_helper

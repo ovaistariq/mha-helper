@@ -1,6 +1,6 @@
 # (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
 #
-# This file is part of mha-helper
+# This file is part of mha_helper
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -35,7 +35,7 @@ class MHA_slave_helper(object):
         host_ip = self._slave_host_config_helper.get_host_ip()
 
         self._slave_host = MySQL_helper(host=host_ip, user=mysql_user,
-                            password=mysql_password) 
+                            password=mysql_password)
 
     def is_healthy(self):
         # Try to connect to the slave

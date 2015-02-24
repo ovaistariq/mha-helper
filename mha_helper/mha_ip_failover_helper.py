@@ -1,6 +1,6 @@
 # (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
 #
-# This file is part of mha-helper
+# This file is part of mha_helper
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -31,16 +31,16 @@ class MHA_IP_failover_helper(object):
 	current_datetime = datetime.now().strftime("%Y-%m-%-d %H:%M:%S")
 	print "[%s] %s" % (current_datetime, message)
 
-    def execute_stop_command(self, orig_master_host, orig_master_ip, 
+    def execute_stop_command(self, orig_master_host, orig_master_ip,
                                 ssh_user, ssh_options, ssh_port):
 	# We do not really need to do anything here because there is no SSH access
 	return MHA_IP_failover_helper.CODE_ERR_NO_SSH
 
-    def execute_stopssh_command(self, orig_master_host, orig_master_ip, 
+    def execute_stopssh_command(self, orig_master_host, orig_master_ip,
                                 ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=orig_master_host)
 
-        orig_master = MySQL_helper(host=orig_master_ip, 
+        orig_master = MySQL_helper(host=orig_master_ip,
                                     user=config_helper.get_mysql_user(),
                                     password=config_helper.get_mysql_password())
 
@@ -61,12 +61,12 @@ class MHA_IP_failover_helper(object):
 
         return exit_code
 
-    def execute_start_command(self, orig_master_host, orig_master_ip, 
-                                new_master_host, new_master_ip, 
+    def execute_start_command(self, orig_master_host, orig_master_ip,
+                                new_master_host, new_master_ip,
                                 ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=new_master_host)
-        
-        new_master = MySQL_helper(host=new_master_ip, 
+
+        new_master = MySQL_helper(host=new_master_ip,
                                     user=config_helper.get_mysql_user(),
                                     password=config_helper.get_mysql_password())
 
@@ -98,7 +98,7 @@ class MHA_IP_failover_helper(object):
 
         return MHA_IP_failover_helper.CODE_SUCCESS
 
-    def execute_status_command(self, orig_master_host, orig_master_ip, 
+    def execute_status_command(self, orig_master_host, orig_master_ip,
                                 ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=orig_master_host)
 
