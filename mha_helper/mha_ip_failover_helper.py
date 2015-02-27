@@ -19,7 +19,7 @@ import time
 from datetime import datetime
 import subprocess
 from mysql_helper import MySQL_helper
-from mha_config_helper import MHA_config_helper
+from config_helper import MHA_config_helper
 from mha_vip_helper import MHA_VIP_helper
 
 class MHA_IP_failover_helper(object):

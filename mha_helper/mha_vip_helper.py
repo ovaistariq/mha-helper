@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import subprocess
-from mha_config_helper import MHA_config_helper
+from config_helper import MHA_config_helper
 
 class MHA_VIP_helper(object):
     @staticmethod

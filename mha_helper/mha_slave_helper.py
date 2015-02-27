@@ -16,7 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from mysql_helper import MySQL_helper
-from mha_config_helper import MHA_config_helper
+from config_helper import MHA_config_helper
 
 class MHA_slave_helper(object):
     CODE_SUCCESS = 0

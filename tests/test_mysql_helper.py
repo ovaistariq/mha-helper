@@ -14,13 +14,16 @@ class TestMySQLHelper(unittest.TestCase):
         mysql_host = os.getenv('MYSQL_TEST_IP')
         mysql_user = os.getenv('MYSQL_TEST_USER')
         mysql_password = os.getenv('MYSQL_TEST_PASSWORD')
-        mysql_port = os.getenv('MYSQL_TEST_PORT')
+        mysql_port = int(os.getenv('MYSQL_TEST_PORT'))
 
         if not mysql_host or not mysql_user or not mysql_password or not mysql_port:
             self.fail(msg='MySQL database connection information not set')
 
         self.mysql_conn = MySQLHelper(host=mysql_host, port=mysql_port, user=mysql_user, password=mysql_password)
-        self.mysql_conn.connect()
+        if not self.mysql_conn.connect():
+            self.fail(msg='Could not connect to the MySQL database')
+
+        self.mysql_version = os.getenv('MYSQL_TEST_VERSION')
 
     def tearDown(self):
         self.mysql_conn.disconnect()
@@ -30,7 +33,7 @@ class TestMySQLHelper(unittest.TestCase):
         self.assertEqual(MySQLHelper.is_read_only_query('INSERT INTO foo VALUES ("bar")'), False)
 
     def test_get_version(self):
-        self.assertEqual(self.mysql_conn.get_version(), True)
+        self.assertEqual(self.mysql_conn.get_version(), self.mysql_version)
 
     def test_get_connection_id(self):
         self.assertNotEqual(self.mysql_conn.get_connection_id(), None)
@@ -49,6 +52,21 @@ class TestMySQLHelper(unittest.TestCase):
     def test_get_processlist(self):
         processlist = self.mysql_conn.get_processlist()
         self.assertTrue(len(processlist) >= 1)
+
+    def test_kill_connection(self):
+        mysql_host = os.getenv('MYSQL_TEST_IP')
+        mysql_user = os.getenv('MYSQL_TEST_USER')
+        mysql_password = os.getenv('MYSQL_TEST_PASSWORD')
+        mysql_port = int(os.getenv('MYSQL_TEST_PORT'))
+
+        mysql_conn = MySQLHelper(host=mysql_host, port=mysql_port, user=mysql_user, password=mysql_password)
+        if not mysql_conn.connect():
+            self.fail(msg='Could not connect to the MySQL database')
+
+        mysql_conn_id = mysql_conn.get_connection_id()
+        self.assertTrue(self.mysql_conn.kill_connection(mysql_conn_id))
+
+        del mysql_conn
 
 if __name__ == '__main__':
     unittest.main()

@@ -33,7 +33,7 @@ class MySQLHelper(object):
 
     def __init__(self, host, port, user, password):
         self._host = host
-        self._port = port
+        self._port = int(port)
         self._user = user
         self._password = password
         self._connection = None
