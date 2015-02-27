@@ -14,7 +14,7 @@ class TestMySQLHelper(unittest.TestCase):
         mysql_host = os.getenv('MYSQL_TEST_IP')
         mysql_user = os.getenv('MYSQL_TEST_USER')
         mysql_password = os.getenv('MYSQL_TEST_PASSWORD')
-        mysql_port = int(os.getenv('MYSQL_TEST_PORT'))
+        mysql_port = os.getenv('MYSQL_TEST_PORT')
 
         if not mysql_host or not mysql_user or not mysql_password or not mysql_port:
             self.fail(msg='MySQL database connection information not set')
