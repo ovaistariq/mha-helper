@@ -19,12 +19,14 @@ from __future__ import print_function
 import fnmatch
 import os
 import ConfigParser
+import re
 
 
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
-    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip', 'writer_vip_cidr', 'manage_vip', 'report_email', 'requires_sudo',
+    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'manage_vip', 'vip_type', 'report_email', 'requires_sudo',
                                  'cluster_interface']
+    VIP_PROVIDER_TYPES = ['metal', 'aws', 'openstack']
 
     # This stores the configuration for every host
     host_config = dict()
@@ -49,31 +51,82 @@ class ConfigHelper(object):
 
                 default_config = dict()
                 for opt in ConfigHelper.MHA_HELPER_CONFIG_OPTIONS:
-                    default_config[opt] = config_parser.get('default', opt)
+                    opt_value = config_parser.get('default', opt)
+                    if not ConfigHelper.validate_config_value(opt, opt_value):
+                        print("Parsing the option '%s' with value '%s' failed" % (opt, opt_value))
+                        return False
+
+                    default_config[opt] = opt_value
 
                 # Setup host based configs. Initially hosts inherit config from the default section but override them
                 # within their own sections
                 for hostname in config_parser.sections():
                     ConfigHelper.host_config[hostname] = dict()
 
-                    for key, value in default_config.iteritems():
-                        ConfigHelper.host_config[hostname][key] = value
-
+                    # We read the options from the host section of the config
                     for opt in ConfigHelper.MHA_HELPER_CONFIG_OPTIONS:
-                        if config_parser.has_option(hostname, opt) and opt not in ['writer_vip', 'writer_vip_cidr']:
+                        if config_parser.has_option(hostname, opt) and opt != 'writer_vip_cidr':
                             ConfigHelper.host_config[hostname][opt] = config_parser.get(hostname, opt)
 
+                    # We now read the options from the default section and if any option has not been set by the host
+                    # section we set that to what is defined in the default section, writer_vip_cidr is always read from
+                    # the default section because it has to be global for the entire replication cluster
+                    # If the option is not defined in both default and host section, we throw an error
+                    for opt in ConfigHelper.MHA_HELPER_CONFIG_OPTIONS:
+                        if opt not in ConfigHelper.host_config[hostname] or opt == 'writer_vip_cidr':
+                            # If the host section did not define the config option and the default config also does
+                            # not define the config option then we bail out
+                            if opt not in default_config:
+                                print("Missing required option '%s'. The option should either be set in default "
+                                      "section or the host section of the config" % opt)
+                                return False
+
+                            ConfigHelper.host_config[hostname][opt] = default_config[opt]
+
         return True
+
+    @staticmethod
+    def validate_config_value(config_key, config_value):
+        if config_key == 'writer_vip_cidr':
+            return ConfigHelper.validate_ip_address(config_value)
+
+        if config_key == 'manage_vip':
+            return config_value in ['yes', 'no']
+
+        if config_key == 'vip_type':
+            return config_value in ConfigHelper.VIP_PROVIDER_TYPES
+
+        if config_key == 'report_email':
+            return ConfigHelper.validate_email_address(config_value)
+
+        if config_key == 'requires_sudo':
+            return config_value in ['yes', 'no']
+
+        if config_key == 'cluster_interface':
+            return config_value is not None and len(config_value) > 0
+
+    @staticmethod
+    def validate_ip_address(ip_address):
+        pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$'
+        return bool(re.match(pattern, ip_address))
+
+    @staticmethod
+    def validate_email_address(email_address):
+        pattern = '^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$'
+        return bool(re.match(pattern, email_address))
 
     def __init__(self, host):
         self._host = host
         self._host_config = self.__class__.host_config[host]
 
     def get_writer_vip(self):
-        return self._host_config['writer_vip']
+        return self.get_writer_vip_cidr().split('/')[0]
 
     def get_writer_vip_cidr(self):
         return self._host_config['writer_vip_cidr']
+
+    def get_vip_type(self):
+        return self._host_config['vip_type']
 
     def get_manage_vip(self):
         return self._host_config['manage_vip']
