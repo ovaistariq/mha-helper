@@ -24,9 +24,8 @@ import re
 
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
-    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'manage_vip', 'vip_type', 'report_email', 'requires_sudo',
-                                 'cluster_interface']
-    VIP_PROVIDER_TYPES = ['metal', 'aws', 'openstack']
+    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'requires_sudo', 'cluster_interface']
+    VIP_PROVIDER_TYPES = ['none', 'metal', 'aws', 'openstack']
 
     # This stores the configuration for every host
     host_config = dict()
@@ -90,9 +89,6 @@ class ConfigHelper(object):
         if config_key == 'writer_vip_cidr':
             return ConfigHelper.validate_ip_address(config_value)
 
-        if config_key == 'manage_vip':
-            return config_value in ['yes', 'no']
-
         if config_key == 'vip_type':
             return config_value in ConfigHelper.VIP_PROVIDER_TYPES
 
@@ -129,7 +125,7 @@ class ConfigHelper(object):
         return self._host_config['vip_type']
 
     def get_manage_vip(self):
-        return self._host_config['manage_vip']
+        return self._host_config['vip_type'] != 'none'
 
     def get_report_email(self):
         return self._host_config['report_email']
