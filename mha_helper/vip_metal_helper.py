@@ -15,10 +15,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
 import subprocess
-from config_helper import MHA_config_helper
 
-class MHA_VIP_helper(object):
+class VIPMetalHelper(object):
     @staticmethod
     def remove_vip(config_helper, host_ip, ssh_user, ssh_port, ssh_options):
         cluster_interface = config_helper.get_cluster_interface()
