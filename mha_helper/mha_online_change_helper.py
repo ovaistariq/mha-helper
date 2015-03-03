@@ -19,7 +19,7 @@ import time
 from datetime import datetime
 from mysql_helper import MySQL_helper
 from config_helper import MHA_config_helper
-from mha_vip_helper import MHA_VIP_helper
+from vip_metal_helper import MHA_VIP_helper
 
 class MHA_online_change_helper(object):
     CODE_SUCCESS = 0
