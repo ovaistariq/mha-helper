@@ -95,10 +95,10 @@ class TestConfigHelper(unittest.TestCase):
         self.test_load_config_with_good_config()
 
         host_config = ConfigHelper('db1')
-        self.assertEqual(host_config.get_requires_sudo(), 'yes')
+        self.assertEqual(host_config.get_requires_sudo(), True)
 
         host_config = ConfigHelper('db12')
-        self.assertEqual(host_config.get_requires_sudo(), 'no')
+        self.assertEqual(host_config.get_requires_sudo(), False)
 
     def test_get_cluster_interface(self):
         self.test_load_config_with_good_config()

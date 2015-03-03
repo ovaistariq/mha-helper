@@ -1,4 +1,4 @@
-# (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
+# (c) 2015, Ovais Tariq <ovaistariq@gmail.com>
 #
 # This file is part of mha_helper
 #
@@ -131,7 +131,10 @@ class ConfigHelper(object):
         return self._host_config['report_email']
 
     def get_requires_sudo(self):
-        return self._host_config['requires_sudo']
+        if self._host_config['requires_sudo'] == 'yes':
+            return True
+
+        return False
 
     def get_cluster_interface(self):
         return self._host_config['cluster_interface']
