@@ -18,6 +18,7 @@
 from __future__ import print_function
 from mha_helper.ssh_helper import SSHHelper
 from mha_helper.config_helper import ConfigHelper
+import re
 
 
 class VIPMetalHelper(object):
@@ -46,11 +47,17 @@ class VIPMetalHelper(object):
             return False
 
         # Assign the VIP to the host
-        if not self._ssh_client.execute_ssh_command(ip_cmd):
+        ret_code, stdout_lines = self._ssh_client.execute_ssh_command(ip_cmd)
+        if not ret_code:
+            if len(stdout_lines) > 0:
+                print("Command output: %s" % "\n".join(stdout_lines))
             return False
 
         # Send ARP update requests to all the listening hosts
-        if not self._ssh_client.execute_ssh_command(arping_cmd):
+        ret_code, stdout_lines = self._ssh_client.execute_ssh_command(arping_cmd)
+        if not ret_code:
+            if len(stdout_lines) > 0:
+                print("Command output: %s" % "\n".join(stdout_lines))
             return False
 
         return True
@@ -65,7 +72,39 @@ class VIPMetalHelper(object):
             return False
 
         # Remove the VIP from the host
-        if not self._ssh_client.execute_ssh_command(ip_cmd):
+        ret_code, stdout_lines = self._ssh_client.execute_ssh_command(ip_cmd)
+        if not ret_code:
+            if len(stdout_lines) > 0:
+                print("Command output: %s" % "\n".join(stdout_lines))
             return False
 
         return True
+
+    def has_vip(self):
+        ip_cmd = "%s addr show dev %s" % (VIPMetalHelper.IP_CMD, self._cluster_interface)
+        if self._requires_sudo:
+            ip_cmd = "sudo %s" % ip_cmd
+
+        # Connect to the host over SSH
+        if not self._ssh_client.make_ssh_connection():
+            return False
+
+        # Fetch the output of the command `ip addr show dev eth` and parse it to list the IP addresses
+        # If the VIP is in that list then that means the VIP is assigned to the host
+        ret_code, stdout_lines = self._ssh_client.execute_ssh_command(ip_cmd)
+        if not ret_code:
+            if len(stdout_lines) > 0:
+                print("Command output: %s" % "\n".join(stdout_lines))
+            return False
+
+        vip_found = False
+        for line in stdout_lines:
+            # We want to match a line similar to the following:
+            #   inet 192.168.30.11/24 brd 192.168.30.255 scope global eth1
+            if re.search(r'\binet\b', line):
+                # The second element of the matching line is the IP address in CIDR format
+                if line.split()[1] == self._writer_vip_cidr:
+                    vip_found = True
+                    break
+
+        return vip_found

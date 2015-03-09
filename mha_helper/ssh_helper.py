@@ -56,6 +56,10 @@ class SSHHelper(object):
         return True
 
     def execute_ssh_command(self, cmd):
+        cmd_exec_status = True
+        stdout_lines = []
+        stderr_lines = []
+
         try:
             print("Executing command on '%s': %s" % (self._host, cmd))
             stdin, stdout, stderr = self._ssh_client.exec_command(cmd, get_pty=True,
@@ -65,14 +69,13 @@ class SSHHelper(object):
             stderr_lines = stderr.readlines()
 
             if stdout.channel.recv_exit_status() != 0:
-                if len(stderr_lines) > 0:
-                    print("Command failed with the following error: %s" % "\n".join(stderr_lines))
-                else:
-                    print("Command failed with the following error: %s" % "\n".join(stdout_lines))
+                raise paramiko.SSHException()
 
-                return False
         except paramiko.SSHException as e:
-            print("Failed to execute the command on '%s': %s" % (self._host, repr(e)))
-            return False
+            print("Failed to execute the command on '%s': %s" % (self._host, str(e)))
+            if len(stderr_lines) > 0:
+                print("Error reported by %s: %s" % (self._host, "\n".join(stderr_lines)))
 
-        return True
+            cmd_exec_status = False
+
+        return cmd_exec_status, stdout_lines
