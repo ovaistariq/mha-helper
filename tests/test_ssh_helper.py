@@ -31,11 +31,14 @@ class TestSSHHelper(unittest.TestCase):
 
         # Execute a known good command
         cmd = "/sbin/ip addr show"
-        self.assertTrue(self.ssh_client.execute_ssh_command(cmd))
+        cmd_exec_status, cmd_exec_output = self.ssh_client.execute_ssh_command(cmd)
+        self.assertTrue(cmd_exec_status)
+        self.assertTrue(len(cmd_exec_output) > 0)
 
         # Execute a known misspelled command
-        err_cmd = "/sbin/ifcon"
-        self.assertFalse(self.ssh_client.execute_ssh_command(err_cmd))
+        err_cmd = "/sbin/ifconfig -c"
+        cmd_exec_status, cmd_exec_output = self.ssh_client.execute_ssh_command(err_cmd)
+        self.assertFalse(cmd_exec_status)
 
 if __name__ == '__main__':
     unittest.main()

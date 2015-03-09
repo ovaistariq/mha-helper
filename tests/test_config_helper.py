@@ -49,8 +49,8 @@ class TestConfigHelper(unittest.TestCase):
     def test_get_writer_vip(self):
         self.test_load_config_with_good_config()
 
-        host_config = ConfigHelper('db1')
-        self.assertEqual(host_config.get_writer_vip(), '192.168.1.155')
+        host_config = ConfigHelper('master')
+        self.assertEqual(host_config.get_writer_vip(), '192.168.30.100')
 
         host_config = ConfigHelper('db13')
         self.assertEqual(host_config.get_writer_vip(), '192.168.10.155')
@@ -58,8 +58,8 @@ class TestConfigHelper(unittest.TestCase):
     def test_get_writer_vip_cidr(self):
         self.test_load_config_with_good_config()
 
-        host_config = ConfigHelper('db1')
-        self.assertEqual(host_config.get_writer_vip_cidr(), '192.168.1.155/24')
+        host_config = ConfigHelper('master')
+        self.assertEqual(host_config.get_writer_vip_cidr(), '192.168.30.100/24')
 
         host_config = ConfigHelper('db13')
         self.assertEqual(host_config.get_writer_vip_cidr(), '192.168.10.155/24')
@@ -67,7 +67,7 @@ class TestConfigHelper(unittest.TestCase):
     def test_get_vip_type(self):
         self.test_load_config_with_good_config()
 
-        host_config = ConfigHelper('db1')
+        host_config = ConfigHelper('node1')
         self.assertEqual(host_config.get_vip_type(), 'metal')
 
         host_config = ConfigHelper('db11')
@@ -76,7 +76,7 @@ class TestConfigHelper(unittest.TestCase):
     def test_get_manage_vip(self):
         self.test_load_config_with_good_config()
 
-        host_config = ConfigHelper('db1')
+        host_config = ConfigHelper('node1')
         self.assertTrue(host_config.get_manage_vip())
 
         host_config = ConfigHelper('db12')
@@ -85,7 +85,7 @@ class TestConfigHelper(unittest.TestCase):
     def test_get_report_email(self):
         self.test_load_config_with_good_config()
 
-        host_config = ConfigHelper('db1')
+        host_config = ConfigHelper('node2')
         self.assertEqual(host_config.get_report_email(), 'notify@test-cluster.com')
 
         host_config = ConfigHelper('db12')
@@ -94,7 +94,7 @@ class TestConfigHelper(unittest.TestCase):
     def test_get_requires_sudo(self):
         self.test_load_config_with_good_config()
 
-        host_config = ConfigHelper('db1')
+        host_config = ConfigHelper('master')
         self.assertEqual(host_config.get_requires_sudo(), True)
 
         host_config = ConfigHelper('db12')
@@ -103,8 +103,8 @@ class TestConfigHelper(unittest.TestCase):
     def test_get_cluster_interface(self):
         self.test_load_config_with_good_config()
 
-        host_config = ConfigHelper('db1')
-        self.assertEqual(host_config.get_cluster_interface(), 'eth0')
+        host_config = ConfigHelper('node2')
+        self.assertEqual(host_config.get_cluster_interface(), 'eth1')
 
         host_config = ConfigHelper('db10')
         self.assertEqual(host_config.get_cluster_interface(), 'eth10')

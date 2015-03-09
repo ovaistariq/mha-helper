@@ -11,7 +11,7 @@ export MYSQL_TEST_PASSWORD="msandbox"
 export MYSQL_TEST_PORT="3306"
 
 # Export the variables that are needed by the SSHHelper test
-export SSH_TEST_HOST="master.localhost"
+export SSH_TEST_HOST="master"
 export SSH_TEST_IP="192.168.30.11"
 export SSH_TEST_USER="root"
 export SSH_TEST_PORT="22"
@@ -20,3 +20,4 @@ export SSH_TEST_PORT="22"
 python ${script_root}/test_mysql_helper.py -v
 python ${script_root}/test_config_helper.py -v
 python ${script_root}/test_ssh_helper.py -v
+python ${script_root}/test_vip_metal_helper.py -v
