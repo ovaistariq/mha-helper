@@ -30,6 +30,9 @@ class SSHHelper(object):
         self._ssh_port = int(ssh_port)
         self._ssh_options = ssh_options
 
+        if self._host_ip is None:
+            self._host_ip = self._host
+
         self._ssh_client = None
 
     def make_ssh_connection(self):
