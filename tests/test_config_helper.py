@@ -36,6 +36,7 @@ class TestConfigHelper(unittest.TestCase):
         self.assertTrue(ConfigHelper.validate_config_value('writer_vip_cidr', '192.168.10.1/22'))
         self.assertTrue(ConfigHelper.validate_config_value('vip_type', 'aws'))
         self.assertTrue(ConfigHelper.validate_config_value('report_email', 'me@ovaistariq.net'))
+        self.assertTrue(ConfigHelper.validate_config_value('smtp_host', 'smtp.sj.lithium.com'))
         self.assertTrue(ConfigHelper.validate_config_value('requires_sudo', 'no'))
         self.assertTrue(ConfigHelper.validate_config_value('cluster_interface', 'eth0'))
 
@@ -43,6 +44,7 @@ class TestConfigHelper(unittest.TestCase):
         self.assertFalse(ConfigHelper.validate_config_value('writer_vip_cidr', '192.168.1/22'))
         self.assertFalse(ConfigHelper.validate_config_value('vip_type', 'foo'))
         self.assertFalse(ConfigHelper.validate_config_value('report_email', 'foo@bar'))
+        self.assertFalse(ConfigHelper.validate_config_value('smtp_host', 'smtp.does.not.work'))
         self.assertFalse(ConfigHelper.validate_config_value('requires_sudo', 'bar'))
         self.assertFalse(ConfigHelper.validate_config_value('cluster_interface', ''))
 
@@ -86,10 +88,20 @@ class TestConfigHelper(unittest.TestCase):
         self.test_load_config_with_good_config()
 
         host_config = ConfigHelper('node2')
-        self.assertEqual(host_config.get_report_email(), 'notify@test-cluster.com')
+        self.assertEqual(host_config.get_report_email(), 'ovaistariq@gmail.com')
 
         host_config = ConfigHelper('db12')
         self.assertEqual(host_config.get_report_email(), 'notify@host-db12.com')
+
+    def test_get_smtp_host(self):
+        self.test_load_config_with_good_config()
+
+        host_config = ConfigHelper('node2')
+        self.assertEqual(host_config.get_report_email(), 'smtp.sj.lithium.com')
+
+        host_config = ConfigHelper('db12')
+        self.assertEqual(host_config.get_report_email(), 'notify@host-db12.com')
+        self.assertEqual(host_config.get_report_email(), 'smtp.sj.lithium.com')
 
     def test_get_requires_sudo(self):
         self.test_load_config_with_good_config()

@@ -18,13 +18,15 @@
 from __future__ import print_function
 import fnmatch
 import os
-import ConfigParser
+import socket
 import re
+import ConfigParser
 
 
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
-    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'requires_sudo', 'cluster_interface']
+    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo',
+                                 'cluster_interface']
     VIP_PROVIDER_TYPES = ['none', 'metal', 'aws', 'openstack']
 
     # This stores the configuration for every host
@@ -64,7 +66,7 @@ class ConfigHelper(object):
 
                     # We read the options from the host section of the config
                     for opt in ConfigHelper.MHA_HELPER_CONFIG_OPTIONS:
-                        if config_parser.has_option(hostname, opt) and opt != 'writer_vip_cidr':
+                        if config_parser.has_option(hostname, opt) and opt != 'writer_vip_cidr' and opt != 'smtp_host':
                             ConfigHelper.host_config[hostname][opt] = config_parser.get(hostname, opt)
 
                     # We now read the options from the default section and if any option has not been set by the host
@@ -72,7 +74,8 @@ class ConfigHelper(object):
                     # the default section because it has to be global for the entire replication cluster
                     # If the option is not defined in both default and host section, we throw an error
                     for opt in ConfigHelper.MHA_HELPER_CONFIG_OPTIONS:
-                        if opt not in ConfigHelper.host_config[hostname] or opt == 'writer_vip_cidr':
+                        if (opt not in ConfigHelper.host_config[hostname] or opt == 'writer_vip_cidr'
+                            or opt == 'smtp_host'):
                             # If the host section did not define the config option and the default config also does
                             # not define the config option then we bail out
                             if opt not in default_config:
@@ -95,6 +98,9 @@ class ConfigHelper(object):
         if config_key == 'report_email':
             return ConfigHelper.validate_email_address(config_value)
 
+        if config_key == 'smtp_host':
+            return ConfigHelper.validate_hostname(config_value)
+
         if config_key == 'requires_sudo':
             return config_value in ['yes', 'no']
 
@@ -110,6 +116,27 @@ class ConfigHelper(object):
     def validate_email_address(email_address):
         pattern = '^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$'
         return bool(re.match(pattern, email_address))
+
+    @staticmethod
+    def validate_hostname(hostname):
+        if len(hostname) > 255:
+            return False
+
+        if hostname[-1] == ".":
+            hostname = hostname[:-1] # strip exactly one dot from the right, if present
+
+        allowed = re.compile("(?!-)[A-Z\d-]{1,63}(?<!-)$", re.IGNORECASE)
+        if not all(allowed.match(x) for x in hostname.split(".")):
+            return False
+
+        # Now we try to resolve the hostname and error out if we cannot
+        try:
+            socket.gethostbyname(hostname)
+        except Exception as e:
+            print("Failed to resolve the hostname %s: %s" % (hostname, str(e)))
+            return False
+
+        return True
 
     def __init__(self, host):
         self._host = host
@@ -129,6 +156,9 @@ class ConfigHelper(object):
 
     def get_report_email(self):
         return self._host_config['report_email']
+
+    def get_smtp_host(self):
+        return self._host_config['smtp_host']
 
     def get_requires_sudo(self):
         if self._host_config['requires_sudo'] == 'yes':
