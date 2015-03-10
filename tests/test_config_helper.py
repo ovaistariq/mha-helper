@@ -44,7 +44,7 @@ class TestConfigHelper(unittest.TestCase):
         self.assertFalse(ConfigHelper.validate_config_value('writer_vip_cidr', '192.168.1/22'))
         self.assertFalse(ConfigHelper.validate_config_value('vip_type', 'foo'))
         self.assertFalse(ConfigHelper.validate_config_value('report_email', 'foo@bar'))
-        self.assertFalse(ConfigHelper.validate_config_value('smtp_host', 'smtp.does.not.work'))
+        self.assertFalse(ConfigHelper.validate_config_value('smtp_host', 'smtp'))
         self.assertFalse(ConfigHelper.validate_config_value('requires_sudo', 'bar'))
         self.assertFalse(ConfigHelper.validate_config_value('cluster_interface', ''))
 
@@ -97,11 +97,10 @@ class TestConfigHelper(unittest.TestCase):
         self.test_load_config_with_good_config()
 
         host_config = ConfigHelper('node2')
-        self.assertEqual(host_config.get_report_email(), 'smtp.sj.lithium.com')
+        self.assertEqual(host_config.get_smtp_host(), 'localhost')
 
         host_config = ConfigHelper('db12')
-        self.assertEqual(host_config.get_report_email(), 'notify@host-db12.com')
-        self.assertEqual(host_config.get_report_email(), 'smtp.sj.lithium.com')
+        self.assertEqual(host_config.get_smtp_host(), 'smtp.sj.lithium.com')
 
     def test_get_requires_sudo(self):
         self.test_load_config_with_good_config()

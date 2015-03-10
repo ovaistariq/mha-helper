@@ -21,3 +21,4 @@ python ${script_root}/test_mysql_helper.py -v
 python ${script_root}/test_config_helper.py -v
 python ${script_root}/test_ssh_helper.py -v
 python ${script_root}/test_vip_metal_helper.py -v
+python ${script_root}/test_email_helper.py -v
