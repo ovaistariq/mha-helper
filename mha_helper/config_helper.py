@@ -27,7 +27,11 @@ class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
     MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo',
                                  'cluster_interface']
-    VIP_PROVIDER_TYPES = ['none', 'metal', 'aws', 'openstack']
+    VIP_PROVIDER_TYPE_NONE = 'none'
+    VIP_PROVIDER_TYPE_METAL = 'metal'
+    VIP_PROVIDER_TYPE_AWS = 'aws'
+    VIP_PROVIDER_TYPE_OS = 'openstack'
+    VIP_PROVIDER_TYPES = [VIP_PROVIDER_TYPE_NONE, VIP_PROVIDER_TYPE_METAL, VIP_PROVIDER_TYPE_AWS, VIP_PROVIDER_TYPE_OS]
 
     # This stores the configuration for every host
     host_config = dict()
@@ -140,6 +144,9 @@ class ConfigHelper(object):
 
     def __init__(self, host):
         self._host = host
+
+        if host not in self.__class__.host_config:
+            raise ValueError
         self._host_config = self.__class__.host_config[host]
 
     def get_writer_vip(self):
