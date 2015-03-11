@@ -1,4 +1,4 @@
-# (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
+# (c) 2015, Ovais Tariq <ovaistariq@gmail.com>
 #
 # This file is part of mha_helper
 #
@@ -21,14 +21,15 @@ import time
 import atexit
 import signal
 
-class Unix_daemon(object):
+
+class UnixDaemon(object):
     """
     A generic daemon class.
 
     Usage: subclass the Unix_daemon class and override the run() method
     """
-    def __init__(self, pidfile, stdin=os.devnull, stdout=os.devnull, stderr=os.devnull, home_dir='/', umask=0):
-        self.pidfile = pidfile
+    def __init__(self, pid_file, stdin=os.devnull, stdout=os.devnull, stderr=os.devnull, home_dir='/', umask=0):
+        self.pid_file = pid_file
         self.stdin = stdin
         self.stdout = stdout
         self.stderr = stderr
@@ -76,12 +77,12 @@ class Unix_daemon(object):
         os.dup2(se.fileno(), sys.stderr.fileno())
 
         # write pidfile
-        atexit.register(self.delpid)
+        atexit.register(self.delete_pid)
         pid = str(os.getpid())
-        file(self.pidfile,'w+').write("%s\n" % pid)
+        file(self.pid_file, 'w+').write("%s\n" % pid)
 
-    def delpid(self):
-        os.remove(self.pidfile)
+    def delete_pid(self):
+        os.remove(self.pid_file)
 
     def start(self):
         """
@@ -89,15 +90,15 @@ class Unix_daemon(object):
         """
         # Check for a pidfile to see if the daemon already runs
         try:
-            pf = file(self.pidfile,'r')
+            pf = file(self.pid_file, 'r')
             pid = int(pf.read().strip())
             pf.close()
         except IOError:
             pid = None
 
         if pid:
-            message = "pidfile %s already exist. Daemon already running?\n"
-            sys.stderr.write(message % self.pidfile)
+            message = "PID file %s already exist. Daemon already running?\n"
+            sys.stderr.write(message % self.pid_file)
             sys.exit(1)
 
         # Start the daemon
@@ -110,16 +111,16 @@ class Unix_daemon(object):
         """
         # Get the pid from the pidfile
         try:
-            pf = file(self.pidfile,'r')
+            pf = file(self.pid_file, 'r')
             pid = int(pf.read().strip())
             pf.close()
         except IOError:
             pid = None
 
         if not pid:
-            message = "pidfile %s does not exist. Daemon not running?\n"
-            sys.stderr.write(message % self.pidfile)
-            return # not an error in a restart
+            message = "PID file %s does not exist. Daemon not running?\n"
+            sys.stderr.write(message % self.pid_file)
+            return  # not an error in a restart
 
         # Try killing the daemon process
         try:
@@ -129,8 +130,8 @@ class Unix_daemon(object):
         except OSError, err:
             err = str(err)
             if err.find("No such process") > 0:
-                if os.path.exists(self.pidfile):
-                    os.remove(self.pidfile)
+                if os.path.exists(self.pid_file):
+                    os.remove(self.pid_file)
             else:
                 print str(err)
                 sys.exit(1)
