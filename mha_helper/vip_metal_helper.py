@@ -16,8 +16,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 from __future__ import print_function
-from mha_helper.ssh_helper import SSHHelper
-from mha_helper.config_helper import ConfigHelper
+from ssh_helper import SSHHelper
+from config_helper import ConfigHelper
 import re
 
 
@@ -25,7 +25,7 @@ class VIPMetalHelper(object):
     IP_CMD = "/sbin/ip"
     ARPING_CMD = "/usr/sbin/arping"
 
-    def __init__(self, host, host_ip, ssh_user, ssh_port, ssh_options):
+    def __init__(self, host, host_ip=None, ssh_user=None, ssh_port=None, ssh_options=None):
         config_helper = ConfigHelper(host)
         self._cluster_interface = config_helper.get_cluster_interface()
         self._writer_vip_cidr = config_helper.get_writer_vip_cidr()
