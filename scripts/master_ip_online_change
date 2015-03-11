@@ -19,12 +19,14 @@
 
 import sys
 from optparse import OptionParser
-from lib.mha_online_change_helper import MHA_online_change_helper
+
+# Define exit codes
+ERR_CODE_COMMAND_MISSING_ARG = 10
+ERR_CODE_ORIG_MASTER_MISSING_ARGS = 11
+ERR_CODE_NEW_MASTER_MISSING_ARGS = 11
+
 
 def main():
-    # set some config variables
-    privileged_users = ['root']
-
     # parse comand line arguments
     parser = OptionParser()
     parser.add_option('--command', type='string')
@@ -33,27 +35,40 @@ def main():
     parser.add_option('--orig_master_port', type='string')
     parser.add_option('--orig_master_user', type='string')
     parser.add_option('--orig_master_password', type='string')
+    parser.add_option('--orig_master_ssh_host', type='string')
+    parser.add_option('--orig_master_ssh_ip', type='string')
     parser.add_option('--orig_master_ssh_port', type='string')
+    parser.add_option('--orig_master_ssh_user', type='string')
     parser.add_option('--new_master_host', type='string')
     parser.add_option('--new_master_ip', type='string')
     parser.add_option('--new_master_port', type='string')
     parser.add_option('--new_master_user', type='string')
     parser.add_option('--new_master_password', type='string')
+    parser.add_option('--new_master_ssh_user', type='string')
+    parser.add_option('--new_master_ssh_host', type='string')
     parser.add_option('--new_master_ssh_port', type='string')
     parser.add_option('--ssh_options', type='string')
+    parser.add_option('--orig_master_is_new_slave', type='string')
 
     (options, args) = parser.parse_args()
 
-    # do the actual work
-    exit_code = 1
+    # Checking for required options
+    if options.command is None:
+        sys.exit(ERR_CODE_COMMAND_MISSING_ARG)
 
-    if (options.orig_master_host is not None and 
-            options.orig_master_ip is not None and 
+    if options.orig_master_host is None or options.orig_master_user is None or options.orig_master_password is None:
+        sys.exit(ERR_CODE_ORIG_MASTER_MISSING_ARGS)
+
+    if options.new_master_host is None or options.new_master_user is None or options.new_master_password is None:
+        sys.exit(ERR_CODE_NEW_MASTER_MISSING_ARGS)
+
+    if (options.orig_master_host is not None and
+            options.orig_master_ip is not None and
             options.new_master_host is not None and
-            options.new_master_ip is not None and 
+            options.new_master_ip is not None and
             options.command is not None):
         mha_online_change_helper = MHA_online_change_helper(
-                orig_master_host=options.orig_master_host, 
+                orig_master_host=options.orig_master_host,
                 orig_master_ip=options.orig_master_ip,
                 orig_master_ssh_port=options.orig_master_ssh_port,
                 new_master_host=options.new_master_host,
@@ -70,7 +85,7 @@ def main():
             exit_code = mha_online_change_helper.execute_start_command()
 
     # exit the script with the appropriate code
-    # if script exits with a 0 status code, MHA executes FLUSH TABLES WITH READ LOCK 
+    # if script exits with a 0 status code, MHA executes FLUSH TABLES WITH READ LOCK
     # and continues with the online failover
     sys.exit(exit_code)
 
