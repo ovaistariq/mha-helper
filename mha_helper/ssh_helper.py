@@ -18,20 +18,28 @@
 from __future__ import print_function
 import paramiko
 import socket
+import os
+import pwd
 
 
 class SSHHelper(object):
     SSH_CMD_TIMEOUT = 30
 
-    def __init__(self, host, host_ip, ssh_user, ssh_port, ssh_options):
+    def __init__(self, host, host_ip=None, ssh_user=None, ssh_port=None, ssh_options=None):
+        if host_ip is None:
+            host_ip = host
+
+        if ssh_user is None:
+            ssh_user = pwd.getpwuid(os.getuid())[0]
+
+        if ssh_port is None or ssh_port < 1:
+            ssh_port = 22
+
         self._host = host
         self._host_ip = host_ip
         self._ssh_user = ssh_user
         self._ssh_port = int(ssh_port)
         self._ssh_options = ssh_options
-
-        if self._host_ip is None:
-            self._host_ip = self._host
 
         self._ssh_client = None
 
