@@ -19,7 +19,7 @@ from __future__ import print_function
 import socket
 import smtplib
 from email.mime.text import MIMEText
-from mha_helper.config_helper import ConfigHelper
+from config_helper import ConfigHelper
 
 
 class EmailHelper(object):
