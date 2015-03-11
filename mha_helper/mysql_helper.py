@@ -32,6 +32,9 @@ class MySQLHelper(object):
         return False
 
     def __init__(self, host, port, user, password):
+        if port is None or port < 1:
+            port = 3306
+
         self._host = host
         self._port = int(port)
         self._user = user
