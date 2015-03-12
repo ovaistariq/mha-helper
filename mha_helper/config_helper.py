@@ -41,6 +41,9 @@ class ConfigHelper(object):
     def load_config():
         pattern = '*.conf'
 
+        if not os.path.exists(ConfigHelper.MHA_HELPER_CONFIG_DIR):
+            return False
+
         for root, dirs, files in os.walk(ConfigHelper.MHA_HELPER_CONFIG_DIR):
             for filename in fnmatch.filter(files, pattern):
                 config_file_path = os.path.join(ConfigHelper.MHA_HELPER_CONFIG_DIR, filename)
@@ -88,6 +91,10 @@ class ConfigHelper(object):
                                 return False
 
                             ConfigHelper.host_config[hostname][opt] = default_config[opt]
+
+        # If no host configuration was found it is still an error as we may be analyzing empty files
+        if len(ConfigHelper.host_config) < 1:
+            return False
 
         return True
 
