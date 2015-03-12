@@ -85,7 +85,6 @@ class MHAHelper(object):
             orig_master_mysql_port = getattr(self, "orig_master_port", None)
             orig_master_mysql_user = getattr(self, "orig_master_user")
             orig_master_mysql_pass = getattr(self, "orig_master_password")
-            orig_master_ssh_host = getattr(self, "orig_master_ssh_host", self.orig_master_host)
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
             orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
@@ -99,10 +98,6 @@ class MHAHelper(object):
             new_master_mysql_port = getattr(self, "new_master_port", None)
             new_master_mysql_user = getattr(self, "new_master_user")
             new_master_mysql_pass = getattr(self, "new_master_password")
-            new_master_ssh_host = getattr(self, "new_master_ssh_host", self.new_master_host)
-            new_master_ssh_ip = getattr(self, "new_master_ssh_ip", new_master_ip)
-            new_master_ssh_port = getattr(self, "new_master_ssh_port", None)
-            new_master_ssh_user = getattr(self, "new_master_ssh_user", None)
         except AttributeError as e:
             print("Failed to read one or more required new master parameter(s): %s" % str(e))
             return False
@@ -150,11 +145,53 @@ class MHAHelper(object):
             print("Disconnecting from mysql on the original master '%s'" % self.orig_master_host)
             mysql_orig_master.disconnect()
 
+        return True
+
     def __stop_ssh_command(self):
         pass
 
     def __start_command(self):
-        pass
+        # New master
+        try:
+            new_master_ip = getattr(self, "new_master_ip", self.new_master_host)
+            new_master_mysql_port = getattr(self, "new_master_port", None)
+            new_master_mysql_user = getattr(self, "new_master_user")
+            new_master_mysql_pass = getattr(self, "new_master_password")
+            new_master_ssh_ip = getattr(self, "new_master_ssh_ip", new_master_ip)
+            new_master_ssh_port = getattr(self, "new_master_ssh_port", None)
+            new_master_ssh_user = getattr(self, "new_master_ssh_user", None)
+        except AttributeError as e:
+            print("Failed to read one or more required new master parameter(s): %s" % str(e))
+            return False
+
+        # Setup MySQL connection
+        mysql_new_master = MySQLHelper(new_master_ip, new_master_mysql_port, new_master_mysql_user,
+                                       new_master_mysql_pass)
+
+        try:
+            print("Connecting to mysql on the new master '%s'" % self.new_master_host)
+            if not mysql_new_master.connect():
+                return False
+
+            print("Setting read_only to '0' on the new master '%s'" % self.new_master_host)
+            if not mysql_new_master.unset_read_only() or mysql_new_master.is_read_only():
+                return False
+
+            if self.new_master_config.get_manage_vip():
+                vip_type = self.new_master_config.get_vip_type()
+                print("Adding the vip using the '%s' provider to the new master '%s'" %
+                      (vip_type, self.new_master_host))
+
+                if not self.__add_vip_to_host(vip_type, self.new_master_host, new_master_ssh_ip, new_master_ssh_user,
+                                              new_master_ssh_port):
+                    return False
+        except Exception as e:
+            print("Unexpected error: %s" % str(e))
+        finally:
+            print("Disconnecting from mysql on the new master '%s'" % self.new_master_host)
+            mysql_new_master.disconnect()
+
+        return True
 
     def __status_command(self):
         pass
@@ -177,12 +214,29 @@ class MHAHelper(object):
         return True
 
     @classmethod
+    def __add_vip_to_host(cls, vip_type, host, host_ip, ssh_user, ssh_port):
+        if vip_type == ConfigHelper.VIP_PROVIDER_TYPE_METAL:
+            vip_helper = VIPMetalHelper(host, host_ip, ssh_user, ssh_port)
+            if not vip_helper.assign_vip():
+                return False
+        elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_AWS:
+            pass
+        elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_OS:
+            pass
+        else:
+            # There are no other vip providers apart from what we are testing for above. Hence we throw an
+            # error here
+            return False
+
+        return True
+
+    @classmethod
     def __mysql_kill_threads(cls, host, mysql_connection):
         timeout = 5
         sleep_interval = 0.1
         start = datetime.datetime.now()
 
-        print("Waiting %d seconds for application threads to disconnect from the MySQL server '%s'" % (host, timeout))
+        print("Waiting %d seconds for application threads to disconnect from the MySQL server '%s'" % (timeout, host))
         while True:
             try:
                 mysql_threads = cls.__get_mysql_threads_list(mysql_connection)
@@ -206,6 +260,8 @@ class MHAHelper(object):
         except Exception as e:
             print("Unexpected error: %s" % str(e))
             return False
+
+        return True
 
     @classmethod
     def __get_mysql_threads_list(cls, mysql_connection):
