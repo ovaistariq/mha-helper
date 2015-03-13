@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
+# (c) 2015, Ovais Tariq <ovaistariq@gmail.com>
 #
 # This file is part of mha-helper
 #
@@ -19,15 +19,16 @@
 
 import sys
 from optparse import OptionParser
+from mha_helper.mha_helper import MHAHelper
 
 # Define exit codes
-ERR_CODE_COMMAND_MISSING_ARG = 10
-ERR_CODE_ORIG_MASTER_MISSING_ARGS = 11
-ERR_CODE_NEW_MASTER_MISSING_ARGS = 11
+ERR_CODE_ONLINE_FAILOVER_COMMAND_ARG = 10
+ERR_CODE_ONLINE_FAILOVER_FAILURE = 20
+SUCCESS_CODE_ONLINE_FAILOVER = 0
 
 
 def main():
-    # parse comand line arguments
+    # parse command line arguments
     parser = OptionParser()
     parser.add_option('--command', type='string')
     parser.add_option('--orig_master_host', type='string')
@@ -46,48 +47,29 @@ def main():
     parser.add_option('--new_master_password', type='string')
     parser.add_option('--new_master_ssh_user', type='string')
     parser.add_option('--new_master_ssh_host', type='string')
+    parser.add_option('--new_master_ssh_ip', type='string')
     parser.add_option('--new_master_ssh_port', type='string')
     parser.add_option('--ssh_options', type='string')
-    parser.add_option('--orig_master_is_new_slave', type='string')
 
     (options, args) = parser.parse_args()
 
-    # Checking for required options
+    mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
     if options.command is None:
-        sys.exit(ERR_CODE_COMMAND_MISSING_ARG)
+        sys.exit(ERR_CODE_ONLINE_FAILOVER_COMMAND_ARG)
 
-    if options.orig_master_host is None or options.orig_master_user is None or options.orig_master_password is None:
-        sys.exit(ERR_CODE_ORIG_MASTER_MISSING_ARGS)
+    failover_arguments = dict()
+    for opt, value in options.__dict__.items():
+        if value is not None:
+            failover_arguments[opt] = value
 
-    if options.new_master_host is None or options.new_master_user is None or options.new_master_password is None:
-        sys.exit(ERR_CODE_NEW_MASTER_MISSING_ARGS)
-
-    if (options.orig_master_host is not None and
-            options.orig_master_ip is not None and
-            options.new_master_host is not None and
-            options.new_master_ip is not None and
-            options.command is not None):
-        mha_online_change_helper = MHA_online_change_helper(
-                orig_master_host=options.orig_master_host,
-                orig_master_ip=options.orig_master_ip,
-                orig_master_ssh_port=options.orig_master_ssh_port,
-                new_master_host=options.new_master_host,
-	        new_master_ip=options.new_master_ip,
-                new_master_ssh_port=options.new_master_ssh_port,
-                ssh_options=options.ssh_options,
-                privileged_users=privileged_users)
-
-        if options.command == 'stop':
-            exit_code = mha_online_change_helper.execute_stop_command()
-            if exit_code != 0:
-                mha_online_change_helper.rollback_stop_command()
-        elif options.command == 'start':
-            exit_code = mha_online_change_helper.execute_start_command()
+    if not mha_helper.execute_command(options.command, **failover_arguments):
+        sys.exit(ERR_CODE_ONLINE_FAILOVER_FAILURE)
 
     # exit the script with the appropriate code
-    # if script exits with a 0 status code, MHA executes FLUSH TABLES WITH READ LOCK
-    # and continues with the online failover
-    sys.exit(exit_code)
+    # if script exits with a 0 status code, MHA continues with the failover
+    sys.exit(SUCCESS_CODE_ONLINE_FAILOVER)
+
 
 if __name__ == "__main__":
     main()
