@@ -73,14 +73,19 @@ class MHAHelper(object):
                 self.failover_type == MHAHelper.FAILOVER_TYPE_HARD)
 
     def __stop_command(self):
-        if not hasattr(self, "orig_master_host") or not hasattr(self, "new_master_host"):
+        try:
+            self.orig_master_host = getattr(self, "orig_master_host")
+            self.orig_master_config = ConfigHelper(self.orig_master_host)
+        except Exception as e:
+            print("Failed to read configuration for original master: %s" % str(e))
             return False
 
-        self.orig_master_host = getattr(self, "orig_master_host")
-        self.new_master_host = getattr(self, "new_master_host")
-
-        self.orig_master_config = ConfigHelper(self.orig_master_host)
-        self.new_master_config = ConfigHelper(self.new_master_host)
+        try:
+            self.new_master_host = getattr(self, "new_master_host")
+            self.new_master_config = ConfigHelper(self.new_master_host)
+        except Exception as e:
+            print("Failed to read configuration for new master: %s" % str(e))
+            return False
 
         # Original master
         try:
@@ -155,14 +160,19 @@ class MHAHelper(object):
         pass
 
     def __start_command(self):
-        if not hasattr(self, "orig_master_host") or not hasattr(self, "new_master_host"):
+        try:
+            self.orig_master_host = getattr(self, "orig_master_host")
+            self.orig_master_config = ConfigHelper(self.orig_master_host)
+        except Exception as e:
+            print("Failed to read configuration for original master: %s" % str(e))
             return False
 
-        self.orig_master_host = getattr(self, "orig_master_host")
-        self.new_master_host = getattr(self, "new_master_host")
-
-        self.orig_master_config = ConfigHelper(self.orig_master_host)
-        self.new_master_config = ConfigHelper(self.new_master_host)
+        try:
+            self.new_master_host = getattr(self, "new_master_host")
+            self.new_master_config = ConfigHelper(self.new_master_host)
+        except Exception as e:
+            print("Failed to read configuration for new master: %s" % str(e))
+            return False
 
         # New master
         try:
@@ -208,11 +218,12 @@ class MHAHelper(object):
         return True
 
     def __status_command(self):
-        if not hasattr(self, "orig_master_host"):
+        try:
+            self.orig_master_host = getattr(self, "orig_master_host")
+            self.orig_master_config = ConfigHelper(self.orig_master_host)
+        except Exception as e:
+            print("Failed to read configuration for original master: %s" % str(e))
             return False
-
-        self.orig_master_host = getattr(self, "orig_master_host")
-        self.orig_master_config = ConfigHelper(self.orig_master_host)
 
         # Original master
         try:
@@ -240,11 +251,12 @@ class MHAHelper(object):
         return True
 
     def __rollback_stop_command(self):
-        if not hasattr(self, "orig_master_host"):
+        try:
+            self.orig_master_host = getattr(self, "orig_master_host")
+            self.orig_master_config = ConfigHelper(self.orig_master_host)
+        except Exception as e:
+            print("Failed to read configuration for original master: %s" % str(e))
             return False
-
-        self.orig_master_host = getattr(self, "orig_master_host")
-        self.orig_master_config = ConfigHelper(self.orig_master_host)
 
         # Original master
         try:
@@ -273,6 +285,8 @@ class MHAHelper(object):
                 print("Failed to reset read_only to '0' on the original master '%s'" % self.orig_master_host)
                 return False
 
+            print("Set read_only back to '0' on the original master '%s'" % self.orig_master_host)
+
             if self.orig_master_config.get_manage_vip():
                 vip_type = self.orig_master_config.get_vip_type()
                 if not self.__add_vip_to_host(vip_type, self.orig_master_host, orig_master_ssh_ip, orig_master_ssh_user,
@@ -280,6 +294,8 @@ class MHAHelper(object):
                     print("Failed to add back the vip using the '%s' provider to the original master '%s'" %
                           (vip_type, self.orig_master_host))
                     return False
+
+                print("Added back the vip to the original master '%s'" % self.orig_master_host)
         except Exception as e:
             print("Unexpected error: %s" % str(e))
             return False
