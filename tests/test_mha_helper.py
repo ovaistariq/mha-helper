@@ -21,8 +21,6 @@ class TestMHAHelper(unittest.TestCase):
 
         ConfigHelper.MHA_HELPER_CONFIG_DIR = mha_helper_config_dir
 
-        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
-
         # Setting the necessary variables here needed by the tests
         self.orig_master_host = "master"
         self.orig_master_ip = "192.168.30.11"
@@ -48,6 +46,9 @@ class TestMHAHelper(unittest.TestCase):
         self.mha_helper = None
 
     def test_execute_stop_command_with_all_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
         # to it before we enter the stop command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
@@ -64,29 +65,14 @@ class TestMHAHelper(unittest.TestCase):
                                                         orig_master_ssh_ip=self.orig_master_ssh_ip,
                                                         orig_master_ssh_port=self.orig_master_ssh_port,
                                                         orig_master_ssh_user=self.orig_master_ssh_user,
-                                                        new_master_host=self.new_master_host,
-                                                        new_master_ip=self.new_master_ip,
-                                                        new_master_port=self.new_master_port,
-                                                        new_master_user=self.new_master_user,
-                                                        new_master_password=self.new_master_password,
-                                                        new_master_ssh_user=self.new_master_ssh_user,
-                                                        new_master_ssh_host=self.new_master_ssh_host,
-                                                        new_master_ssh_ip=self.new_master_ssh_ip,
-                                                        new_master_ssh_port=self.new_master_ssh_port,
                                                         ssh_options=self.ssh_options))
 
         # Once the STOP command completes successfully, we would have read_only enabled on both new and original master
         # and we would have the VIP removed from the original master, so we are going to confirm that separately here
         orig_mysql = MySQLHelper(self.orig_master_ip, self.orig_master_port, self.orig_master_user,
                                  self.orig_master_password)
-        new_mysql = MySQLHelper(self.new_master_ip, self.new_master_port, self.new_master_user,
-                                self.new_master_password)
-
         orig_mysql.connect()
         self.assertTrue(orig_mysql.is_read_only())
-
-        new_mysql.connect()
-        self.assertTrue(new_mysql.is_read_only())
 
         self.assertFalse(VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
                                         self.orig_master_ssh_port).has_vip())
@@ -96,6 +82,9 @@ class TestMHAHelper(unittest.TestCase):
                        self.orig_master_ssh_port).remove_vip()
 
     def test_execute_stop_command_with_minimum_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
         # to it before we enter the stop command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip).assign_vip()
@@ -105,22 +94,13 @@ class TestMHAHelper(unittest.TestCase):
                                                         orig_master_host=self.orig_master_host,
                                                         orig_master_ip=self.orig_master_ip,
                                                         orig_master_user=self.orig_master_user,
-                                                        orig_master_password=self.orig_master_password,
-                                                        new_master_host=self.new_master_host,
-                                                        new_master_ip=self.new_master_ip,
-                                                        new_master_user=self.new_master_user,
-                                                        new_master_password=self.new_master_password))
+                                                        orig_master_password=self.orig_master_password))
 
         # Once the STOP command completes successfully, we would have read_only enabled on both new and original master
         # and we would have the VIP removed from the original master, so we are going to confirm that separately here
         orig_mysql = MySQLHelper(self.orig_master_ip, None, self.orig_master_user, self.orig_master_password)
-        new_mysql = MySQLHelper(self.new_master_ip, None, self.new_master_user, self.new_master_password)
-
         orig_mysql.connect()
         self.assertTrue(orig_mysql.is_read_only())
-
-        new_mysql.connect()
-        self.assertTrue(new_mysql.is_read_only())
 
         self.assertFalse(VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
                                         self.orig_master_ssh_port).has_vip())
@@ -129,7 +109,106 @@ class TestMHAHelper(unittest.TestCase):
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
                        self.orig_master_ssh_port).remove_vip()
 
+    def test_execute_stop_hard_command_with_all_params(self):
+        # Setup mha_helper object with hard failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_HARD)
+
+        # First we test by passing in all the parameters that MHA would pass to mha_helper
+        self.assertTrue(self.mha_helper.execute_command(command=MHAHelper.FAILOVER_STOP_CMD,
+                                                        orig_master_host=self.orig_master_host,
+                                                        orig_master_ip=self.orig_master_ip,
+                                                        orig_master_port=self.orig_master_port,
+                                                        orig_master_user=self.orig_master_user,
+                                                        orig_master_password=self.orig_master_password,
+                                                        orig_master_ssh_host=self.orig_master_ssh_host,
+                                                        orig_master_ssh_ip=self.orig_master_ssh_ip,
+                                                        orig_master_ssh_port=self.orig_master_ssh_port,
+                                                        orig_master_ssh_user=self.orig_master_ssh_user,
+                                                        ssh_options=self.ssh_options))
+
+        # Once the STOP HARD command completes successfully, there is no change in state on the original master
+        # because there is nothing to do as STOP HARD means in bare metal no SSH basically
+        self.assertFalse(VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                                        self.orig_master_ssh_port).has_vip())
+
+        # We remove the VIP again just to have a clean slate at the end of the test
+        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                       self.orig_master_ssh_port).remove_vip()
+
+    def test_execute_stop_hard_command_with_minimum_params(self):
+        # Setup mha_helper object with hard failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_HARD)
+
+        # First we test by passing in all the parameters that MHA would pass to mha_helper
+        self.assertTrue(self.mha_helper.execute_command(command=MHAHelper.FAILOVER_STOP_CMD,
+                                                        orig_master_host=self.orig_master_host,
+                                                        orig_master_ip=self.orig_master_ip,
+                                                        orig_master_user=self.orig_master_user,
+                                                        orig_master_password=self.orig_master_password))
+
+        # Once the STOP HARD command completes successfully, there is no change in state on the original master
+        # because there is nothing to do as STOP HARD means in bare metal no SSH basically
+        self.assertFalse(VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                                        self.orig_master_ssh_port).has_vip())
+
+        # We remove the VIP again just to have a clean slate at the end of the test
+        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                       self.orig_master_ssh_port).remove_vip()
+
+    def test_execute_stop_ssh_command_with_all_params(self):
+        # Setup mha_helper object with hard failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_HARD)
+
+        # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
+        # to it before we enter the stop_ssh command
+        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                       self.orig_master_ssh_port).assign_vip()
+
+        # First we test by passing in all the parameters that MHA would pass to mha_helper
+        self.assertTrue(self.mha_helper.execute_command(command=MHAHelper.FAILOVER_STOPSSH_CMD,
+                                                        orig_master_host=self.orig_master_host,
+                                                        orig_master_ip=self.orig_master_ip,
+                                                        orig_master_port=self.orig_master_port,
+                                                        orig_master_ssh_host=self.orig_master_ssh_host,
+                                                        orig_master_ssh_ip=self.orig_master_ssh_ip,
+                                                        orig_master_ssh_port=self.orig_master_ssh_port,
+                                                        ssh_options=self.ssh_options))
+
+        # Once the STOP SSH command completes successfully, the VIP should be removed from the original master
+        self.assertFalse(VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                                        self.orig_master_ssh_port).has_vip())
+
+        # We remove the VIP again just to have a clean slate at the end of the test
+        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                       self.orig_master_ssh_port).remove_vip()
+
+    def test_execute_stop_ssh_command_with_minimum_params(self):
+        # Setup mha_helper object with hard failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_HARD)
+
+        # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
+        # to it before we enter the stop_ssh command
+        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                       self.orig_master_ssh_port).assign_vip()
+
+        # First we test by passing in all the parameters that MHA would pass to mha_helper
+        self.assertTrue(self.mha_helper.execute_command(command=MHAHelper.FAILOVER_STOPSSH_CMD,
+                                                        orig_master_host=self.orig_master_host,
+                                                        orig_master_ip=self.orig_master_ip,
+                                                        orig_master_port=self.orig_master_port))
+
+        # Once the STOP SSH command completes successfully, the VIP should be removed from the original master
+        self.assertFalse(VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                                        self.orig_master_ssh_port).has_vip())
+
+        # We remove the VIP again just to have a clean slate at the end of the test
+        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                       self.orig_master_ssh_port).remove_vip()
+
     def test_execute_start_command_with_all_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We remove the VIP first from the original master as it is assumed that the master already has the VIP removed
         # from it before we enter the start command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
@@ -173,6 +252,9 @@ class TestMHAHelper(unittest.TestCase):
                        self.new_master_ssh_port).remove_vip()
 
     def test_execute_start_command_with_minimum_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We remove the VIP first from the original master as it is assumed that the master already has the VIP removed
         # from it before we enter the start command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
@@ -205,6 +287,9 @@ class TestMHAHelper(unittest.TestCase):
                        self.new_master_ssh_port).remove_vip()
 
     def test_execute_status_command_with_all_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
         # to it before we enter the status command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
@@ -237,6 +322,9 @@ class TestMHAHelper(unittest.TestCase):
                                                          ssh_options=self.ssh_options))
 
     def test_execute_status_command_with_minimum_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
         # to it before we enter the status command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip).assign_vip()
@@ -255,6 +343,9 @@ class TestMHAHelper(unittest.TestCase):
                                                          orig_master_ip=self.orig_master_ip))
 
     def test_rollback_stop_command_with_all_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
         # to it before we enter the stop command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
@@ -268,10 +359,9 @@ class TestMHAHelper(unittest.TestCase):
                                                          orig_master_user=self.orig_master_user,
                                                          orig_master_password=self.orig_master_password,
                                                          orig_master_ssh_host=self.orig_master_ssh_host,
-                                                         orig_master_ssh_ip=self.orig_master_ssh_ip,
+                                                         orig_master_ssh_ip="Incorrect IP on purpose to make it fail",
                                                          orig_master_ssh_port=self.orig_master_ssh_port,
-                                                         orig_master_ssh_user=self.orig_master_ssh_user,
-                                                         new_master_host="this is wrong hostname and supposed to fail"))
+                                                         orig_master_ssh_user=self.orig_master_ssh_user))
 
         # Once the STOP command is rolled back successfully, we would have read_only disabled on  original master
         # and we would have the VIP assigned to the original master, so we are going to confirm that separately here
@@ -288,6 +378,9 @@ class TestMHAHelper(unittest.TestCase):
                        self.orig_master_ssh_port).remove_vip()
 
     def test_rollback_stop_command_with_minimum_params(self):
+        # Setup mha_helper object with online failover type
+        self.mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_ONLINE)
+
         # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
         # to it before we enter the stop command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
@@ -299,7 +392,7 @@ class TestMHAHelper(unittest.TestCase):
                                                          orig_master_ip=self.orig_master_ip,
                                                          orig_master_user=self.orig_master_user,
                                                          orig_master_password=self.orig_master_password,
-                                                         new_master_host="this is wrong hostname and supposed to fail"))
+                                                         orig_master_ssh_ip="Incorrect IP on purpose to make it fail"))
 
         # Once the STOP command is rolled back successfully, we would have read_only disabled on  original master
         # and we would have the VIP assigned to the original master, so we are going to confirm that separately here

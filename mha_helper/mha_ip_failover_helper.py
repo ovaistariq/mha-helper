@@ -27,15 +27,6 @@ class MHA_IP_failover_helper(object):
     CODE_ERR_GENERAL = 1
     CODE_ERR_NO_SSH = 10
 
-    def debug_message(self, message):
-	current_datetime = datetime.now().strftime("%Y-%m-%-d %H:%M:%S")
-	print "[%s] %s" % (current_datetime, message)
-
-    def execute_stop_command(self, orig_master_host, orig_master_ip,
-                                ssh_user, ssh_options, ssh_port):
-	# We do not really need to do anything here because there is no SSH access
-	return MHA_IP_failover_helper.CODE_ERR_NO_SSH
-
     def execute_stopssh_command(self, orig_master_host, orig_master_ip,
                                 ssh_user, ssh_options, ssh_port):
         config_helper = MHA_config_helper(host=orig_master_host)
