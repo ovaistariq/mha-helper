@@ -53,7 +53,11 @@ class MHAHelper(object):
 
         # Delegate the work to other functions
         if command == self.FAILOVER_STOP_CMD:
-            return self.__stop_command()
+            if not self.__stop_command():
+                self.__rollback_stop_command()
+                return False
+
+            return True
         elif command == self.FAILOVER_STOPSSH_CMD:
             return self.__stop_ssh_command()
         elif command == self.FAILOVER_START_CMD:
@@ -137,6 +141,7 @@ class MHAHelper(object):
                 return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
+            return False
         finally:
             print("Disconnecting from mysql on the new master '%s'" % self.new_master_host)
             mysql_new_master.disconnect()
@@ -195,6 +200,7 @@ class MHAHelper(object):
                     return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
+            return False
         finally:
             print("Disconnecting from mysql on the new master '%s'" % self.new_master_host)
             mysql_new_master.disconnect()
@@ -229,6 +235,56 @@ class MHAHelper(object):
                     return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
+            return False
+
+        return True
+
+    def __rollback_stop_command(self):
+        if not hasattr(self, "orig_master_host"):
+            return False
+
+        self.orig_master_host = getattr(self, "orig_master_host")
+        self.orig_master_config = ConfigHelper(self.orig_master_host)
+
+        # Original master
+        try:
+            orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
+            orig_master_mysql_port = getattr(self, "orig_master_port", None)
+            orig_master_mysql_user = getattr(self, "orig_master_user")
+            orig_master_mysql_pass = getattr(self, "orig_master_password")
+            orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
+            orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
+            orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
+        except AttributeError as e:
+            print("Failed to read one or more required original master parameter(s): %s" % str(e))
+            return False
+
+        # Setup MySQL connections
+        mysql_orig_master = MySQLHelper(orig_master_ip, orig_master_mysql_port, orig_master_mysql_user,
+                                        orig_master_mysql_pass)
+
+        print("Rolling back the failover changes on the original master '%s'" % self.orig_master_host)
+        try:
+            if not mysql_orig_master.connect():
+                print("Failed to connect to mysql on the original master '%s'" % self.orig_master_host)
+                return False
+
+            if not mysql_orig_master.unset_read_only() or mysql_orig_master.is_read_only():
+                print("Failed to reset read_only to '0' on the original master '%s'" % self.orig_master_host)
+                return False
+
+            if self.orig_master_config.get_manage_vip():
+                vip_type = self.orig_master_config.get_vip_type()
+                if not self.__add_vip_to_host(vip_type, self.orig_master_host, orig_master_ssh_ip, orig_master_ssh_user,
+                                              orig_master_ssh_port):
+                    print("Failed to add back the vip using the '%s' provider to the original master '%s'" %
+                          (vip_type, self.orig_master_host))
+                    return False
+        except Exception as e:
+            print("Unexpected error: %s" % str(e))
+            return False
+        finally:
+            mysql_orig_master.disconnect()
 
         return True
 
