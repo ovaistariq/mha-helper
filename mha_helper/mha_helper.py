@@ -51,16 +51,6 @@ class MHAHelper(object):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
 
-        # Common configuration options are validated here
-        if not hasattr(self, "orig_master_host") or not hasattr(self, "new_master_host"):
-            return False
-
-        self.orig_master_host = getattr(self, "orig_master_host")
-        self.new_master_host = getattr(self, "new_master_host")
-
-        self.orig_master_config = ConfigHelper(self.orig_master_host)
-        self.new_master_config = ConfigHelper(self.new_master_host)
-
         # Delegate the work to other functions
         if command == self.FAILOVER_STOP_CMD:
             return self.__stop_command()
@@ -79,6 +69,15 @@ class MHAHelper(object):
                 self.failover_type == MHAHelper.FAILOVER_TYPE_HARD)
 
     def __stop_command(self):
+        if not hasattr(self, "orig_master_host") or not hasattr(self, "new_master_host"):
+            return False
+
+        self.orig_master_host = getattr(self, "orig_master_host")
+        self.new_master_host = getattr(self, "new_master_host")
+
+        self.orig_master_config = ConfigHelper(self.orig_master_host)
+        self.new_master_config = ConfigHelper(self.new_master_host)
+
         # Original master
         try:
             orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
@@ -151,6 +150,15 @@ class MHAHelper(object):
         pass
 
     def __start_command(self):
+        if not hasattr(self, "orig_master_host") or not hasattr(self, "new_master_host"):
+            return False
+
+        self.orig_master_host = getattr(self, "orig_master_host")
+        self.new_master_host = getattr(self, "new_master_host")
+
+        self.orig_master_config = ConfigHelper(self.orig_master_host)
+        self.new_master_config = ConfigHelper(self.new_master_host)
+
         # New master
         try:
             new_master_ip = getattr(self, "new_master_ip", self.new_master_host)
@@ -194,7 +202,35 @@ class MHAHelper(object):
         return True
 
     def __status_command(self):
-        pass
+        if not hasattr(self, "orig_master_host"):
+            return False
+
+        self.orig_master_host = getattr(self, "orig_master_host")
+        self.orig_master_config = ConfigHelper(self.orig_master_host)
+
+        # Original master
+        try:
+            orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
+            orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
+            orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
+            orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
+        except AttributeError as e:
+            print("Failed to read one or more required original master parameter(s): %s" % str(e))
+            return False
+
+        try:
+            if self.orig_master_config.get_manage_vip():
+                vip_type = self.orig_master_config.get_vip_type()
+                print("Checking the vip using the '%s' provider on the original master '%s'" %
+                      (vip_type, self.orig_master_host))
+
+                if not self.__check_vip_on_host(vip_type, self.orig_master_host, orig_master_ssh_ip,
+                                                orig_master_ssh_user, orig_master_ssh_port):
+                    return False
+        except Exception as e:
+            print("Unexpected error: %s" % str(e))
+
+        return True
 
     @classmethod
     def __remove_vip_from_host(cls, vip_type, host, host_ip, ssh_user, ssh_port):
@@ -219,6 +255,21 @@ class MHAHelper(object):
             vip_helper = VIPMetalHelper(host, host_ip, ssh_user, ssh_port)
             if not vip_helper.assign_vip():
                 return False
+        elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_AWS:
+            pass
+        elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_OS:
+            pass
+        else:
+            # There are no other vip providers apart from what we are testing for above. Hence we throw an
+            # error here
+            return False
+
+        return True
+
+    @classmethod
+    def __check_vip_on_host(cls, vip_type, host, host_ip, ssh_user, ssh_port):
+        if vip_type == ConfigHelper.VIP_PROVIDER_TYPE_METAL:
+            return VIPMetalHelper(host, host_ip, ssh_user, ssh_port).has_vip()
         elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_AWS:
             pass
         elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_OS:
