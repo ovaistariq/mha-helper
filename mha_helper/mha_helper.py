@@ -143,7 +143,6 @@ class MHAHelper(object):
             orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
-            orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
@@ -154,8 +153,8 @@ class MHAHelper(object):
                 print("Removing the vip using the '%s' provider from the original master '%s'" %
                       (vip_type, self.orig_master_host))
 
-                if not self.__remove_vip_from_host(vip_type, self.orig_master_host, orig_master_ssh_ip,
-                                                   orig_master_ssh_user, orig_master_ssh_port, self.FAILOVER_TYPE_HARD):
+                if not self.__remove_vip_from_host(vip_type, self.orig_master_host, orig_master_ssh_ip, None,
+                                                   orig_master_ssh_port, self.FAILOVER_TYPE_HARD):
                     return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
@@ -176,7 +175,7 @@ class MHAHelper(object):
             orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
-            orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
+            orig_master_ssh_user = getattr(self, "ssh_user", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
@@ -220,7 +219,11 @@ class MHAHelper(object):
             new_master_mysql_pass = getattr(self, "new_master_password")
             new_master_ssh_ip = getattr(self, "new_master_ssh_ip", new_master_ip)
             new_master_ssh_port = getattr(self, "new_master_ssh_port", None)
-            new_master_ssh_user = getattr(self, "new_master_ssh_user", None)
+
+            if self.failover_type == self.FAILOVER_TYPE_HARD:
+                new_master_ssh_user = getattr(self, "ssh_user", None)
+            else:
+                new_master_ssh_user = getattr(self, "new_master_ssh_user", None)
         except AttributeError as e:
             print("Failed to read one or more required new master parameter(s): %s" % str(e))
             return False
@@ -268,7 +271,7 @@ class MHAHelper(object):
             orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
-            orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
+            orig_master_ssh_user = getattr(self, "ssh_user", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False

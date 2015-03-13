@@ -117,13 +117,9 @@ class TestMHAHelper(unittest.TestCase):
         self.assertTrue(self.mha_helper.execute_command(command=MHAHelper.FAILOVER_STOP_CMD,
                                                         orig_master_host=self.orig_master_host,
                                                         orig_master_ip=self.orig_master_ip,
-                                                        orig_master_port=self.orig_master_port,
-                                                        orig_master_user=self.orig_master_user,
-                                                        orig_master_password=self.orig_master_password,
                                                         orig_master_ssh_host=self.orig_master_ssh_host,
                                                         orig_master_ssh_ip=self.orig_master_ssh_ip,
                                                         orig_master_ssh_port=self.orig_master_ssh_port,
-                                                        orig_master_ssh_user=self.orig_master_ssh_user,
                                                         ssh_options=self.ssh_options))
 
         # Once the STOP HARD command completes successfully, there is no change in state on the original master
@@ -142,9 +138,7 @@ class TestMHAHelper(unittest.TestCase):
         # First we test by passing in all the parameters that MHA would pass to mha_helper
         self.assertTrue(self.mha_helper.execute_command(command=MHAHelper.FAILOVER_STOP_CMD,
                                                         orig_master_host=self.orig_master_host,
-                                                        orig_master_ip=self.orig_master_ip,
-                                                        orig_master_user=self.orig_master_user,
-                                                        orig_master_password=self.orig_master_password))
+                                                        orig_master_ip=self.orig_master_ip))
 
         # Once the STOP HARD command completes successfully, there is no change in state on the original master
         # because there is nothing to do as STOP HARD means in bare metal no SSH basically
