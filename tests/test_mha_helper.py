@@ -22,24 +22,24 @@ class TestMHAHelper(unittest.TestCase):
         ConfigHelper.MHA_HELPER_CONFIG_DIR = mha_helper_config_dir
 
         # Setting the necessary variables here needed by the tests
-        self.orig_master_host = "master"
-        self.orig_master_ip = "192.168.30.11"
-        self.orig_master_port = 3306
-        self.orig_master_user = "msandbox"
-        self.orig_master_password = "msandbox"
-        self.orig_master_ssh_host = "manager"
-        self.orig_master_ssh_ip = "192.168.30.11"
-        self.orig_master_ssh_port = 22
-        self.orig_master_ssh_user = "root"
-        self.new_master_host = "node1"
-        self.new_master_ip = "192.168.30.12"
-        self.new_master_port = 3306
-        self.new_master_user = "msandbox"
-        self.new_master_password = "msandbox"
-        self.new_master_ssh_user = "root"
-        self.new_master_ssh_host = "node1"
-        self.new_master_ssh_ip = "192.168.30.12"
-        self.new_master_ssh_port = 22
+        self.orig_master_host = os.getenv('ORIG_MASTER_HOST')
+        self.orig_master_ip = os.getenv('ORIG_MASTER_IP')
+        self.orig_master_port = os.getenv('ORIG_MASTER_PORT')
+        self.orig_master_user = os.getenv('ORIG_MASTER_USER')
+        self.orig_master_password = os.getenv('ORIG_MASTER_PASSWORD')
+        self.orig_master_ssh_host = os.getenv('ORIG_MASTER_SSH_HOST')
+        self.orig_master_ssh_ip = os.getenv('ORIG_MASTER_SSH_IP')
+        self.orig_master_ssh_port = os.getenv('ORIG_MASTER_SSH_PORT')
+        self.orig_master_ssh_user = os.getenv('ORIG_MASTER_SSH_USER')
+        self.new_master_host = os.getenv('NEW_MASTER_HOST')
+        self.new_master_ip = os.getenv('NEW_MASTER_IP')
+        self.new_master_port = os.getenv('NEW_MASTER_PORT')
+        self.new_master_user = os.getenv('NEW_MASTER_USER')
+        self.new_master_password = os.getenv('NEW_MASTER_PASSWORD')
+        self.new_master_ssh_user = os.getenv('NEW_MASTER_SSH_USER')
+        self.new_master_ssh_host = os.getenv('NEW_MASTER_SSH_HOST')
+        self.new_master_ssh_ip = os.getenv('NEW_MASTER_SSH_IP')
+        self.new_master_ssh_port = os.getenv('NEW_MASTER_SSH_PORT')
         self.ssh_options = None
 
     def tearDown(self):

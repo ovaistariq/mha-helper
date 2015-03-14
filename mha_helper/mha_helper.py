@@ -47,9 +47,15 @@ class MHAHelper(object):
         self.orig_master_config = None
         self.new_master_config = None
 
-    def execute_command(self, command, **kwargs):
+    def execute_command(self, **kwargs):
         for key, value in kwargs.iteritems():
             setattr(self, key, value)
+
+        try:
+            command = getattr(self, "command")
+        except Exception as e:
+            print("No command supplied: %s" % str(e))
+            return False
 
         # Delegate the work to other functions
         if command == self.FAILOVER_STOP_CMD:
