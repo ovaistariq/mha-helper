@@ -67,5 +67,5 @@ function test_python_scripts() {
     python ${script_root}/test_master_ip_hard_failover_helper.py -v
 }
 
-#unit_test_python_classes
+unit_test_python_classes
 test_python_scripts
