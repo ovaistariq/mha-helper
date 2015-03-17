@@ -49,7 +49,7 @@ class SSHHelper(object):
 
         self._ssh_client = paramiko.SSHClient()
         self._ssh_client.load_system_host_keys()
-        self._ssh_client.set_missing_host_key_policy(paramiko.WarningPolicy())
+        self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
             print("Connecting to '%s'@'%s'" % (self._host, self._ssh_user))
