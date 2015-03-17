@@ -125,7 +125,8 @@ class TestMasterIPHardFailoverHelper(unittest.TestCase):
         --orig_master_ssh_host={4} --orig_master_ssh_ip={5} --orig_master_ssh_port={6} --ssh_user={7} \
         --test_config_path={8}""".format(self.failover_script_path, self.orig_master_host, self.orig_master_ip,
                                          self.orig_master_port, self.orig_master_ssh_host, self.orig_master_ssh_ip,
-                                         self.orig_master_ssh_port, self.mha_helper_config_dir)
+                                         self.orig_master_ssh_port, self.orig_master_ssh_user,
+                                         self.mha_helper_config_dir)
 
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()
@@ -175,12 +176,13 @@ class TestMasterIPHardFailoverHelper(unittest.TestCase):
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
                        self.orig_master_ssh_port).assign_vip()
 
-        print("\n- Testing 'disable write on the current master' stage by executing stopssh command")
+        print("\n- Testing the status command")
         cmd = """{0} --command=status --orig_master_host={1} --orig_master_ip={2} --orig_master_port={3} \
         --orig_master_ssh_host={4} --orig_master_ssh_ip={5} --orig_master_ssh_port={6} --ssh_user={7} \
         --test_config_path={8}""".format(self.failover_script_path, self.orig_master_host, self.orig_master_ip,
                                          self.orig_master_port, self.orig_master_ssh_host, self.orig_master_ssh_ip,
-                                         self.orig_master_ssh_port, self.mha_helper_config_dir)
+                                         self.orig_master_ssh_port, self.orig_master_ssh_user,
+                                         self.mha_helper_config_dir)
 
         proc = subprocess.Popen(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         stdout, stderr = proc.communicate()

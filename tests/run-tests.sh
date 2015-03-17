@@ -62,6 +62,9 @@ function test_python_scripts() {
     echo
     echo "-- Running ${script_root}/test_master_ip_online_failover_helper.py"
     python ${script_root}/test_master_ip_online_failover_helper.py -v
+    echo
+    echo "-- Running ${script_root}/test_master_ip_hard_failover_helper.py"
+    python ${script_root}/test_master_ip_hard_failover_helper.py -v
 }
 
 #unit_test_python_classes
