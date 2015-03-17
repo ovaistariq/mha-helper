@@ -17,8 +17,11 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+from __future__ import print_function
 import sys
+import os
 from optparse import OptionParser
+from mha_helper.config_helper import ConfigHelper
 from mha_helper.mha_helper import MHAHelper
 
 # Define exit codes
@@ -47,20 +50,22 @@ def main():
     parser.add_option('--new_master_password', type='string')
     parser.add_option('--ssh_user', type='string')
     parser.add_option('--ssh_options', type='string')
+    parser.add_option('--test_config_path', type='string')
 
     (options, args) = parser.parse_args()
 
-    mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_HARD)
+    # This is purely for testing purposes
+    if options.test_config_path is not None and os.path.exists(options.test_config_path):
+        ConfigHelper.MHA_HELPER_CONFIG_DIR = options.test_config_path
 
-    if options.command is None:
-        sys.exit(ERR_CODE_HARD_FAILOVER_COMMAND_ARG)
+    mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_HARD)
 
     failover_arguments = dict()
     for opt, value in options.__dict__.items():
-        if value is not None:
+        if value is not None and opt != "test_config_path":
             failover_arguments[opt] = value
 
-    if not mha_helper.execute_command(options.command, **failover_arguments):
+    if not mha_helper.execute_command(**failover_arguments):
         sys.exit(ERR_CODE_HARD_FAILOVER_FAILURE)
 
     # exit the script with the appropriate code

@@ -45,17 +45,31 @@ class TestMasterIPOnlineFailoverHelper(unittest.TestCase):
         self.new_master_ssh_ip = os.getenv('NEW_MASTER_SSH_IP')
         self.new_master_ssh_port = os.getenv('NEW_MASTER_SSH_PORT')
 
+    def tearDown(self):
+        # We remove the VIP just to have a clean slate at the end of the test
+        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
+                       self.orig_master_ssh_port).remove_vip()
+        VIPMetalHelper(self.new_master_host, self.new_master_ip, self.new_master_ssh_user,
+                       self.new_master_ssh_port).remove_vip()
+
+        # We unset read only on original master to have a clean slate at the end of the test
+        orig_mysql = MySQLHelper(self.orig_master_ip, self.orig_master_port, self.orig_master_user,
+                                 self.orig_master_password)
+        orig_mysql.connect()
+        orig_mysql.unset_read_only()
+
+        # We set read only on new master to have a clean slate at the end of the test
+        new_mysql = MySQLHelper(self.new_master_ip, self.new_master_port, self.new_master_user,
+                                self.new_master_password)
+        new_mysql.connect()
+        new_mysql.set_read_only()
+
+    def test_main(self):
         # We setup the VIP first on the original master as it is assumed that the master already has the VIP attached
         # to it before we enter the stop command
         VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
                        self.orig_master_ssh_port).assign_vip()
 
-    def tearDown(self):
-        # We remove the VIP just to have a clean slate at the end of the test
-        VIPMetalHelper(self.orig_master_host, self.orig_master_ip, self.orig_master_ssh_user,
-                       self.orig_master_ssh_port).remove_vip()
-
-    def test_main(self):
         print("\n- Testing rejects_update stage by executing stop command")
         cmd = """{0} --command=stop --orig_master_host={1} --orig_master_ip={2} --orig_master_port={3} \
         --orig_master_user={4} --orig_master_password={5} --orig_master_ssh_host={6} --orig_master_ssh_ip={7} \
@@ -78,8 +92,8 @@ class TestMasterIPOnlineFailoverHelper(unittest.TestCase):
 
         self.assertEqual(proc.returncode, 0)
 
-        # Once the STOP command completes successfully, we would have read_only enabled on both new and original master
-        # and we would have the VIP removed from the original master, so we are going to confirm that separately here
+        # Once the STOP command completes successfully, we would have read_only enabled on original master and we
+        # would have the VIP removed from the original master, so we are going to confirm that separately here
         orig_mysql = MySQLHelper(self.orig_master_ip, self.orig_master_port, self.orig_master_user,
                                  self.orig_master_password)
         orig_mysql.connect()
