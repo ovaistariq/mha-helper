@@ -1,6 +1,6 @@
 name             'mysql_replication'
 maintainer       'Ovais Tariq'
-maintainer_email 'ovaistariq@gmail.com'
+maintainer_email 'me@ovaistariq.net'
 license          'All rights reserved'
 description      'Installs/Configures mysql_replication'
 long_description 'Installs/Configures mysql_replication'
