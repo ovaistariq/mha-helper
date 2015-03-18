@@ -1,6 +1,8 @@
 DEPENDENCIES
   database
   mysql
+  mysql-mha
+    path: custom-cookbooks/mysql-mha
   mysql-test-schema
   mysql2_chef_gem
   mysql_replication
@@ -19,6 +21,8 @@ GRAPH
   mysql (6.0.17)
     smf (>= 0.0.0)
     yum-mysql-community (>= 0.0.0)
+  mysql-mha (0.1.0)
+    yum-epel (>= 0.0.0)
   mysql-test-schema (0.2.0)
     mysql (~> 6.0)
   mysql2_chef_gem (1.0.1)
