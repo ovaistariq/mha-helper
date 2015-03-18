@@ -1,0 +1,19 @@
+{
+  "name": "master.localhost",
+  "chef_environment": "vagrant",
+  "mysql": {
+    "root_password": "r00t",
+    "server": {
+      "socket": "/var/lib/mysql/mysql.sock",
+      "server_id": 1
+    },
+    "replication": {
+      "user": "repl",
+      "password": "repl",
+      "slaves": [ "192.168.30.12", "192.168.30.13" ]
+    }
+  },
+  "run_list": [
+    "recipe[mysql_replication::master]"
+  ]
+}

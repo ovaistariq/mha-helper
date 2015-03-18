@@ -1,0 +1,7 @@
+source "https://supermarket.chef.io"
+
+cookbook "mysql"
+cookbook "database"
+cookbook "mysql2_chef_gem"
+cookbook "mysql-test-schema"
+cookbook "mysql_replication", path: "custom-cookbooks/mysql_replication"
