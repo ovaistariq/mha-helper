@@ -14,6 +14,7 @@
     }
   },
   "run_list": [
-    "recipe[mysql_replication::master]"
+    "recipe[mysql_replication::master]",
+    "recipe[mysql-mha::node]"
   ]
 }

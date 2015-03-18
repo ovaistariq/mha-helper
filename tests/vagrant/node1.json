@@ -13,6 +13,7 @@
     }
   },
   "run_list": [
-    "recipe[mysql_replication::slave]"
+    "recipe[mysql_replication::slave]",
+    "recipe[mysql-mha::node]"
   ]
 }
