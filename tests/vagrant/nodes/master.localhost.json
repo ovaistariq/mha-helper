@@ -783,6 +783,20 @@
         "log_error": "/var/lib/mysql/mysql-error.log",
         "log_warnings": 2
       }
+    },
+    "mysql_mha": {
+      "node": {
+        "version": "0.56-0.el6",
+        "package_name": "mha4mysql-node-0.56-0.el6.noarch.rpm",
+        "source": "https://72003f4c60f5cc941cd1c7d448fc3c99e0aebaa8.googledrive.com/host/0B1lu97m8-haWeHdGWXp0YVVUSlk/mha4mysql-node-0.56-0.el6.noarch.rpm",
+        "checksum": "1e287e762150e6cd37df9420ecbb6c40e309832b5d3d8c778572867501c297ad"
+      },
+      "manager": {
+        "version": "0.56-0.el6",
+        "package_name": "mha4mysql-manager-0.56-0.el6.noarch.rpm",
+        "source": "https://72003f4c60f5cc941cd1c7d448fc3c99e0aebaa8.googledrive.com/host/0B1lu97m8-haWeHdGWXp0YVVUSlk/mha4mysql-manager-0.56-0.el6.noarch.rpm",
+        "checksum": "0f137d9d14ac8f6dc82fd73fad67484e5d5b6bc38cef5eb9269056ac19ff7df8"
+      }
     }
   },
   "automatic": {
@@ -828,28 +842,28 @@
     },
     "memory": {
       "swap": {
-        "cached": "3412kB",
+        "cached": "2944kB",
         "total": "950264kB",
-        "free": "623180kB"
+        "free": "616528kB"
       },
       "total": "469644kB",
-      "free": "108872kB",
-      "buffers": "5496kB",
-      "cached": "75848kB",
-      "active": "127720kB",
-      "inactive": "154824kB",
-      "dirty": "32kB",
+      "free": "119720kB",
+      "buffers": "5716kB",
+      "cached": "72344kB",
+      "active": "120956kB",
+      "inactive": "150836kB",
+      "dirty": "40kB",
       "writeback": "0kB",
-      "anon_pages": "198880kB",
-      "mapped": "11932kB",
-      "slab": "62908kB",
-      "slab_reclaimable": "12456kB",
-      "slab_unreclaim": "50452kB",
-      "page_tables": "4884kB",
+      "anon_pages": "191852kB",
+      "mapped": "12520kB",
+      "slab": "62424kB",
+      "slab_reclaimable": "11940kB",
+      "slab_unreclaim": "50484kB",
+      "page_tables": "5164kB",
       "nfs_unstable": "0kB",
       "bounce": "0kB",
       "commit_limit": "1185084kB",
-      "committed_as": "979212kB",
+      "committed_as": "978364kB",
       "vmalloc_total": "34359738367kB",
       "vmalloc_used": "20480kB",
       "vmalloc_chunk": "34359698936kB"
@@ -1184,15 +1198,15 @@
         "interfaces": {
           "lo": {
             "rx": {
-              "bytes": "2656661",
-              "packets": "4079",
+              "bytes": "3674178",
+              "packets": "6022",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
             },
             "tx": {
-              "bytes": "2656661",
-              "packets": "4079",
+              "bytes": "3674178",
+              "packets": "6022",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
@@ -1202,16 +1216,16 @@
           "eth0": {
             "tx": {
               "queuelen": "1000",
-              "bytes": "4826731",
-              "packets": "63382",
+              "bytes": "4993150",
+              "packets": "64633",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
               "collisions": "0"
             },
             "rx": {
-              "bytes": "125497787",
-              "packets": "115894",
+              "bytes": "125642231",
+              "packets": "117579",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
@@ -1220,16 +1234,16 @@
           "eth1": {
             "tx": {
               "queuelen": "1000",
-              "bytes": "104974",
-              "packets": "1201",
+              "bytes": "140204",
+              "packets": "1616",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
               "collisions": "0"
             },
             "rx": {
-              "bytes": "78460",
-              "packets": "1207",
+              "bytes": "104860",
+              "packets": "1622",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
@@ -1244,8 +1258,8 @@
     "filesystem": {
       "/dev/mapper/VolGroup-lv_root": {
         "kb_size": "39841176",
-        "kb_used": "1810220",
-        "kb_available": "36007124",
+        "kb_used": "1806324",
+        "kb_available": "36011020",
         "percent_used": "5%",
         "mount": "/",
         "fs_type": "ext4",
@@ -1286,9 +1300,9 @@
       },
       "vagrant": {
         "kb_size": "487385240",
-        "kb_used": "96256916",
-        "kb_available": "391128324",
-        "percent_used": "20%",
+        "kb_used": "97948456",
+        "kb_available": "389436784",
+        "percent_used": "21%",
         "mount": "/vagrant",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -1303,9 +1317,9 @@
       },
       "vagrant-cache": {
         "kb_size": "487385240",
-        "kb_used": "96256916",
-        "kb_available": "391128324",
-        "percent_used": "20%",
+        "kb_used": "97948456",
+        "kb_available": "389436784",
+        "percent_used": "21%",
         "mount": "/tmp/vagrant-cache",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -1320,9 +1334,9 @@
       },
       "v-csc-5": {
         "kb_size": "487385240",
-        "kb_used": "96256916",
-        "kb_available": "391128324",
-        "percent_used": "20%",
+        "kb_used": "97948456",
+        "kb_available": "389436784",
+        "percent_used": "21%",
         "mount": "/tmp/vagrant-chef/f8c1c94326995c3e6f020847a914d0fa/cookbooks",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -1337,9 +1351,9 @@
       },
       "v-csdb-4": {
         "kb_size": "487385240",
-        "kb_used": "96256916",
-        "kb_available": "391128324",
-        "percent_used": "20%",
+        "kb_used": "97948456",
+        "kb_available": "389436784",
+        "percent_used": "21%",
         "mount": "/tmp/vagrant-chef/aa6927e1838c80cbb9ecc1a827b03495/data_bags",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -1354,8 +1368,8 @@
       },
       " ": {
         "total_inodes": "2531328",
-        "inodes_used": "64206",
-        "inodes_available": "2467122",
+        "inodes_used": "64197",
+        "inodes_available": "2467131",
         "inodes_percent_used": "3%",
         "mount": "/"
       },
@@ -2168,10 +2182,10 @@
     },
     "current_user": "vagrant",
     "root_group": "root",
-    "uptime_seconds": 17495,
-    "uptime": "4 hours 51 minutes 35 seconds",
-    "idletime_seconds": 17051,
-    "idletime": "4 hours 44 minutes 11 seconds",
+    "uptime_seconds": 21128,
+    "uptime": "5 hours 52 minutes 08 seconds",
+    "idletime_seconds": 20608,
+    "idletime": "5 hours 43 minutes 28 seconds",
     "block_device": {
       "ram0": {
         "size": "32768",
@@ -2297,9 +2311,10 @@
       }
     },
     "cloud_v2": null,
-    "ohai_time": 1426644801.3766713,
+    "ohai_time": 1426658441.8961198,
     "recipes": [
       "mysql_replication::master",
+      "mysql-mha::node",
       "mysql_replication::_server",
       "mysql_replication::replication_user",
       "yum-mysql-community::mysql56",
@@ -2311,6 +2326,7 @@
     ]
   },
   "run_list": [
-    "recipe[mysql_replication::master]"
+    "recipe[mysql_replication::master]",
+    "recipe[mysql-mha::node]"
   ]
 }
