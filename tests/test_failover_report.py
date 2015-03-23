@@ -14,7 +14,7 @@ class TestFailoverReport(unittest.TestCase):
     def setUp(self):
         self.root_directory = os.path.dirname(os.path.realpath(__file__))
         self.failover_report_script_path = os.path.realpath(
-            "{0}/../scripts/failover_report".format(self.root_directory))
+            "{0}/../scripts/master_failover_report".format(self.root_directory))
 
         self.mha_helper_config_dir = os.path.join(self.root_directory, 'conf', 'good')
         if not self.mha_helper_config_dir:
