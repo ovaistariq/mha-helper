@@ -1,0 +1,27 @@
+{
+  "id": "test_pod",
+  "comment": "MHA replication pod 'test_pod' configuration",
+  "mysql": {
+    "user": "mha",
+    "repl_user": "repl"
+  },
+  "user": {
+    "username": "mha",
+    "uid": "10011",
+    "groups": [ 
+      "mysql" 
+    ],
+    "ssh_public_key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDWMgpnlurHG8qL5PzT7EZ1Ka6Wb9EHd4YxlAQ99Mtnu7CovBik4ooj9UUnhuQHYkvegpC0ea0fLp6zNXUBCMakKIvdcHHhp5ADmoVq2tjRODuoLvEEb4Ta7rGz51hSmjelWptOzqYMkeUM2NZdR48OerwZS/q6UJeAXnhCo5bhUKLTjs+fc1fO6SrArk5SiYoKBfPzzqDHWX8LJ0Va/3MJig4MhTT/AnRwzbTVx+gJ3EG1UaemJcrYtbSUc9z+NFjWlJrRlN7eCVj8ux3i/qTMiu4C/1tAwdBIh+XNZZQd9bWxatDyGuZ0KrhI4SHvVQJe3YOoPaQ0GmH+35aCKue1 ovais.tariq@LT3228.local"
+  },
+  "working_dir": "/var/log/mha/test_pod",
+  "master_ip_failover_script": "/usr/bin/master_ip_hard_failover_helper",
+  "master_ip_online_change_script": "/usr/bin/master_ip_online_failover_helper",
+  "master_report_script": "/usr/bin/master_failover_report",
+  "candidate_masters": [ "master", "node1" ],
+  "no_master": [ "node2" ],
+  "check_replication_delay": [ "node2" ],
+  "vip_type": "metal",
+  "writer_vip_cidr": "192.168.30.100/24",
+  "report_email": "ovaistariq@gmail.com",
+  "smtp_host": "localhost"
+}

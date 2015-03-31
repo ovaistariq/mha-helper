@@ -1,0 +1,11 @@
+{
+  "id": "test_pod",
+  "comment": "MHA replication pod 'test_pod' configuration",
+  "mysql": {
+    "password": "mha",
+    "repl_password": "repl"
+  },
+  "user": {
+    "ssh_private_key": "-----BEGIN RSA PRIVATE KEY-----\nMIIEowIBAAKCAQEA1jIKZ5bqxxvKi+T80+xGdSmulm/RB3eGMZQEPfTLZ7uwqLwY\npOKKI/VFJ4bkB2JL3oKQtHmtHy6eszV1AQjGpCiL3XBx4aeQA5qFatrY0Tg7qC7x\nBG+E2u6xs+dYUpo3pVqbTs6mDJHlDNjWXUePDnq8GUv6ulCXgF54QqOW4VCi047P\nn3NXzukqwK5OUomKCgXz886gx1l/CydFWv9zCYoODIU0/wJ0cM201cfoCdxBtVGn\npiXK2LW0lHPc/jRY1pSa0ZTe3glY/Lsd4v6kzIruAv9bQMHQSIflzWWUHfW1sWrQ\n8hrmdCq4SOEh71UCXt2DqD2kNBph/t+WgirntQIDAQABAoIBAQCJrKhbZPmK+SX7\nPTf0z02KSTxanYxxjDXI8Ca52/pRtqYaDqyYbrPz4NaOTXmL9XZmku2H0x2fiUug\nTJ/kBkwHf7hGoNvR+u3qIwvWXsw1zjsqIuHvw+5U+k9mHzD6Bv31XoOs5857Ddt3\nonhGhJRC7kiwydFiqCJ49D/ANX3pW8nmK5Qccs1skwEbxUTXBCw9ILVP6qyIttiL\nnYPcmPFP+0J8eT9aoJSaGeeKPm55eY8oJPhL5m1RlFWfw1XB5XQYtm+pj0Qnyc+B\n/IYIIsTINH6O+ogE5sIi+kf1Q6zn2/z6BR3fHoklSL+Qr++Z2J9lx+KmMwdZAntM\nav8zdHcRAoGBAPD+T9OVbiS0KtlEA3//N0GRtiIV2RciWBJTukjnFXyDqRxLU/Ks\ncNprKaIjKsdX0l0znzZQbbTsHJPEc5OycH3F7JFeDDyFQgJNbX1C35N4KnM+T9vO\nlWSZz2EphcY2edf3jBuwO2Zc/v47kVKlzE7wUWYKF5hH6AOE4WtwjZ/LAoGBAOOI\niqUocA0pX/0LWQB5PNKWOwuAE8BR0sSH1xMYmo69z4YjuBpoWaWHPgNbky5PJhAn\n00Hm/57CtBFNerK3p20Z+clS3mL0RcZi/xvSBfNjDUbY2wRx6d4xSGkf+Y8RXPbN\nCYRk+Rin8d2hxV3+4Q6mSup1ZW9+KYr+SzTTgaZ/AoGABqMqdaxe7TndGEDMS+Eu\nl2q49nVdlkqG3HJb5hgfOl+x76qPdFaVgR6Edge77OOZUqHSV7+dVedO3i8B8+Zt\nPLmPy20orx4IdGHHizSlTb14hdYIgwhMiwnFcWqgWZY0guM5g6W17RrQlxXy6bDR\nULdDtqi+f54zYK1vO/NMo0MCgYAvcUv/bfQXOnZSS+ht6dmdy0daeYUkx6rb4bsd\ntzaa5sb7oD0F/JYcpptulcyVjllQaw1oo2LPVqe3J+GanCKj5BOqP8Yw+eAGoqOw\nyFUHT7L3/8WDIsFx2/LOQKWHiEZLC6udWHR8CKCs5stBcyC4LkJWqs3Qtoyw9570\nz9krvwKBgBTbcUyvw004zSkQVcl7YZs8htF+i225AcA2FH61EJY3fm/Kb+Gcctfh\nZpXmX2c00QPE/oYXWCkl28xeTDe9shysolfs2tef9DTCk5P7QrUEx+uiYgfGbBUz\ntso7bnEJ+SU/4zbS4beMhnhbrCHV6ZF1MFRfUnS5pJr3dChix7pk\n-----END RSA PRIVATE KEY-----"
+  }
+}
