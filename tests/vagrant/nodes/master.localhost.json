@@ -21,7 +21,8 @@
       "socket": "/var/lib/mysql/mysql.sock"
     },
     "tags": [
-
+      "mha_managed",
+      "pod:test_pod"
     ]
   },
   "default": {
@@ -37,6 +38,7 @@
       "compile_time_update": false,
       "key_proxy": "",
       "cache_bypass": {
+
       },
       "periodic_update_min_delay": 86400,
       "launchpad_api_version": "1.0",
@@ -143,6 +145,7 @@
         }
       ],
       "password": {
+
       },
       "enable_pgdg_yum": false,
       "initdb_locale": null,
@@ -678,18 +681,21 @@
         "query_cache_type": "",
         "default_storage_engine": "InnoDB",
         "options": {
+
         }
       },
       "client": {
         "socket": "/var/lib/mysql/mysql.sock",
         "port": 3306,
         "options": {
+
         },
         "development_files": true
       },
       "mysqld_safe": {
         "socket": "/var/lib/mysql/mysql.sock",
         "options": {
+
         }
       },
       "forbid_remote_root": true,
@@ -705,6 +711,7 @@
         "io_capacity": "400",
         "flush_method": "O_DIRECT",
         "options": {
+
         }
       },
       "galera": {
@@ -713,6 +720,7 @@
         "wsrep_sst_method": "rsync",
         "wsrep_provider": "/usr/lib/galera/libgalera_smm.so",
         "options": {
+
         }
       },
       "replication": {
@@ -1005,6 +1013,7 @@
     "os": "linux",
     "os_version": "2.6.32-358.el6.x86_64",
     "lsb": {
+
     },
     "platform": "centos",
     "platform_version": "6.4",
