@@ -175,7 +175,7 @@ class Cluster_test_vagrant
 
   def vagrant_up()
     # Initialize the VMs using vagrant
-    cmd = "vagrant up --no-provision"
+    cmd = "vagrant up"
     Open3.popen3(cmd) do |stdin, stdout, stderr, wait_thr|
       while line = stdout.gets
         @logger.info(line)
@@ -624,7 +624,7 @@ end
 # Command line parsing
 options = {}
 opt_parser = OptionParser.new do |opts|
-  opts.banner = "Usage: cluster_test_vagrant.rb --init|--destroy"
+  opts.banner = "Usage: test.rb --init|--destroy"
 
   options['initialize_cluster'] = false
   opts.on("-i", "--init", "Initialize the test MySQL replication cluster") do

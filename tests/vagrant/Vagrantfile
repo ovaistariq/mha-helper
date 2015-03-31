@@ -31,23 +31,27 @@ Vagrant.configure(2) do |config|
     manager.vm.hostname = "manager.localhost"
     manager.vm.network "private_network", ip: ENV["MHA_MANAGER_HOST_IP"]
     manager.vm.synced_folder "../../../mha-helper", ENV["MHA_HELPER_PATH_ON_VM"]
+    manager.vm.provision "shell", path: "provision_chef.sh"
   end
 
   # The MySQL master box
   config.vm.define "master" do |master|
     master.vm.hostname = "master.localhost"
     master.vm.network "private_network", ip: ENV["MHA_MASTER_HOST_IP"]
+    master.vm.provision "shell", path: "provision_chef.sh"
   end
 
   # The MySQL slave node1 box
   config.vm.define "node1" do |node1|
     node1.vm.hostname = "node1.localhost"
     node1.vm.network "private_network", ip: ENV["MHA_NODE1_HOST_IP"]
+    node1.vm.provision "shell", path: "provision_chef.sh"
   end
 
   # The MySQL slave node2 box
   config.vm.define "node2" do |node2|
     node2.vm.hostname = "node2.localhost"
     node2.vm.network "private_network", ip: ENV["MHA_NODE2_HOST_IP"]
+    node2.vm.provision "shell", path: "provision_chef.sh"
   end
 end
