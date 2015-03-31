@@ -3,7 +3,6 @@
   "chef_environment": "vagrant",
   "mysql": {
     "root_password": "r00t",
-    "socket": "/var/lib/mysql/mysql.sock",
     "server": {
       "socket": "/var/lib/mysql/mysql.sock",
       "server_id": 3

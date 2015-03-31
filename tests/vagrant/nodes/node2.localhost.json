@@ -781,17 +781,22 @@
       }
     },
     "mysql_mha": {
-      "node": {
-        "version": "0.56-0.el6",
-        "package_name": "mha4mysql-node-0.56-0.el6.noarch.rpm",
-        "source": "https://72003f4c60f5cc941cd1c7d448fc3c99e0aebaa8.googledrive.com/host/0B1lu97m8-haWeHdGWXp0YVVUSlk/mha4mysql-node-0.56-0.el6.noarch.rpm",
-        "checksum": "1e287e762150e6cd37df9420ecbb6c40e309832b5d3d8c778572867501c297ad"
-      },
       "manager": {
         "version": "0.56-0.el6",
         "package_name": "mha4mysql-manager-0.56-0.el6.noarch.rpm",
         "source": "https://72003f4c60f5cc941cd1c7d448fc3c99e0aebaa8.googledrive.com/host/0B1lu97m8-haWeHdGWXp0YVVUSlk/mha4mysql-manager-0.56-0.el6.noarch.rpm",
         "checksum": "0f137d9d14ac8f6dc82fd73fad67484e5d5b6bc38cef5eb9269056ac19ff7df8"
+      },
+      "node": {
+        "version": "0.56-0.el6",
+        "package_name": "mha4mysql-node-0.56-0.el6.noarch.rpm",
+        "source": "https://72003f4c60f5cc941cd1c7d448fc3c99e0aebaa8.googledrive.com/host/0B1lu97m8-haWeHdGWXp0YVVUSlk/mha4mysql-node-0.56-0.el6.noarch.rpm",
+        "checksum": "1e287e762150e6cd37df9420ecbb6c40e309832b5d3d8c778572867501c297ad",
+        "mysql_port": "3306",
+        "mysql_binlog_dir": "/var/lib/mysql",
+        "ssh_port": "22",
+        "requires_sudo": "yes",
+        "cluster_interface": "eth0"
       }
     }
   },
@@ -838,28 +843,28 @@
     },
     "memory": {
       "swap": {
-        "cached": "3364kB",
+        "cached": "11320kB",
         "total": "950264kB",
-        "free": "650504kB"
+        "free": "687568kB"
       },
       "total": "469644kB",
-      "free": "84212kB",
-      "buffers": "7448kB",
-      "cached": "72004kB",
-      "active": "127928kB",
-      "inactive": "179088kB",
-      "dirty": "36kB",
+      "free": "75764kB",
+      "buffers": "8884kB",
+      "cached": "36728kB",
+      "active": "236500kB",
+      "inactive": "80876kB",
+      "dirty": "24kB",
       "writeback": "0kB",
-      "anon_pages": "225360kB",
-      "mapped": "12464kB",
-      "slab": "62660kB",
-      "slab_reclaimable": "12216kB",
-      "slab_unreclaim": "50444kB",
-      "page_tables": "5224kB",
+      "anon_pages": "261472kB",
+      "mapped": "11032kB",
+      "slab": "60784kB",
+      "slab_reclaimable": "10560kB",
+      "slab_unreclaim": "50224kB",
+      "page_tables": "5188kB",
       "nfs_unstable": "0kB",
       "bounce": "0kB",
       "commit_limit": "1185084kB",
-      "committed_as": "978952kB",
+      "committed_as": "977436kB",
       "vmalloc_total": "34359738367kB",
       "vmalloc_used": "20480kB",
       "vmalloc_chunk": "34359698936kB"
@@ -880,7 +885,7 @@
       "modules": {
         "vboxsf": {
           "size": "37631",
-          "refcount": "4"
+          "refcount": "2"
         },
         "sunrpc": {
           "size": "260521",
@@ -946,20 +951,20 @@
           "size": "90230",
           "refcount": "1"
         },
-        "sd_mod": {
-          "size": "38976",
-          "refcount": "3"
-        },
-        "crc_t10dif": {
-          "size": "1541",
-          "refcount": "1"
-        },
         "sr_mod": {
           "size": "15177",
           "refcount": "0"
         },
         "cdrom": {
           "size": "39085",
+          "refcount": "1"
+        },
+        "sd_mod": {
+          "size": "38976",
+          "refcount": "3"
+        },
+        "crc_t10dif": {
+          "size": "1541",
           "refcount": "1"
         },
         "pata_acpi": {
@@ -1142,7 +1147,7 @@
           ],
           "encapsulation": "Ethernet",
           "addresses": {
-            "08:00:27:15:10:93": {
+            "08:00:27:36:E1:F4": {
               "family": "lladdr"
             },
             "192.168.30.13": {
@@ -1152,16 +1157,13 @@
               "broadcast": "192.168.30.255",
               "scope": "Global"
             },
-            "fe80::a00:27ff:fe15:1093": {
+            "fe80::a00:27ff:fe36:e1f4": {
               "family": "inet6",
               "prefixlen": "64",
               "scope": "Link"
             }
           },
           "state": "up",
-          "arp": {
-            "192.168.30.11": "08:00:27:b2:ee:2a"
-          },
           "routes": [
             {
               "destination": "192.168.30.0/24",
@@ -1193,15 +1195,15 @@
         "interfaces": {
           "lo": {
             "rx": {
-              "bytes": "1938027",
-              "packets": "2763",
+              "bytes": "1207782",
+              "packets": "2624",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
             },
             "tx": {
-              "bytes": "1938027",
-              "packets": "2763",
+              "bytes": "1207782",
+              "packets": "2624",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
@@ -1211,16 +1213,16 @@
           "eth0": {
             "tx": {
               "queuelen": "1000",
-              "bytes": "1255640",
-              "packets": "10000",
+              "bytes": "319337",
+              "packets": "2471",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
               "collisions": "0"
             },
             "rx": {
-              "bytes": "1596105",
-              "packets": "15498",
+              "bytes": "396345",
+              "packets": "3469",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
@@ -1229,16 +1231,16 @@
           "eth1": {
             "tx": {
               "queuelen": "1000",
-              "bytes": "48038",
-              "packets": "830",
+              "bytes": "552",
+              "packets": "8",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
               "collisions": "0"
             },
             "rx": {
-              "bytes": "77532",
-              "packets": "819",
+              "bytes": "0",
+              "packets": "0",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
@@ -1249,12 +1251,12 @@
     },
     "ipaddress": "10.0.2.15",
     "macaddress": "08:00:27:68:BF:20",
-    "ip6address": "fe80::a00:27ff:fe15:1093",
+    "ip6address": "fe80::a00:27ff:fe36:e1f4",
     "filesystem": {
       "/dev/mapper/VolGroup-lv_root": {
         "kb_size": "39841176",
-        "kb_used": "1776160",
-        "kb_available": "36041184",
+        "kb_used": "1774324",
+        "kb_available": "36043020",
         "percent_used": "5%",
         "mount": "/",
         "fs_type": "ext4",
@@ -1295,9 +1297,9 @@
       },
       "vagrant": {
         "kb_size": "487385240",
-        "kb_used": "97950752",
-        "kb_available": "389434488",
-        "percent_used": "21%",
+        "kb_used": "104162088",
+        "kb_available": "383223152",
+        "percent_used": "22%",
         "mount": "/vagrant",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -1312,44 +1314,10 @@
       },
       "vagrant-cache": {
         "kb_size": "487385240",
-        "kb_used": "97950752",
-        "kb_available": "389434488",
-        "percent_used": "21%",
+        "kb_used": "104162088",
+        "kb_available": "383223152",
+        "percent_used": "22%",
         "mount": "/tmp/vagrant-cache",
-        "total_inodes": "1000",
-        "inodes_used": "0",
-        "inodes_available": "1000",
-        "inodes_percent_used": "0%",
-        "fs_type": "vboxsf",
-        "mount_options": [
-          "uid=900",
-          "gid=999",
-          "rw"
-        ]
-      },
-      "v-csc-11": {
-        "kb_size": "487385240",
-        "kb_used": "97950752",
-        "kb_available": "389434488",
-        "percent_used": "21%",
-        "mount": "/tmp/vagrant-chef/87f595668b511bc1a16ad0a49a1734c7/cookbooks",
-        "total_inodes": "1000",
-        "inodes_used": "0",
-        "inodes_available": "1000",
-        "inodes_percent_used": "0%",
-        "fs_type": "vboxsf",
-        "mount_options": [
-          "uid=900",
-          "gid=999",
-          "rw"
-        ]
-      },
-      "v-csdb-10": {
-        "kb_size": "487385240",
-        "kb_used": "97950752",
-        "kb_available": "389434488",
-        "percent_used": "21%",
-        "mount": "/tmp/vagrant-chef/aa6927e1838c80cbb9ecc1a827b03495/data_bags",
         "total_inodes": "1000",
         "inodes_used": "0",
         "inodes_available": "1000",
@@ -1363,8 +1331,8 @@
       },
       " ": {
         "total_inodes": "2531328",
-        "inodes_used": "64153",
-        "inodes_available": "2467175",
+        "inodes_used": "64203",
+        "inodes_available": "2467125",
         "inodes_percent_used": "3%",
         "mount": "/"
       },
@@ -1456,7 +1424,7 @@
         "model": "58",
         "model_name": "Intel(R) Core(TM) i7-3740QM CPU @ 2.70GHz",
         "stepping": "9",
-        "mhz": "2715.862",
+        "mhz": "2661.306",
         "cache_size": "6144 KB",
         "flags": [
           "fpu",
@@ -1569,7 +1537,7 @@
             "Product Name": "VirtualBox",
             "Version": "1.2",
             "Serial Number": "0",
-            "UUID": "FDEB76E7-FBF0-4BB2-B5B8-A3D31DA89F0C",
+            "UUID": "8B544EFF-4A48-47A9-A42C-8FDA559FF762",
             "Wake-up Type": "Power Switch",
             "SKU Number": "Not Specified",
             "Family": "Virtual Machine"
@@ -1579,7 +1547,7 @@
         "product_name": "VirtualBox",
         "version": "1.2",
         "serial_number": "0",
-        "uuid": "FDEB76E7-FBF0-4BB2-B5B8-A3D31DA89F0C",
+        "uuid": "8B544EFF-4A48-47A9-A42C-8FDA559FF762",
         "wake_up_type": "Power Switch",
         "sku_number": "Not Specified",
         "family": "Virtual Machine"
@@ -1652,7 +1620,7 @@
             "String 1": "vboxVer_4.3.14",
             "String 2": "vboxRev_95030",
             "Header and Data": {
-              "80 08 08 00 C4 6C 29 00": null
+              "80 08 08 00 0E 9D 28 00": null
             }
           }
         ],
@@ -2177,10 +2145,10 @@
     },
     "current_user": "vagrant",
     "root_group": "root",
-    "uptime_seconds": 21343,
-    "uptime": "5 hours 55 minutes 43 seconds",
-    "idletime_seconds": 21058,
-    "idletime": "5 hours 50 minutes 58 seconds",
+    "uptime_seconds": 4167,
+    "uptime": "1 hours 09 minutes 27 seconds",
+    "idletime_seconds": 4007,
+    "idletime": "1 hours 06 minutes 47 seconds",
     "block_device": {
       "ram0": {
         "size": "32768",
@@ -2278,15 +2246,6 @@
         "size": "0",
         "removable": "0"
       },
-      "sr0": {
-        "size": "2097151",
-        "removable": "1",
-        "model": "CD-ROM",
-        "rev": "1.0",
-        "state": "running",
-        "timeout": "30",
-        "vendor": "VBOX"
-      },
       "sda": {
         "size": "83886080",
         "removable": "0",
@@ -2295,6 +2254,15 @@
         "state": "running",
         "timeout": "30",
         "vendor": "ATA"
+      },
+      "sr0": {
+        "size": "2097151",
+        "removable": "1",
+        "model": "CD-ROM",
+        "rev": "1.0",
+        "state": "running",
+        "timeout": "30",
+        "vendor": "VBOX"
       },
       "dm-0": {
         "size": "80953344",
@@ -2306,7 +2274,7 @@
       }
     },
     "cloud_v2": null,
-    "ohai_time": 1426658758.9553418,
+    "ohai_time": 1427764019.5313563,
     "recipes": [
       "mysql_replication::slave",
       "mysql-mha::node",
