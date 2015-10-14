@@ -111,10 +111,6 @@ class MHAHelper(object):
             if not mysql_orig_master.connect():
                 return False
 
-            print("Setting read_only to '1' on the original master '%s'" % self.orig_master_host)
-            if not mysql_orig_master.set_read_only() or not mysql_orig_master.is_read_only():
-                return False
-
             if self.orig_master_config.get_manage_vip():
                 vip_type = self.orig_master_config.get_vip_type()
                 print("Removing the vip using the '%s' provider from the original master '%s'" %
@@ -124,6 +120,10 @@ class MHAHelper(object):
                                                    orig_master_ssh_user, orig_master_ssh_port,
                                                    self.FAILOVER_TYPE_ONLINE):
                     return False
+
+            print("Setting read_only to '1' on the original master '%s'" % self.orig_master_host)
+            if not mysql_orig_master.set_read_only() or not mysql_orig_master.is_read_only():
+                return False
 
             if not self.__mysql_kill_threads(self.orig_master_host, mysql_orig_master):
                 return False
