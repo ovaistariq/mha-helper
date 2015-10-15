@@ -26,16 +26,16 @@ while getopts "h?c:d:" opt; do
         h|\?)
             #show_help
             exit 0
-            ;;  
+            ;;
         c)  conf=$OPTARG
-            ;;  
+            ;;
         d)  dead_master_host=$OPTARG
-            ;;  
+            ;;
     esac
 done
 shift $((OPTIND-1)) # Shift off the options and optional --.
 
-if [[ -z $dead_master_host ]]
+if [[ -z ${dead_master_host} ]]
 then
     echo "ERROR: option '-d HOST' (hostname of dead master) not given. See -h" >&2
     exit 1
