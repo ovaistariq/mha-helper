@@ -1,4 +1,4 @@
-# (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
+# (c) 2013, Ovais Tariq <me@ovaistariq.net>
 #
 # This file is part of mha_helper
 #
@@ -17,6 +17,8 @@
 
 # -*- coding: utf-8 -*-
 
+__name__ = 'mha_helper'
 __author__ = 'Ovais Tariq'
 __email__ = 'me@ovaistariq.net'
 __version__ = '0.4.0'
+__url__ = 'https://github.com/ovaistariq/mha-helper'

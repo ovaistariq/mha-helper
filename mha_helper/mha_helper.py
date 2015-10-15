@@ -1,4 +1,4 @@
-# (c) 2015, Ovais Tariq <ovaistariq@gmail.com>
+# (c) 2015, Ovais Tariq <me@ovaistariq.net>
 #
 # This file is part of mha_helper
 #
