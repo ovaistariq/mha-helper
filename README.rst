@@ -34,8 +34,8 @@ First and foremost MHA itself needs to be installed. You need the MHA manager an
 MHA Helper has been developed and tested against Python 2.6 and 2.7. Versions < 2.6 are not supported.
 
 In addition to Python 2.6, the following Python modules are needed:
-* paramiko
-* PyMySQL
+- paramiko
+- PyMySQL
 
 There are other MHA specific requirements, please go through the link below to read about them: https://code.google.com/p/mysql-master-ha/wiki/Requirements
 
@@ -94,14 +94,14 @@ I would also suggest that you go through this link to see all the available MHA 
 
 Following are the important options that must be specified in the MHA application configuration file:
 
-* user
-* password
-* ssh_user
-* manager_workdir
-* manager_log
-* master_ip_failover_script       = /usr/bin/master_ip_hard_failover_helper
-* master_ip_online_change_script  = /usr/bin/master_ip_online_failover_helper
-* report_script                   = /usr/bin/master_failover_report
+- user
+- password
+- ssh_user
+- manager_workdir
+- manager_log
+- master_ip_failover_script
+- master_ip_online_change_script
+- report_script
 
 
 Below is an example application configuration file:
@@ -194,8 +194,8 @@ Do an online failover:
 Using Non-root User
 ===================
 If you are using non-root user to connect to master-slave hosts via ssh (the user that you use for this purpose is taken from the *ssh_user* option) then you need to make sure that the user can execute the following commands:
-* /sbin/ip
-* /sbin/arping
+- /sbin/ip
+- /sbin/arping
 
 The user should be able to execute the above commands using sudo, and should not have to provide a password. This can accomplished by editing the file /etc/sudoers using visudo and adding the following lines:
 
@@ -207,5 +207,5 @@ In the example above I am assuming that ssh_user=mha_helper.
 Some General Recommendations
 ----------------------------
 There are some general recommendations that I want to make, to prevent race-condition that can cause data inconsistencies:
-* Do not persist interface with writer VIP in the network scripts. This is important for example in cases where both the candidate masters go down i.e. hosts go down and then come back online. In which case we should need to manually intervene because there is no automated way to find out which MySQL server should be the source of truth
-* Persist read_only in the MySQL configuration file of all the candidate masters as well. This is again important for example in cases where both the candidate masters go down.
+1. Do not persist interface with writer VIP in the network scripts. This is important for example in cases where both the candidate masters go down i.e. hosts go down and then come back online. In which case we should need to manually intervene because there is no automated way to find out which MySQL server should be the source of truth
+2. Persist read_only in the MySQL configuration file of all the candidate masters as well. This is again important for example in cases where both the candidate masters go down.
