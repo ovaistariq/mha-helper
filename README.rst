@@ -46,10 +46,10 @@ writer_vip_cidr
     The virtual IP that is assigned to the MySQL master. This must be in CIDR format.
 vip_type
     The type of VIP which can be anyone of these:
-    * none : When this is set then MHA Helper does not do VIP management
-    * metal : When this is set then traditional baremetal-style VIP management is done using the standard *ip* command
-    * aws : When this is set then VIP management is done in a way relevant to AWS
-    * openstack : When this is set then VIP management is done in a way relevant to OpenStack
+    - none : When this is set then MHA Helper does not do VIP management
+    - metal : When this is set then traditional baremetal-style VIP management is done using the standard *ip* command
+    - aws : When this is set then VIP management is done in a way relevant to AWS
+    - openstack : When this is set then VIP management is done in a way relevant to OpenStack
 report_email
     The email address which receives the email notification when a MySQL failover is performed
 smtp_host
