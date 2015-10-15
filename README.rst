@@ -178,11 +178,11 @@ Manual Failover Examples
 ------------------------
 Once everything is configured and running, doing the failover is pretty simple.
 
-Do a failover when the master db1 goes down:
+Do a failover when the master db1 goes down::
 
 > /usr/bin/mysql_failover -d db1 -c /etc/mha/test_cluster.conf
 
-Do an online failover:
+Do an online failover::
 
 > /usr/bin/mysql_online_failover -c /etc/mha/test_cluster.conf
 
@@ -193,11 +193,9 @@ If you are using non-root user to connect to master-slave hosts via ssh (the use
 - /sbin/ip
 - /sbin/arping
 
-The user should be able to execute the above commands using sudo, and should not have to provide a password. This can accomplished by editing the file /etc/sudoers using visudo and adding the following lines:
+The user should be able to execute the above commands using sudo, and should not have to provide a password. This can accomplished by editing the file /etc/sudoers using visudo and adding the following lines::
 
-::
-
-    mha_helper   ALL=NOPASSWD: /sbin/ip, /sbin/arping
+> mha_helper   ALL=NOPASSWD: /sbin/ip, /sbin/arping
 
 In the example above I am assuming that ssh_user=mha_helper.
 
