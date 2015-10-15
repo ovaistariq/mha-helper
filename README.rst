@@ -64,6 +64,7 @@ All the options above can be specified either in the default section or in the h
 Let me show you an example configuration file:
 
 ::
+
     [default]
     requires_sudo               = yes
     vip_type                    = metal
@@ -101,6 +102,7 @@ Following are the important options that must be specified in the MHA applicatio
 Below is an example application configuration file:
 
 ::
+
     [server default]
     user                            = mha_helper
     password                        = helper
@@ -194,6 +196,7 @@ If you are using non-root user to connect to master-slave hosts via ssh (the use
 The user should be able to execute the above commands using sudo, and should not have to provide a password. This can accomplished by editing the file /etc/sudoers using visudo and adding the following lines:
 
 ::
+
     mha_helper   ALL=NOPASSWD: /sbin/ip, /sbin/arping
 
 In the example above I am assuming that ssh_user=mha_helper.
