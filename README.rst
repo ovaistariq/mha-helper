@@ -2,12 +2,6 @@
 MHA Helper
 ==========
 
-.. image:: https://img.shields.io/travis/ovaistariq/mha_helper.svg
-        :target: https://travis-ci.org/ovaistariq/mha_helper
-
-.. image:: https://img.shields.io/pypi/v/mha_helper.svg
-        :target: https://pypi.python.org/pypi/mha_helper
-
 .. image:: https://badges.gitter.im/Join%20Chat.svg
    :alt: Join the chat at https://gitter.im/ovaistariq/mha-helper
    :target: https://gitter.im/ovaistariq/mha-helper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
