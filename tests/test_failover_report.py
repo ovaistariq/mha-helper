@@ -18,11 +18,11 @@ class TestFailoverReport(unittest.TestCase):
 
         self.mha_helper_config_dir = os.path.join(self.root_directory, 'conf', 'good')
         if not self.mha_helper_config_dir:
-            self.fail(msg='mha-helper configuration dir not set')
+            self.fail(msg='mha_helper configuration dir not set')
 
         ConfigHelper.MHA_HELPER_CONFIG_DIR = self.mha_helper_config_dir
         if not ConfigHelper.load_config():
-            self.fail(msg='Could not load mha-helper configuration from %s' % self.mha_helper_config_dir)
+            self.fail(msg='Could not load mha_helper configuration from %s' % self.mha_helper_config_dir)
 
         self.orig_master_host = os.getenv('ORIG_MASTER_HOST')
         self.new_master_host = os.getenv('NEW_MASTER_HOST')

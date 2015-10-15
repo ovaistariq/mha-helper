@@ -33,7 +33,6 @@
       "compile_time_update": false,
       "key_proxy": "",
       "cache_bypass": {
-
       },
       "periodic_update_min_delay": 86400,
       "launchpad_api_version": "1.0",
@@ -140,7 +139,6 @@
         }
       ],
       "password": {
-
       },
       "enable_pgdg_yum": false,
       "initdb_locale": null,
@@ -676,21 +674,18 @@
         "query_cache_type": "",
         "default_storage_engine": "InnoDB",
         "options": {
-
         }
       },
       "client": {
         "socket": "/var/lib/mysql/mysql.sock",
         "port": 3306,
         "options": {
-
         },
         "development_files": true
       },
       "mysqld_safe": {
         "socket": "/var/lib/mysql/mysql.sock",
         "options": {
-
         }
       },
       "forbid_remote_root": true,
@@ -706,7 +701,6 @@
         "io_capacity": "400",
         "flush_method": "O_DIRECT",
         "options": {
-
         }
       },
       "galera": {
@@ -715,7 +709,6 @@
         "wsrep_sst_method": "rsync",
         "wsrep_provider": "/usr/lib/galera/libgalera_smm.so",
         "options": {
-
         }
       },
       "replication": {
@@ -851,28 +844,28 @@
     },
     "memory": {
       "swap": {
-        "cached": "11320kB",
+        "cached": "12820kB",
         "total": "950264kB",
-        "free": "687568kB"
+        "free": "583056kB"
       },
       "total": "469644kB",
-      "free": "75764kB",
-      "buffers": "8884kB",
-      "cached": "36728kB",
-      "active": "236500kB",
-      "inactive": "80876kB",
-      "dirty": "24kB",
+      "free": "53692kB",
+      "buffers": "36860kB",
+      "cached": "108896kB",
+      "active": "92084kB",
+      "inactive": "222400kB",
+      "dirty": "1480kB",
       "writeback": "0kB",
-      "anon_pages": "261472kB",
-      "mapped": "11032kB",
-      "slab": "60784kB",
-      "slab_reclaimable": "10560kB",
-      "slab_unreclaim": "50224kB",
-      "page_tables": "5188kB",
+      "anon_pages": "156952kB",
+      "mapped": "12928kB",
+      "slab": "85676kB",
+      "slab_reclaimable": "33944kB",
+      "slab_unreclaim": "51732kB",
+      "page_tables": "5252kB",
       "nfs_unstable": "0kB",
       "bounce": "0kB",
       "commit_limit": "1185084kB",
-      "committed_as": "977436kB",
+      "committed_as": "977472kB",
       "vmalloc_total": "34359738367kB",
       "vmalloc_used": "20480kB",
       "vmalloc_chunk": "34359698936kB"
@@ -1008,7 +1001,6 @@
     "os": "linux",
     "os_version": "2.6.32-358.el6.x86_64",
     "lsb": {
-
     },
     "platform": "centos",
     "platform_version": "6.4",
@@ -1126,12 +1118,6 @@
               "src": "10.0.2.15"
             },
             {
-              "destination": "169.254.0.0/16",
-              "family": "inet",
-              "scope": "link",
-              "metric": "1002"
-            },
-            {
               "destination": "default",
               "family": "inet",
               "via": "10.0.2.2"
@@ -1204,15 +1190,15 @@
         "interfaces": {
           "lo": {
             "rx": {
-              "bytes": "1207782",
-              "packets": "2624",
+              "bytes": "1489632",
+              "packets": "2731",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
             },
             "tx": {
-              "bytes": "1207782",
-              "packets": "2624",
+              "bytes": "1489632",
+              "packets": "2731",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
@@ -1222,16 +1208,16 @@
           "eth0": {
             "tx": {
               "queuelen": "1000",
-              "bytes": "319337",
-              "packets": "2471",
+              "bytes": "930367",
+              "packets": "9450",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
               "collisions": "0"
             },
             "rx": {
-              "bytes": "396345",
-              "packets": "3469",
+              "bytes": "1403335",
+              "packets": "17149",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
@@ -1264,8 +1250,8 @@
     "filesystem": {
       "/dev/mapper/VolGroup-lv_root": {
         "kb_size": "39841176",
-        "kb_used": "1774324",
-        "kb_available": "36043020",
+        "kb_used": "1887640",
+        "kb_available": "35929704",
         "percent_used": "5%",
         "mount": "/",
         "fs_type": "ext4",
@@ -1306,9 +1292,9 @@
       },
       "vagrant": {
         "kb_size": "487385240",
-        "kb_used": "104162088",
-        "kb_available": "383223152",
-        "percent_used": "22%",
+        "kb_used": "109758344",
+        "kb_available": "377626896",
+        "percent_used": "23%",
         "mount": "/vagrant",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -1323,9 +1309,9 @@
       },
       "vagrant-cache": {
         "kb_size": "487385240",
-        "kb_used": "104162088",
-        "kb_available": "383223152",
-        "percent_used": "22%",
+        "kb_used": "109758344",
+        "kb_available": "377626896",
+        "percent_used": "23%",
         "mount": "/tmp/vagrant-cache",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -1340,8 +1326,8 @@
       },
       " ": {
         "total_inodes": "2531328",
-        "inodes_used": "64203",
-        "inodes_available": "2467125",
+        "inodes_used": "64273",
+        "inodes_available": "2467055",
         "inodes_percent_used": "3%",
         "mount": "/"
       },
@@ -2154,10 +2140,10 @@
     },
     "current_user": "vagrant",
     "root_group": "root",
-    "uptime_seconds": 4167,
-    "uptime": "1 hours 09 minutes 27 seconds",
-    "idletime_seconds": 4007,
-    "idletime": "1 hours 06 minutes 47 seconds",
+    "uptime_seconds": 71502,
+    "uptime": "19 hours 51 minutes 42 seconds",
+    "idletime_seconds": 71199,
+    "idletime": "19 hours 46 minutes 39 seconds",
     "block_device": {
       "ram0": {
         "size": "32768",
@@ -2283,7 +2269,7 @@
       }
     },
     "cloud_v2": null,
-    "ohai_time": 1427764019.5313563,
+    "ohai_time": 1428098229.222918,
     "recipes": [
       "mysql_replication::slave",
       "mysql-mha::node",

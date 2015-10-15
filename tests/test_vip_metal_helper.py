@@ -16,11 +16,11 @@ class TestVIPMetalHelper(unittest.TestCase):
 
         mha_helper_config_dir = os.path.join(self.root_directory, 'conf', 'good')
         if not mha_helper_config_dir:
-            self.fail(msg='mha-helper configuration dir not set')
+            self.fail(msg='mha_helper configuration dir not set')
 
         ConfigHelper.MHA_HELPER_CONFIG_DIR = mha_helper_config_dir
         if not ConfigHelper.load_config():
-            self.fail(msg='Could not load mha-helper configuration from %s' % mha_helper_config_dir)
+            self.fail(msg='Could not load mha_helper configuration from %s' % mha_helper_config_dir)
 
         self.ssh_host = os.getenv('SSH_TEST_HOST')
         self.ssh_host_ip = os.getenv('SSH_TEST_IP')

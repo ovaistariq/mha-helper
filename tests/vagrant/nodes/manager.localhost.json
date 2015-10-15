@@ -242,28 +242,28 @@
     },
     "memory": {
       "swap": {
-        "cached": "848kB",
+        "cached": "1624kB",
         "total": "950264kB",
-        "free": "937504kB"
+        "free": "938440kB"
       },
       "total": "469644kB",
-      "free": "202540kB",
-      "buffers": "9916kB",
-      "cached": "107584kB",
-      "active": "116700kB",
-      "inactive": "68980kB",
-      "dirty": "36kB",
+      "free": "15824kB",
+      "buffers": "50552kB",
+      "cached": "226048kB",
+      "active": "115504kB",
+      "inactive": "231304kB",
+      "dirty": "672kB",
       "writeback": "0kB",
-      "anon_pages": "67336kB",
-      "mapped": "9864kB",
-      "slab": "67180kB",
-      "slab_reclaimable": "16796kB",
-      "slab_unreclaim": "50384kB",
-      "page_tables": "4052kB",
+      "anon_pages": "68784kB",
+      "mapped": "14092kB",
+      "slab": "92588kB",
+      "slab_reclaimable": "40316kB",
+      "slab_unreclaim": "52272kB",
+      "page_tables": "4212kB",
       "nfs_unstable": "0kB",
       "bounce": "0kB",
       "commit_limit": "1185084kB",
-      "committed_as": "201248kB",
+      "committed_as": "201864kB",
       "vmalloc_total": "34359738367kB",
       "vmalloc_used": "20480kB",
       "vmalloc_chunk": "34359698936kB"
@@ -594,15 +594,15 @@
         "interfaces": {
           "lo": {
             "rx": {
-              "bytes": "320118",
-              "packets": "552",
+              "bytes": "482523",
+              "packets": "852",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
             },
             "tx": {
-              "bytes": "320118",
-              "packets": "552",
+              "bytes": "482523",
+              "packets": "852",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
@@ -612,16 +612,16 @@
           "eth0": {
             "tx": {
               "queuelen": "1000",
-              "bytes": "562273",
-              "packets": "6999",
+              "bytes": "1233401",
+              "packets": "14714",
               "errors": "0",
               "drop": "0",
               "carrier": "0",
               "collisions": "0"
             },
             "rx": {
-              "bytes": "8548229",
-              "packets": "10622",
+              "bytes": "9644863",
+              "packets": "25522",
               "errors": "0",
               "drop": "0",
               "overrun": "0"
@@ -654,8 +654,8 @@
     "filesystem": {
       "/dev/mapper/VolGroup-lv_root": {
         "kb_size": "39841176",
-        "kb_used": "1324360",
-        "kb_available": "36492984",
+        "kb_used": "1349764",
+        "kb_available": "36467580",
         "percent_used": "4%",
         "mount": "/",
         "fs_type": "ext4",
@@ -696,9 +696,9 @@
       },
       "vagrant": {
         "kb_size": "487385240",
-        "kb_used": "104988612",
-        "kb_available": "382396628",
-        "percent_used": "22%",
+        "kb_used": "109852436",
+        "kb_available": "377532804",
+        "percent_used": "23%",
         "mount": "/vagrant",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -713,9 +713,9 @@
       },
       "vagrant-cache": {
         "kb_size": "487385240",
-        "kb_used": "104988612",
-        "kb_available": "382396628",
-        "percent_used": "22%",
+        "kb_used": "109852436",
+        "kb_available": "377532804",
+        "percent_used": "23%",
         "mount": "/tmp/vagrant-cache",
         "total_inodes": "1000",
         "inodes_used": "0",
@@ -730,9 +730,9 @@
       },
       "home_vagrant_mha-helper": {
         "kb_size": "487385240",
-        "kb_used": "104988612",
-        "kb_available": "382396628",
-        "percent_used": "22%",
+        "kb_used": "109852436",
+        "kb_available": "377532804",
+        "percent_used": "23%",
         "mount": "/home/vagrant/mha-helper",
         "fs_type": "vboxsf",
         "mount_options": [
@@ -1544,10 +1544,10 @@
     },
     "current_user": "vagrant",
     "root_group": "root",
-    "uptime_seconds": 4189,
-    "uptime": "1 hours 09 minutes 49 seconds",
-    "idletime_seconds": 4078,
-    "idletime": "1 hours 07 minutes 58 seconds",
+    "uptime_seconds": 71486,
+    "uptime": "19 hours 51 minutes 26 seconds",
+    "idletime_seconds": 71257,
+    "idletime": "19 hours 47 minutes 37 seconds",
     "block_device": {
       "ram0": {
         "size": "32768",
@@ -1673,7 +1673,7 @@
       }
     },
     "cloud_v2": null,
-    "ohai_time": 1427763826.6101828,
+    "ohai_time": 1428097977.2426686,
     "recipes": [
       "mysql-mha::manager",
       "yum-epel::default",

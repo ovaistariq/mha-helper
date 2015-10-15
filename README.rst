@@ -15,7 +15,7 @@ MHA helper is a Python module that supplements in doing proper failover using MH
 
 Introduction
 ------------
-There are three functions of mha-helper:
+There are three functions of MHA Helper:
 
 1. Execute pre-failover and post-failover steps during an online failover. An online failover is one in which the original master is not dead and the failover is performed, for example, for maintenance purposes.
 2. Execute pre-failover and post-failover steps during a hard master failover. In this case the original master is dead, meaning either the host is dead or the MySQL server process has died.

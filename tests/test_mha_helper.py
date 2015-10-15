@@ -17,7 +17,7 @@ class TestMHAHelper(unittest.TestCase):
         self.root_directory = os.path.dirname(os.path.realpath(__file__))
         mha_helper_config_dir = os.path.join(self.root_directory, 'conf', 'good')
         if not mha_helper_config_dir:
-            self.fail(msg='mha-helper configuration dir not set')
+            self.fail(msg='mha_helper configuration dir not set')
 
         ConfigHelper.MHA_HELPER_CONFIG_DIR = mha_helper_config_dir
 

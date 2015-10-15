@@ -36,9 +36,8 @@ is open to whoever wants to implement it.
 Write Documentation
 ~~~~~~~~~~~~~~~~~~~
 
-mha-helper could always use more documentation, whether as part of the
-official mha-helper docs, in docstrings, or even on the web in blog posts,
-articles, and such.
+MHA Helper could always use more documentation, whether as part of the
+official docs, in docstrings, or even on the web in blog posts, articles, and such.
 
 Submit Feedback
 ~~~~~~~~~~~~~~~
@@ -64,8 +63,8 @@ Ready to contribute? Here's how to set up `mha-helper` for local development.
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv mha-helper
-    $ cd mha-helper/
+    $ mkvirtualenv mha_helper
+    $ cd mha_helper/
     $ python setup.py develop
 
 4. Create a branch for local development::

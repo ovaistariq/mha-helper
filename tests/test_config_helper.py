@@ -17,7 +17,7 @@ class TestConfigHelper(unittest.TestCase):
         # Test with the correct config
         mha_helper_config_dir = os.path.join(self.root_directory, 'conf', 'good')
         if not mha_helper_config_dir:
-            self.fail(msg='mha-helper configuration dir not set')
+            self.fail(msg='mha_helper configuration dir not set')
 
         ConfigHelper.MHA_HELPER_CONFIG_DIR = mha_helper_config_dir
         self.assertTrue(ConfigHelper.load_config())
@@ -26,7 +26,7 @@ class TestConfigHelper(unittest.TestCase):
         # Test with bad config
         mha_helper_config_dir = os.path.join(self.root_directory, 'conf', 'bad')
         if not mha_helper_config_dir:
-            self.fail(msg='mha-helper configuration dir not set')
+            self.fail(msg='mha_helper configuration dir not set')
 
         ConfigHelper.MHA_HELPER_CONFIG_DIR = mha_helper_config_dir
         self.assertFalse(ConfigHelper.load_config())
