@@ -65,7 +65,7 @@ setup(
              'scripts/master_ip_online_failover_helper',
              'scripts/mysql_failover',
              'scripts/mysql_online_failover'],
-    install_requires=['PyMySQL==0.6.3',
+    install_requires=['PyMySQL>=0.6.3',
                       'paramiko>=1.10.0'],
     keywords='mha_helper, mha, mysql, failover, high availability',
     classifiers=[
