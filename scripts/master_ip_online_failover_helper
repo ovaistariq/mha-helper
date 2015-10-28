@@ -53,6 +53,7 @@ def main():
     parser.add_option('--new_master_ssh_ip', type='string')
     parser.add_option('--new_master_ssh_port', type='string')
     parser.add_option('--ssh_options', type='string')
+    parser.add_option('--orig_master_is_new_slave', action="store_true")
     parser.add_option('--test_config_path', type='string')
 
     (options, args) = parser.parse_args()

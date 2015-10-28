@@ -52,7 +52,7 @@ class SSHHelper(object):
         self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
         try:
-            print("Connecting to '%s'@'%s'" % (self._host, self._ssh_user))
+            print("Connecting to '%s'@'%s'" % (self._ssh_user, self._host))
             self._ssh_client.connect(hostname=self._host_ip, port=self._ssh_port, username=self._ssh_user)
         except paramiko.SSHException as e:
             print("Error connecting to '%s': %s" % (self._host, repr(e)))
