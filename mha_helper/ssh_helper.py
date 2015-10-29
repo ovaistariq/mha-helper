@@ -29,16 +29,10 @@ class SSHHelper(object):
         if host_ip is None:
             host_ip = host
 
-        if ssh_user is None:
-            ssh_user = pwd.getpwuid(os.getuid())[0]
-
-        if ssh_port is None or ssh_port < 1:
-            ssh_port = 22
-
         self._host = host
         self._host_ip = host_ip
         self._ssh_user = ssh_user
-        self._ssh_port = int(ssh_port)
+        self._ssh_port = ssh_port
         self._ssh_options = ssh_options
 
         self._ssh_client = None
@@ -51,9 +45,42 @@ class SSHHelper(object):
         self._ssh_client.load_system_host_keys()
         self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
+        # Merge any configuration present in ssh-config with the ones passed on the command-line
+        ssh_config = paramiko.SSHConfig()
+        user_config_file = os.path.expanduser("~/.ssh/config")
+        if os.path.exists(user_config_file):
+            f = open(user_config_file)
+            ssh_config.parse(f)
+            f.close()
+
+        user_config = ssh_config.lookup(self._host_ip)
+
+        # If SSH port is not passed by the user then lookup in ssh-config, if port is configured there then use it,
+        # otherwise use the default ssh port '22'
+        if self._ssh_port is None or self._ssh_port < 1:
+            if 'port' in user_config:
+                self._ssh_port = user_config['port']
+            else:
+                self._ssh_port = 22
+        else:
+            self._ssh_port = int(self._ssh_port)
+
+        # If SSH username is not passed by the user then lookup in ssh-config, if username is configured there then
+        # use it, otherwise use the current system user
+        if self._ssh_user is None:
+            if 'username' in user_config:
+                self._ssh_user = user_config['username']
+            else:
+                self._ssh_user = pwd.getpwuid(os.getuid())[0]
+
+        cfg = dict(hostname=self._host_ip, username=self._ssh_user, port=self._ssh_port)
+
+        if 'identityfile' in user_config:
+            cfg['key_filename'] = user_config['identityfile']
+
         try:
             print("Connecting to '%s'@'%s'" % (self._ssh_user, self._host))
-            self._ssh_client.connect(hostname=self._host_ip, port=self._ssh_port, username=self._ssh_user)
+            self._ssh_client.connect(**cfg)
         except paramiko.SSHException as e:
             print("Error connecting to '%s': %s" % (self._host, repr(e)))
             return False
