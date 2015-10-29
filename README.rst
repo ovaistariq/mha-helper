@@ -26,6 +26,7 @@ First and foremost MHA itself needs to be installed. You need the MHA manager an
 MHA Helper has been developed and tested against Python 2.6 and 2.7. Versions < 2.6 are not supported.
 
 In addition to Python 2.6, the following Python modules are needed:
+
 - paramiko
 - PyMySQL
 
@@ -42,6 +43,19 @@ Before installing the package you will have to configure the TwinDB package repo
 Once the repository has been configured you can install the package as follows::
 
     yum install python-mha_helper
+
+Installation using Opscode Chef
+-------------------------------
+The most easiest way to install and configure both MHA and MHA Helper is to use the Chef cookbook mysql-mha_.
+
+Below are some of the benefits of using the cookbook:
+
+- Installation of MHA and MHA Helper
+- Automatic discovery of MySQL replication clusters and configuration of MHA as well as MHA Helper
+- Ability to discover new nodes joining existing MySQL replication clusters and automatic reconfiguration of MHA and MHA Helper
+- System configuration related to other MHA prerequisites such as system user creation, SSH setup to allow password-less login to MySQL replication nodes
+
+.. _mysql-mha: https://supermarket.chef.io/cookbooks/mysql-mha
 
 Configuration
 -------------
