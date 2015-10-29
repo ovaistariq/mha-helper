@@ -213,5 +213,6 @@ In the example above I am assuming that ssh_user=mha_helper.
 Some General Recommendations
 ----------------------------
 There are some general recommendations that I want to make, to prevent race-condition that can cause data inconsistencies:
+
 1. Do not persist interface with writer VIP in the network scripts. This is important for example in cases where both the candidate masters go down i.e. hosts go down and then come back online. In which case we should need to manually intervene because there is no automated way to find out which MySQL server should be the source of truth
 2. Persist read_only in the MySQL configuration file of all the candidate masters as well. This is again important for example in cases where both the candidate masters go down.
