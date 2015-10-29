@@ -1,0 +1,77 @@
+#!/usr/bin/python
+
+# (c) 2015, Ovais Tariq <me@ovaistariq.net>
+#
+# This file is part of mha_helper
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+from __future__ import print_function
+import sys
+import os
+from optparse import OptionParser
+from mha_helper.config_helper import ConfigHelper
+from mha_helper.mha_helper import MHAHelper
+
+# Define exit codes
+ERR_CODE_HARD_FAILOVER_COMMAND_ARG = 10
+ERR_CODE_HARD_FAILOVER_FAILURE = 20
+SUCCESS_CODE_HARD_FAILOVER = 0
+
+
+def main():
+    # parse command line arguments
+    parser = OptionParser()
+    parser.add_option('--command', type='string')
+    parser.add_option('--orig_master_host', type='string')
+    parser.add_option('--orig_master_ip', type='string')
+    parser.add_option('--orig_master_port', type='string')
+    parser.add_option('--orig_master_ssh_host', type='string')
+    parser.add_option('--orig_master_ssh_ip', type='string')
+    parser.add_option('--orig_master_ssh_port', type='string')
+    parser.add_option('--new_master_host', type='string')
+    parser.add_option('--new_master_ip', type='string')
+    parser.add_option('--new_master_port', type='string')
+    parser.add_option('--new_master_ssh_host', type='string')
+    parser.add_option('--new_master_ssh_ip', type='string')
+    parser.add_option('--new_master_ssh_port', type='string')
+    parser.add_option('--new_master_user', type='string')
+    parser.add_option('--new_master_password', type='string')
+    parser.add_option('--ssh_user', type='string')
+    parser.add_option('--ssh_options', type='string')
+    parser.add_option('--test_config_path', type='string')
+
+    (options, args) = parser.parse_args()
+
+    # This is purely for testing purposes
+    if options.test_config_path is not None and os.path.exists(options.test_config_path):
+        ConfigHelper.MHA_HELPER_CONFIG_DIR = options.test_config_path
+
+    mha_helper = MHAHelper(MHAHelper.FAILOVER_TYPE_HARD)
+
+    failover_arguments = dict()
+    for opt, value in options.__dict__.items():
+        if value is not None and opt != "test_config_path":
+            failover_arguments[opt] = value
+
+    if not mha_helper.execute_command(**failover_arguments):
+        sys.exit(ERR_CODE_HARD_FAILOVER_FAILURE)
+
+    # exit the script with the appropriate code
+    # if script exits with a 0 status code, MHA continues with the failover
+    sys.exit(SUCCESS_CODE_HARD_FAILOVER)
+
+
+if __name__ == "__main__":
+    main()

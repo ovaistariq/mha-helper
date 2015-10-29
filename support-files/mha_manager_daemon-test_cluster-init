@@ -1,6 +1,6 @@
 #!/bin/sh
 
-# (c) 2013, Ovais Tariq <ovaistariq@gmail.com>
+# (c) 2015, Ovais Tariq <me@ovaistariq.net>
 #
 # This file is part of mha-helper
 #
@@ -24,7 +24,7 @@
 # Default-Stop:         0 1 6
 # Short-Description:    This is mha_manager_daemon for test_cluster
 # Description:          There can be multiple instances of mha_manager_daemon
-#                       running each monitoring a different MySQL master-slave 
+#                       running each monitoring a different MySQL master-slave
 #                       cluster. The purpose of this init-script is to provide
 #                       a controlling the daemon specific to the cluster named
 #                       test_cluster.

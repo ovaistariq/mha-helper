@@ -1,0 +1,61 @@
+#!/bin/bash
+
+# (c) 2013, Ovais Tariq <me@ovaistariq.net>
+#
+# This file is part of mha_helper
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+dead_master_host=""
+conf=""
+
+OPTIND=1
+while getopts "h?c:d:" opt; do
+    case "$opt" in
+        h|\?)
+            #show_help
+            exit 0
+            ;;
+        c)  conf=$OPTARG
+            ;;
+        d)  dead_master_host=$OPTARG
+            ;;
+    esac
+done
+shift $((OPTIND-1)) # Shift off the options and optional --.
+
+if [[ -z ${dead_master_host} ]]
+then
+    echo "ERROR: option '-d HOST' (hostname of dead master) not given. See -h" >&2
+    exit 1
+fi
+
+if [[ -z "$conf" ]]
+then
+    echo "ERROR: option '-c CONF' not given. See --help" >&2
+    exit 1
+fi
+
+if [[ ! -e "$conf" ]]
+then
+    echo "ERROR: $conf does not exist"
+    exit 1
+fi
+
+/usr/bin/masterha_master_switch \
+--conf=${conf} \
+--master_state=dead \
+--interactive=0 \
+--ignore_last_failover \
+--dead_master_host=${dead_master_host}

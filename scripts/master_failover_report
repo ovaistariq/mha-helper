@@ -1,0 +1,65 @@
+#!/usr/bin/python
+
+# (c) 2015, Ovais Tariq <me@ovaistariq.net>
+#
+# This file is part of mha_helper
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import sys
+import os
+from optparse import OptionParser
+from mha_helper.config_helper import ConfigHelper
+from mha_helper.email_helper import EmailHelper
+
+# Define exit codes
+ERR_CODE_FAILOVER_REPORT_COMMAND_ARG = 10
+ERR_CODE_FAILOVER_REPORT_CONFIG_ERR = 20
+ERR_CODE_FAILOVER_REPORT_EMAIL_ERR = 20
+SUCCESS_CODE_FAILOVER_REPORT = 0
+
+
+def main():
+    # parse comand line arguments
+    parser = OptionParser()
+    parser.add_option('--conf', type='string')
+    parser.add_option('--orig_master_host', type='string')
+    parser.add_option('--new_master_host', type='string')
+    parser.add_option('--new_slave_hosts', type='string')
+    parser.add_option('--subject', type='string')
+    parser.add_option('--body', type='string')
+    parser.add_option('--test_config_path', type='string')
+
+    (options, args) = parser.parse_args()
+
+    # This is purely for testing purposes
+    if options.test_config_path is not None and os.path.exists(options.test_config_path):
+        ConfigHelper.MHA_HELPER_CONFIG_DIR = options.test_config_path
+
+    # Bail out if the required options are not provided
+    if options.orig_master_host is None or options.subject is None or options.body is None:
+        sys.exit(ERR_CODE_FAILOVER_REPORT_COMMAND_ARG)
+
+    if not ConfigHelper.load_config():
+        sys.exit(ERR_CODE_FAILOVER_REPORT_CONFIG_ERR)
+
+    email_sender = EmailHelper(options.orig_master_host)
+    if not email_sender.send_email(options.subject, options.body):
+        sys.exit(ERR_CODE_FAILOVER_REPORT_EMAIL_ERR)
+
+    # exit the script with the appropriate code
+    sys.exit(SUCCESS_CODE_FAILOVER_REPORT)
+
+if __name__ == "__main__":
+    main()

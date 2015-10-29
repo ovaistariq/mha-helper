@@ -1,34 +1,62 @@
-# Compiled source #
-###################
-*.com
-*.class
-*.dll
-*.exe
-*.o
+*.py[cod]
+
+# C extensions
 *.so
-*.pyc
 
-# Packages #
-############
-# it's better to unpack these files and commit the raw source
-# git has its own built in compression methods
-*.7z
-*.dmg
-*.gz
-*.iso
-*.jar
-*.rar
-*.tar
-*.zip
+# Packages
+*.egg
+*.egg-info
+dist
+build
+bin
+eggs
+parts
+var
+sdist
+develop-eggs
+.installed.cfg
+lib
+lib64
 
-# Logs and databases #
-######################
+# Installer logs
+pip-log.txt
+
+# Unit test / coverage reports
+.coverage
+.tox
+nosetests.xml
+htmlcov
+
+# Translations
+*.mo
+
+# Mr Developer
+.mr.developer.cfg
+.project
+.pydevproject
+.idea
+
+# Complexity
+output/*.html
+output/*/index.html
+
+# Sphinx
+docs/_build
+
+# Key files
+id_rsa
+id_rsa.pub
+
+# Configuration files
+*.conf
+
+# Logs and databases
 *.log
 *.sql
 *.sqlite
 
-# OS generated files #
-######################
+# OS generated files
+
 .DS_Store
 .DS_Store?
 ._*
@@ -38,12 +66,3 @@ Icon?
 ehthumbs.db
 Thumbs.db
 *.swp
-
-# Configuration file #
-######################
-*.conf
-
-# Key files #
-#############
-id_rsa
-id_rsa.pub
