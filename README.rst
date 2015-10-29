@@ -51,7 +51,7 @@ The most easiest way to install and configure both MHA and MHA Helper is to use 
 Below are some of the benefits of using the cookbook:
 
 - Installation of MHA and MHA Helper
-- Automatic discovery of MySQL replication clusters and configuration of MHA as well as MHA Helper
+- Automatic discovery of MySQL replication clusters and automatic configuration of MHA as well as MHA Helper
 - Ability to discover new nodes joining existing MySQL replication clusters and automatic reconfiguration of MHA and MHA Helper
 - System configuration related to other MHA prerequisites such as system user creation, SSH setup to allow password-less login to MySQL replication nodes
 
