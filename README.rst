@@ -11,8 +11,6 @@ MHA helper is a Python module that supplements in doing proper failover using MH
 
 .. _MHA: https://code.google.com/p/mysql-master-ha/
 
-* Documentation: https://mha-helper.readthedocs.org.
-
 Introduction
 ------------
 There are three functions of MHA Helper:
