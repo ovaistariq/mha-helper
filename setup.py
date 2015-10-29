@@ -75,7 +75,7 @@ setup(
         'Development Status :: 4 - Beta',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
-        'License :: OSI Approved :: GNU GPL Version 3',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
         'Environment :: Console',
         'Topic :: Database',
         'Natural Language :: English'
