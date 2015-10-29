@@ -19,7 +19,7 @@ There are three functions of MHA Helper:
 
 1. Execute pre-failover and post-failover steps during an online failover. An online failover is one in which the original master is not dead and the failover is performed, for example, for maintenance purposes.
 2. Execute pre-failover and post-failover steps during a hard master failover. In this case the original master is dead, meaning either the host is dead or the MySQL server process has died.
-3. Daemonize the monitor that monitors the masters for failure.
+3. Daemonize the monitor that monitors the masters for failure *(Currently not implemented)*
 
 Package Requirements and Dependencies
 -------------------------------------
@@ -32,6 +32,18 @@ In addition to Python 2.6, the following Python modules are needed:
 - PyMySQL
 
 There are other MHA specific requirements, please go through the link below to read about them: https://code.google.com/p/mysql-master-ha/wiki/Requirements
+
+Installation
+------------
+MySQL Helper packages are available in RPM format. Currently packages are only available for CentOS/RHEL 6.x
+
+Before installing the package you will have to configure the TwinDB package repository::
+
+    curl -s https://packagecloud.io/install/repositories/twindb/main/script.rpm.sh | sudo bash
+
+Once the repository has been configured you can install the package as follows::
+
+    yum install python-mha_helper
 
 Configuration
 -------------
@@ -48,8 +60,8 @@ vip_type
     The type of VIP which can be anyone of these:
 - none : When this is set then MHA Helper does not do VIP management
 - metal : When this is set then traditional baremetal-style VIP management is done using the standard *ip* command
-- aws : When this is set then VIP management is done in a way relevant to AWS
-- openstack : When this is set then VIP management is done in a way relevant to OpenStack
+- aws : When this is set then VIP management is done in a way relevant to AWS *(Currently not implemented)*
+- openstack : When this is set then VIP management is done in a way relevant to OpenStack *(Currently not implemented)*
 report_email
     The email address which receives the email notification when a MySQL failover is performed
 smtp_host
