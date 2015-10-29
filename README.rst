@@ -34,7 +34,7 @@ There are other MHA specific requirements, please go through the link below to r
 
 Installation
 ------------
-MySQL Helper packages are available in RPM format. Currently packages are only available for CentOS/RHEL 6.x
+MHA Helper packages are available in RPM format. Currently packages are only available for CentOS/RHEL 6.x
 
 Before installing the package you will have to configure the TwinDB package repository::
 
@@ -43,6 +43,12 @@ Before installing the package you will have to configure the TwinDB package repo
 Once the repository has been configured you can install the package as follows::
 
     yum install python-mha_helper
+
+MHA Helper is also available as a python module mha_helper_ and can be installed using pip as follows::
+
+    pip install mha_helper
+
+.. _mha_helper: https://pypi.python.org/pypi/mha_helper
 
 Installation using Opscode Chef
 -------------------------------
