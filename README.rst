@@ -6,6 +6,10 @@ MHA Helper
    :alt: Join the chat at https://gitter.im/ovaistariq/mha-helper
    :target: https://gitter.im/ovaistariq/mha-helper?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge
 
+.. image:: https://img.shields.io/pypi/v/mha_helper.svg?style=flat-square
+   :alt: Latest version released on PyPi
+   :target: https://pypi.python.org/pypi/mha_helper
+
 
 MHA helper is a Python module that supplements in doing proper failover using MHA_. MHA is responsible for executing the important failover steps such as finding the most recent slave to failover to, applying differential logs, monitoring master for failure, etc. But it does not deal with additional steps that need to be taken before and after failover. These would include steps such as setting the read-only flag, killing connections, moving writer virtual IP, etc.
 
