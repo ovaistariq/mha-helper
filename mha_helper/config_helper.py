@@ -120,8 +120,15 @@ class ConfigHelper(object):
 
     @staticmethod
     def validate_ip_address(ip_address):
-        pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$'
-        return bool(re.match(pattern, ip_address))
+        try:
+            socket.inet_pton(socket.AF_INET, ip_address.split('/')[0])
+        except socket.error:
+            try:
+                socket.inet_pton(socket.AF_INET6, ip_address.split('/')[0])
+            except socket.error:
+                return False
+            return True
+        return True
 
     @staticmethod
     def validate_email_address(email_address):
