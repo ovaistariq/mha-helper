@@ -81,6 +81,12 @@ class MHAHelper(object):
         return (self.failover_type == MHAHelper.FAILOVER_TYPE_ONLINE or
                 self.failover_type == MHAHelper.FAILOVER_TYPE_HARD)
 
+    def __unescape_from_shell(self, unescaped):
+        # This matches with mha4mysql-node::NodeUtil.pm::@shell_escape_chars
+        # username and passsword provided by MHA are escaped like this
+        escaped = unescaped.replace('\\','')
+        return escaped
+
     def __stop_command(self):
         try:
             self.orig_master_host = getattr(self, "orig_master_host")
@@ -101,6 +107,9 @@ class MHAHelper(object):
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
+
+        orig_master_mysql_user = self.__unescape_from_shell(orig_master_mysql_user)
+        orig_master_mysql_pass = self.__unescape_from_shell(orig_master_mysql_pass)
 
         # Setup MySQL connections
         mysql_orig_master = MySQLHelper(orig_master_ip, orig_master_mysql_port, orig_master_mysql_user,
@@ -234,6 +243,9 @@ class MHAHelper(object):
             print("Failed to read one or more required new master parameter(s): %s" % str(e))
             return False
 
+        new_master_mysql_user = self.__unescape_from_shell(new_master_mysql_user)
+        new_master_mysql_pass = self.__unescape_from_shell(new_master_mysql_pass)
+
         # Setup MySQL connection
         mysql_new_master = MySQLHelper(new_master_ip, new_master_mysql_port, new_master_mysql_user,
                                        new_master_mysql_pass)
@@ -317,6 +329,9 @@ class MHAHelper(object):
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
+
+        orig_master_mysql_user = self.__unescape_from_shell(orig_master_mysql_user)
+        orig_master_mysql_pass = self.__unescape_from_shell(orig_master_mysql_pass)
 
         # Setup MySQL connections
         mysql_orig_master = MySQLHelper(orig_master_ip, orig_master_mysql_port, orig_master_mysql_user,
