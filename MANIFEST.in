@@ -1,0 +1,8 @@
+include *.rst
+recursive-include scripts *
+recursive-include mha_helper *.py
+recursive-include docs *.rst
+recursive-include support-files *
+include setup.py
+include setup.cfg
+
