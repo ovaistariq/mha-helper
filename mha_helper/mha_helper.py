@@ -18,6 +18,7 @@
 from __future__ import print_function
 import time
 import datetime
+import re
 from mysql_helper import MySQLHelper
 from config_helper import ConfigHelper
 from vip_metal_helper import VIPMetalHelper
@@ -84,7 +85,7 @@ class MHAHelper(object):
     def __unescape_from_shell(self, unescaped):
         # This matches with mha4mysql-node::NodeUtil.pm::@shell_escape_chars
         # username and passsword provided by MHA are escaped like this
-        escaped = unescaped.replace('\\','')
+        escaped = re.sub(r'\\(?!\\)','',unescaped)  # remove escaping (\)
         return escaped
 
     def __stop_command(self):
