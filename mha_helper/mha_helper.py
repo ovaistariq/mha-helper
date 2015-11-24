@@ -446,7 +446,7 @@ class MHAHelper(object):
         try:
             for row in mysql_connection.get_processlist():
                 if (mysql_connection.get_connection_id() == row['Id'] or row['Command'] == "Binlog Dump" or
-                        row['User'] == "system user"):
+                        row['Command'] == "Binlog Dump GTID" or row['User'] == "system user"):
                     continue
                 threads.append(row)
         except Exception as e:
