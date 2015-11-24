@@ -118,7 +118,7 @@ class ConfigHelper(object):
             except ValueError:
                 return False
 
-            return config_value
+            return int(config_value)
 
         if config_key == 'requires_sudo':
             return config_value in ['yes', 'no']
