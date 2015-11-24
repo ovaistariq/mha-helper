@@ -26,7 +26,7 @@ import ConfigParser
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
     MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo',
-                                 'cluster_interface']
+                                 'cluster_interface', 'kill_after_timeout']
     VIP_PROVIDER_TYPE_NONE = 'none'
     VIP_PROVIDER_TYPE_METAL = 'metal'
     VIP_PROVIDER_TYPE_AWS = 'aws'
@@ -112,6 +112,14 @@ class ConfigHelper(object):
         if config_key == 'smtp_host':
             return ConfigHelper.validate_hostname(config_value)
 
+        if config_key == 'kill_after_timeout':
+            try:
+                value = int(config_value)
+            except ValueError:
+                return False
+
+            return config_value
+
         if config_key == 'requires_sudo':
             return config_value in ['yes', 'no']
 
@@ -173,6 +181,9 @@ class ConfigHelper(object):
 
     def get_smtp_host(self):
         return self._host_config['smtp_host']
+
+    def get_kill_after_timeout(self):
+        return self._host_config['kill_after_timeout']
 
     def get_requires_sudo(self):
         if self._host_config['requires_sudo'] == 'yes':

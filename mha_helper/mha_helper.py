@@ -409,7 +409,7 @@ class MHAHelper(object):
 
     @classmethod
     def __mysql_kill_threads(cls, host, mysql_connection):
-        timeout = 5
+        timeout = cls.orig_master_config.get_kill_after_timeout()
         sleep_interval = 0.1
         start = datetime.datetime.now()
 
