@@ -113,12 +113,7 @@ class ConfigHelper(object):
             return ConfigHelper.validate_hostname(config_value)
 
         if config_key == 'kill_after_timeout':
-            try:
-                value = int(config_value)
-            except ValueError:
-                return False
-
-            return int(config_value)
+            return ConfigHelper.validate_integer(config_value)
 
         if config_key == 'requires_sudo':
             return config_value in ['yes', 'no']
@@ -135,6 +130,15 @@ class ConfigHelper(object):
     def validate_email_address(email_address):
         pattern = '^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$'
         return bool(re.match(pattern, email_address))
+
+    @staticmethod
+    def validate_integer(potential_integer):
+            try:
+                value = int(potential_integer)
+            except ValueError:
+                return False
+
+            return True
 
     @staticmethod
     def validate_hostname(hostname):
@@ -183,7 +187,7 @@ class ConfigHelper(object):
         return self._host_config['smtp_host']
 
     def get_kill_after_timeout(self):
-        return self._host_config['kill_after_timeout']
+        return int(self._host_config['kill_after_timeout'])
 
     def get_requires_sudo(self):
         if self._host_config['requires_sudo'] == 'yes':
