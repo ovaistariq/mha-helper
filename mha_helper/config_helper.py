@@ -25,7 +25,7 @@ import ConfigParser
 
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
-    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo',
+    MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo', 'super_read_only'
                                  'cluster_interface']
     VIP_PROVIDER_TYPE_NONE = 'none'
     VIP_PROVIDER_TYPE_METAL = 'metal'
@@ -118,6 +118,9 @@ class ConfigHelper(object):
         if config_key == 'cluster_interface':
             return config_value is not None and len(config_value) > 0
 
+        if config_key == 'super_read_only':
+            return config_value in ['yes', 'no']
+
     @staticmethod
     def validate_ip_address(ip_address):
         pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$'
@@ -182,3 +185,7 @@ class ConfigHelper(object):
 
     def get_cluster_interface(self):
         return self._host_config['cluster_interface']
+
+    def get_super_read_only(self):
+        return self._host_config['super_read_only']
+
