@@ -90,6 +90,8 @@ smtp_host
     The SMTP host that is used to send the failover report email
 requires_sudo
     Some of the system commands executed as part of the failover process require either the use of a privileged user or a user with sudo privileges. Set this to *no* when the system user does not need to execute commands using sudo, set to *yes* otherwise
+requires_arping
+    Some environments do not need to do anything with ARP caches. Set this to *no* in order to not send those arping commands.
 cluster_interface
     The ethernet interface on the machine that gets the Virtual IP assigned or removed
 
