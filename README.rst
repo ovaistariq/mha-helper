@@ -103,6 +103,7 @@ Let me show you an example configuration file:
 
     [default]
     requires_sudo               = yes
+    requires_arping             = yes
     vip_type                    = metal
     writer_vip_cidr             = 192.168.10.155/24
     cluster_interface           = eth1
