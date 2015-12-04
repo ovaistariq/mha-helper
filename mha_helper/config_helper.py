@@ -121,9 +121,6 @@ class ConfigHelper(object):
         if config_key == 'super_read_only':
             return config_value in ['yes', 'no']
 
-        if config_key == 'read_only_config_file':
-            return config_value is not None and len(config_value) > 0
-
     @staticmethod
     def validate_ip_address(ip_address):
         pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$'
