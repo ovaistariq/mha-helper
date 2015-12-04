@@ -118,6 +118,9 @@ class ConfigHelper(object):
         if config_key == 'cluster_interface':
             return config_value is not None and len(config_value) > 0
 
+        if config_key == 'read_only_config_file':
+            return config_value is not None and len(config_value) > 0
+
     @staticmethod
     def validate_ip_address(ip_address):
         pattern = '^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])(/([0-9]|[1-2][0-9]|3[0-2]))$'
@@ -182,3 +185,6 @@ class ConfigHelper(object):
 
     def get_cluster_interface(self):
         return self._host_config['cluster_interface']
+
+    def get_read_only_config_file(self):
+        return self._host_config['read_only_config_file']
