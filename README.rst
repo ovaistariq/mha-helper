@@ -84,6 +84,8 @@ vip_type
 - metal : When this is set then traditional baremetal-style VIP management is done using the standard *ip* command
 - aws : When this is set then VIP management is done in a way relevant to AWS *(Currently not implemented)*
 - openstack : When this is set then VIP management is done in a way relevant to OpenStack *(Currently not implemented)*
+super_read_only
+    Certain MySQL flavors (such as Percona Server: https://www.percona.com/doc/percona-server/5.6/management/super_read_only.html) have super_read_only which also disallows users with SUPER privileges to perform any writes. Set this to *yes* to use this feature.
 report_email
     The email address which receives the email notification when a MySQL failover is performed
 smtp_host
@@ -104,6 +106,7 @@ Let me show you an example configuration file:
     vip_type                    = metal
     writer_vip_cidr             = 192.168.10.155/24
     cluster_interface           = eth1
+    super_read_only             = no
     report_email                = me@ovaistariq.net
     smtp_host                   = localhost
 
