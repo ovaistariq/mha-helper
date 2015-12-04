@@ -26,7 +26,7 @@ import ConfigParser
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
     MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo', 'super_read_only',
-                                 'cluster_interface']
+                                 'read_only_config_file', 'cluster_interface']
     VIP_PROVIDER_TYPE_NONE = 'none'
     VIP_PROVIDER_TYPE_METAL = 'metal'
     VIP_PROVIDER_TYPE_AWS = 'aws'
@@ -120,6 +120,9 @@ class ConfigHelper(object):
 
         if config_key == 'super_read_only':
             return config_value in ['yes', 'no']
+
+        if config_key == 'read_only_config_file':
+            return True
 
     @staticmethod
     def validate_ip_address(ip_address):

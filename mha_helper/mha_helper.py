@@ -21,7 +21,7 @@ import datetime
 from mysql_helper import MySQLHelper
 from config_helper import ConfigHelper
 from vip_metal_helper import VIPMetalHelper
-
+from mysqlconfig_helper import MySQLConfigHelper
 
 class MHAHelper(object):
     FAILOVER_TYPE_ONLINE = 'online_failover'
@@ -130,7 +130,7 @@ class MHAHelper(object):
                 if not mysql_orig_master.set_super_read_only() or not mysql_orig_master.is_super_read_only():
                     return False
 
-            if self.orig_master_config.get_read_only_config_file()
+            if self.orig_master_config.get_read_only_config_file():
                 mysqlconfig_helper = MySQLConfigHelper(self.orig_master_host, orig_master_ssh_ip, orig_master_ssh_user, orig_master_ssh_port)
                 mysqlconfig_helper.set_read_only_config()
 
@@ -261,7 +261,7 @@ class MHAHelper(object):
                 if not mysql_new_master.unset_super_read_only() or mysql_new_master.is_super_read_only():
                     return False
 
-            if self.new_master_config.get_read_only_config_file()
+            if self.new_master_config.get_read_only_config_file():
                 mysqlconfig_helper = MySQLConfigHelper(self.new_master_host, new_master_ssh_ip, new_master_ssh_user, new_master_ssh_port)
                 mysqlconfig_helper.unset_read_only_config()
 
@@ -346,7 +346,7 @@ class MHAHelper(object):
                 print("Failed to connect to mysql on the original master '%s'" % self.orig_master_host)
                 return False
 
-            if self.orig_master_conf.get_super_read_only() == 'no':
+            if self.orig_master_config.get_super_read_only() == 'no':
                 if not mysql_orig_master.unset_read_only() or mysql_orig_master.is_read_only():
                     print("Failed to reset read_only to '0' on the original master '%s'" % self.orig_master_host)
                     return False
@@ -359,7 +359,7 @@ class MHAHelper(object):
 
                 print("Set super_read_only back to '0' on the original master '%s'" % self.orig_master_host)
 
-            if self.orig_master_config.get_read_only_config_file()
+            if self.orig_master_config.get_read_only_config_file():
                 mysqlconfig_helper = MySQLConfigHelper(self.orig_master_host, orig_master_ssh_ip, orig_master_ssh_user, orig_master_ssh_port)
                 mysqlconfig_helper.unset_read_only_config()
 
