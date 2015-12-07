@@ -290,6 +290,7 @@ class MHAHelper(object):
 
                 if not self.__check_vip_on_host(vip_type, self.orig_master_host, orig_master_ssh_ip,
                                                 orig_master_ssh_user, orig_master_ssh_port):
+                    print("The VIP was not found on host %s\n" % (self.orig_master_host))
                     return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
