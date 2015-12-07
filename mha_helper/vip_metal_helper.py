@@ -101,7 +101,7 @@ class VIPMetalHelper(object):
         for line in stdout_lines:
             # We want to match a line similar to the following:
             #   inet 192.168.30.11/24 brd 192.168.30.255 scope global eth1
-            if re.search(r'\binet\b', line):
+            if re.search(r'\b(inet|inet6)\b', line):
                 # The second element of the matching line is the IP address in CIDR format
                 if line.split()[1] == self._writer_vip_cidr:
                     vip_found = True
