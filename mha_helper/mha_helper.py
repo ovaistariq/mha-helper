@@ -457,9 +457,9 @@ class MHAHelper(object):
         return threads
 
     @classmethod
-    def __unescape_from_shell(cls, unescaped):
+    def __unescape_from_shell(cls, escaped):
         # This matches with mha4mysql-node::NodeUtil.pm::@shell_escape_chars
         # username and password provided by MHA are escaped like this
-        escaped = re.sub(r'\\(?!\\)', '', unescaped)  # remove escaping (\)
+        unescaped = re.sub(r'\\(?!\\)', '', escaped)
 
-        return escaped
+        return unescaped
