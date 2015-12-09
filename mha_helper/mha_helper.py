@@ -82,12 +82,6 @@ class MHAHelper(object):
         return (self.failover_type == MHAHelper.FAILOVER_TYPE_ONLINE or
                 self.failover_type == MHAHelper.FAILOVER_TYPE_HARD)
 
-    def __unescape_from_shell(self, unescaped):
-        # This matches with mha4mysql-node::NodeUtil.pm::@shell_escape_chars
-        # username and passsword provided by MHA are escaped like this
-        escaped = re.sub(r'\\(?!\\)','',unescaped)  # remove escaping (\)
-        return escaped
-
     def __stop_command(self):
         try:
             self.orig_master_host = getattr(self, "orig_master_host")
@@ -103,14 +97,11 @@ class MHAHelper(object):
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
             orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
-            orig_master_mysql_user = getattr(self, "orig_master_user")
-            orig_master_mysql_pass = getattr(self, "orig_master_password")
+            orig_master_mysql_user = self.__unescape_from_shell(getattr(self, "orig_master_user"))
+            orig_master_mysql_pass = self.__unescape_from_shell(getattr(self, "orig_master_password"))
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
-
-        orig_master_mysql_user = self.__unescape_from_shell(orig_master_mysql_user)
-        orig_master_mysql_pass = self.__unescape_from_shell(orig_master_mysql_pass)
 
         # Setup MySQL connections
         mysql_orig_master = MySQLHelper(orig_master_ip, orig_master_mysql_port, orig_master_mysql_user,
@@ -231,8 +222,8 @@ class MHAHelper(object):
         try:
             new_master_ip = getattr(self, "new_master_ip", self.new_master_host)
             new_master_mysql_port = getattr(self, "new_master_port", None)
-            new_master_mysql_user = getattr(self, "new_master_user")
-            new_master_mysql_pass = getattr(self, "new_master_password")
+            new_master_mysql_user = self.__unescape_from_shell(getattr(self, "new_master_user"))
+            new_master_mysql_pass = self.__unescape_from_shell(getattr(self, "new_master_password"))
             new_master_ssh_ip = getattr(self, "new_master_ssh_ip", new_master_ip)
             new_master_ssh_port = getattr(self, "new_master_ssh_port", None)
 
@@ -243,9 +234,6 @@ class MHAHelper(object):
         except AttributeError as e:
             print("Failed to read one or more required new master parameter(s): %s" % str(e))
             return False
-
-        new_master_mysql_user = self.__unescape_from_shell(new_master_mysql_user)
-        new_master_mysql_pass = self.__unescape_from_shell(new_master_mysql_pass)
 
         # Setup MySQL connection
         mysql_new_master = MySQLHelper(new_master_ip, new_master_mysql_port, new_master_mysql_user,
@@ -322,17 +310,14 @@ class MHAHelper(object):
         try:
             orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
             orig_master_mysql_port = getattr(self, "orig_master_port", None)
-            orig_master_mysql_user = getattr(self, "orig_master_user")
-            orig_master_mysql_pass = getattr(self, "orig_master_password")
+            orig_master_mysql_user = self.__unescape_from_shell(getattr(self, "orig_master_user"))
+            orig_master_mysql_pass = self.__unescape_from_shell(getattr(self, "orig_master_password"))
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
             orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
-
-        orig_master_mysql_user = self.__unescape_from_shell(orig_master_mysql_user)
-        orig_master_mysql_pass = self.__unescape_from_shell(orig_master_mysql_pass)
 
         # Setup MySQL connections
         mysql_orig_master = MySQLHelper(orig_master_ip, orig_master_mysql_port, orig_master_mysql_user,
@@ -470,3 +455,11 @@ class MHAHelper(object):
             return False
 
         return threads
+
+    @classmethod
+    def __unescape_from_shell(cls, unescaped):
+        # This matches with mha4mysql-node::NodeUtil.pm::@shell_escape_chars
+        # username and password provided by MHA are escaped like this
+        escaped = re.sub(r'\\(?!\\)', '', unescaped)  # remove escaping (\)
+
+        return escaped
