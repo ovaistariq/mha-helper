@@ -122,9 +122,14 @@ class MHAHelper(object):
                                                    self.FAILOVER_TYPE_ONLINE):
                     return False
 
-            print("Setting read_only to '1' on the original master '%s'" % self.orig_master_host)
-            if not mysql_orig_master.set_read_only() or not mysql_orig_master.is_read_only():
-                return False
+            if self.orig_master_config.get_super_read_only() and mysql_orig_master.super_read_only_supported():
+                print("Setting super_read_only to '1' on the original master '%s'" % self.orig_master_host)
+                if not mysql_orig_master.set_super_read_only() or not mysql_orig_master.is_super_read_only():
+                    return False
+            else:
+                print("Setting read_only to '1' on the original master '%s'" % self.orig_master_host)
+                if not mysql_orig_master.set_read_only() or not mysql_orig_master.is_read_only():
+                    return False
 
             if not self.__mysql_kill_threads(self.orig_master_host, mysql_orig_master):
                 return False

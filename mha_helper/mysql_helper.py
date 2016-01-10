@@ -99,9 +99,70 @@ class MySQLHelper(object):
 
     def is_read_only(self):
         cursor = self._connection.cursor()
-        cursor.execute("SELECT @@read_only")
-        row = cursor.fetchone()
-        cursor.close()
+        try:
+            cursor.execute("SELECT @@read_only")
+            row = cursor.fetchone()
+        except pymysql.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            return False
+        finally:
+            cursor.close()
+
+        if row[0] == 1:
+            return True
+
+        return False
+
+    def super_read_only_supported(self):
+        cursor = self._connection.cursor()
+        try:
+            cursor.execute("SHOW VARIABLES LIKE 'super_read_only'")
+            num_rows = cursor.rowcount
+        except pymysql.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            return False
+        finally:
+            cursor.close()
+
+        if num_rows > 0:
+            return True
+
+        return False
+
+    def set_super_read_only(self):
+        cursor = self._connection.cursor()
+        try:
+            cursor.execute("SET GLOBAL super_read_only = 1")
+        except pymysql.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            return False
+        finally:
+            cursor.close()
+
+        return True
+
+    def unset_super_read_only(self):
+        cursor = self._connection.cursor()
+        try:
+            cursor.execute("SET GLOBAL super_read_only = 0")
+        except pymysql.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            return False
+        finally:
+            cursor.close()
+
+        return True
+
+    def is_super_read_only(self):
+        cursor = self._connection.cursor()
+        try:
+            cursor.execute("SELECT @@super_read_only")
+            row = cursor.fetchone()
+        except pymysql.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            return False
+        finally:
+            cursor.close()
 
         if row[0] == 1:
             return True
