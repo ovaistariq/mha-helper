@@ -108,6 +108,41 @@ class MySQLHelper(object):
 
         return False
 
+    def set_super_read_only(self):
+        cursor = self._connection.cursor()
+        try:
+            cursor.execute("SET GLOBAL super_read_only = 1")
+        except pymysql.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            return False
+        finally:
+            cursor.close()
+
+        return True
+
+    def unset_super_read_only(self):
+        cursor = self._connection.cursor()
+        try:
+            cursor.execute("SET GLOBAL super_read_only = 0")
+        except pymysql.Error as e:
+            print("Error %d: %s" % (e.args[0], e.args[1]))
+            return False
+        finally:
+            cursor.close()
+
+        return True
+
+    def is_super_read_only(self):
+        cursor = self._connection.cursor()
+        cursor.execute("SELECT @@super_read_only")
+        row = cursor.fetchone()
+        cursor.close()
+
+        if row[0] == 1:
+            return True
+
+        return False
+
     def disable_log_bin(self):
         cursor = self._connection.cursor()
         try:
