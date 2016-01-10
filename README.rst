@@ -85,7 +85,7 @@ vip_type
 - aws : When this is set then VIP management is done in a way relevant to AWS *(Currently not implemented)*
 - openstack : When this is set then VIP management is done in a way relevant to OpenStack *(Currently not implemented)*
 super_read_only
-    Certain MySQL flavors (such as Percona Server: https://www.percona.com/doc/percona-server/5.6/management/super_read_only.html) have super_read_only which also disallows users with SUPER privileges to perform any writes. Set this to *yes* to use this feature.
+    Certain MySQL flavors (such as Percona Server: https://www.percona.com/doc/percona-server/5.6/management/super_read_only.html) have super_read_only which also disallows users with SUPER privileges to perform any writes when MySQL read_only flag is enabled. Set this to *yes* to use this feature.
 report_email
     The email address which receives the email notification when a MySQL failover is performed
 smtp_host
