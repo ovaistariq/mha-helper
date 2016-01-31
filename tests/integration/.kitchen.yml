@@ -1,0 +1,128 @@
+---
+driver:
+  name: vagrant
+  require_chef_omnibus: 12.4.1
+  vagrantfile_erb: Vagrantfile.erb
+  synced_folders:
+    - ['../../', '/tmp/mha-helper']
+
+provisioner:
+  name: chef_zero
+  encrypted_data_bag_secret_key_path: test/integration/encrypted_data_bag_secret
+  attributes:
+    hosts_list:
+      -
+        hostname: "manager"
+        ip: "192.168.30.10"
+      -
+        hostname: "master"
+        ip: "192.168.30.11"
+      -
+        hostname: "slave01"
+        ip: "192.168.30.12"
+      -
+        hostname: "slave02"
+        ip: "192.168.30.13"
+
+platforms:
+  - name: centos-6.6
+
+suites:
+  - name: manager
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.10"}]
+      vm_hostname: manager.localhost
+    run_list:
+      - recipe[base_test_setup]
+      - recipe[mysql_replication::client]
+      - recipe[mysql-mha::manager]
+      - recipe[base_test_setup::sysbench]
+    attributes:
+    provisioner:
+      client_rb:
+        environment: prod
+
+  - name: master
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.11"}]
+      vm_hostname: master.localhost
+    run_list:
+      - recipe[base_test_setup]
+      - recipe[mysql_replication::master]
+      - recipe[mysql-mha::node]
+    attributes:
+      mysql_mha:
+        pod_name: "test_pod"
+        node:
+          candidate_master: 1
+          check_repl_delay: 0
+          mysql_port: 3306
+          mysql_binlog_dir: /var/lib/mysql
+          ssh_port: 22
+      mysql:
+        server:
+          port: 3306
+          logdir: /var/lib/mysql
+          server_id: 1
+    provisioner:
+      client_rb:
+        environment: prod
+
+  - name: slave01
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.12"}]
+      vm_hostname: slave01.localhost
+    run_list:
+      - recipe[base_test_setup]
+      - recipe[mysql_replication::slave]
+      - recipe[mysql-mha::node]
+    attributes:
+      mysql_mha:
+        pod_name: "test_pod"
+        node:
+          candidate_master: 1
+          check_repl_delay: 0
+          mysql_port: 3306
+          mysql_binlog_dir: /var/log/mysql-default
+          ssh_port: 22
+      mysql:
+        server:
+          port: 3306
+          logdir: /var/log/mysql-default
+          server_id: 2
+      mysql_replication:
+        master_host: "192.168.30.11"
+    provisioner:
+      client_rb:
+        environment: prod
+
+  - name: slave02
+    driver:
+      network:
+        - ["private_network", {ip: "192.168.30.13"}]
+      vm_hostname: slave02.localhost
+    run_list:
+      - recipe[base_test_setup]
+      - recipe[mysql_replication::slave]
+      - recipe[mysql-mha::node]
+    attributes:
+      mysql_mha:
+        pod_name: "test_pod"
+        node:
+          no_master: 1
+          mysql_port: 3307
+          mysql_binlog_dir: /var/log/mysql-default
+          ssh_port: 22
+      mysql:
+        server:
+          port: 3307
+          logdir: /var/log/mysql-default
+          server_id: 3
+      mysql_replication:
+        master_host: "192.168.30.11"
+    provisioner:
+      client_rb:
+        environment: prod

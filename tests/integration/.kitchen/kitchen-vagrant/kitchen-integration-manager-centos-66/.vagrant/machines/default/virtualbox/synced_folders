@@ -1,0 +1,1 @@
+{"virtualbox":{"/tmp/mha-helper":{"guestpath":"/tmp/mha-helper","hostpath":"/Users/ovais.tariq/Documents/work/projects/mha-helper","disabled":false},"vagrant-cache":{"id":"vagrant-cache","guestpath":"/tmp/vagrant-cache","hostpath":"/Users/ovais.tariq/.vagrant.d/cache/opscode-centos-6.6","disabled":false}}}

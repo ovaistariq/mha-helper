@@ -1,0 +1,12 @@
+{
+  "name": "vagrant",
+  "default_attributes": {
+  },
+  "json_class": "Chef::Environment",
+  "description": "",
+  "cookbook_versions": {
+  },
+  "override_attributes": {
+  },
+  "chef_type": "environment"
+}

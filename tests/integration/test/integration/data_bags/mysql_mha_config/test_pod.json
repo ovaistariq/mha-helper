@@ -1,0 +1,24 @@
+{
+  "id": "test_pod",
+  "comment": "MHA replication pod 'test_pod' configuration",
+  "mysql": {
+    "user": "mha",
+    "repl_user": "repl"
+  },
+  "remote_user": {
+    "id": "mha",
+    "comment": "user used by MHA to login to managed nodes",
+    "home": "/home/mha",
+    "uid": "10011",
+    "groups": ["mysql"],
+    "ssh_keys": [
+      "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAwHjA7iaA0/+TD0roAmyOqYFp3DMpuJ/Xee260gio5igLeV6DHyPBskHhcCOWFcZ+uCAOGIm+Yye9nxuspWFEWCa4L1SxniBEpRGtGyorbgz7Zmh/6VlcZOUBTe1GtaprokGAtzP2gaQbRpJ1c0oX3JZ4lVH6Oro3keCGyncZMFJ2nTu0hOgbJPA3XZkRwO0DhB/8IbPu6NwXVcDjaMfTmpj4kp722RFuEUgGrDBwx/vasakpcBMHF+a6QL0gAODHMttQB1kk1hCV4fQtiTSrbG97jldlcC7VvSqK79twpQNe9y06jnMah8xdvZ69mw/4k3Av+Vv3I4KHxvN9wE59Tw== root@manager-centos-66"
+    ]
+  },
+  "vip_type": "metal",
+  "writer_vip_cidr": "192.168.30.100/24",
+  "report_email": "ovaistariq@gmail.com",
+  "smtp_host": "localhost",
+  "requires_sudo": "yes",
+  "cluster_interface": "eth1"
+}
