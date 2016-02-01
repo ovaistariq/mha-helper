@@ -1,6 +1,0 @@
----
-hostname: 127.0.0.1
-username: vagrant
-ssh_key: "/Users/ovais.tariq/Documents/work/projects/mha-helper/tests/integration/.kitchen/kitchen-vagrant/kitchen-integration-manager-centos-66/.vagrant/machines/default/virtualbox/private_key"
-port: '2222'
-last_action: converge
