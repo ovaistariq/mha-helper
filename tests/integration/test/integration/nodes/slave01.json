@@ -1,0 +1,26 @@
+{
+  "name": "slave01",
+  "chef_environment": "prod",
+  "normal": {
+    "tags": [
+      "mha_managed",
+      "pod:test_pod"
+    ],
+    "mysql_mha": {
+      "pod_name": "test_pod",
+      "node": {
+        "candidate_master": "1",
+        "check_repl_delay": "0",
+        "mysql_port": "3306",
+        "mysql_binlog_dir": "/var/log/mysql-default",
+        "ssh_port": "22"
+      }
+    }
+  },
+  "automatic": {
+    "ipaddress": "192.168.30.12",
+    "hostname": "slave01",
+    "fqdn": "slave01.localhost"
+  },
+  "run_list": []
+}

@@ -1,0 +1,14 @@
+{
+  "name": "standalone",
+  "chef_environment": "prod",
+  "normal": {
+    "tags": [
+    ]
+  },
+  "automatic": {
+    "ipaddress": "192.168.30.10",
+    "hostname": "standalone",
+    "fqdn": "standalone.localhost"
+  },
+  "run_list": []
+}

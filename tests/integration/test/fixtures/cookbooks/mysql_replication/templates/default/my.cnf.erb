@@ -1,0 +1,19 @@
+[mysqld]
+
+# BINARY LOGGING #
+log-bin                        = <%= node["mysql"]["server"]["log_bin"] %>
+sync-binlog                    = <%= node["mysql"]["server"]["sync_binlog"] %>
+
+# REPLICATION #
+server-id                      = <%= node["mysql"]["server"]["server_id"] %>
+read-only                      = <%= node["mysql"]["server"]["read_only"] %>
+log-slave-updates              = <%= node["mysql"]["server"]["log_slave_updates"] %>
+relay-log                      = <%= node["mysql"]["server"]["relay_log"] %>
+slave-net-timeout              = <%= node["mysql"]["server"]["slave_net_timeout"] %>
+report-host                    = <%= node["hostname"] %>
+
+# INNODB #
+innodb-buffer-pool-size        = <%= node["mysql"]["server"]["innodb_buffer_pool_size"] %>
+
+# LOGGING #
+log-warnings                   = <%= node["mysql"]["server"]["log_warnings"] %>
