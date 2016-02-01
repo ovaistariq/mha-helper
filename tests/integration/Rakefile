@@ -20,26 +20,6 @@ require 'kitchen'
 require 'mixlib/shellout'
 require 'kitchen/rake_tasks'
 
-# Style tests. Rubocop and Foodcritic
-namespace :style do
-  desc "Run RuboCop style and lint checks"
-  task :rubocop do
-    RuboCop::RakeTask.new(:rubocop) do |t|
-      t.options = ["-D"]
-    end
-  end
-
-  desc "Run Foodcritic lint checks"
-  task :foodcritic do
-    FoodCritic::Rake::LintTask.new(:foodcritic) do |t|
-      t.options = { :fail_tags => ["any"] }
-    end
-  end
-end
-
-desc "Run all style tests"
-task :style => ['style:rubocop', 'style:foodcritic']
-
 # Integration tests. Kitchen.ci
 namespace :integration do
   desc 'Setup the test-kitchen vagrant instances'
