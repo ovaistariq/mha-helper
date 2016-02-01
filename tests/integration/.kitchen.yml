@@ -37,7 +37,7 @@ suites:
       - recipe[base_test_setup]
       - recipe[mysql_replication::client]
       - recipe[mysql-mha::manager]
-      - recipe[base_test_setup::sysbench]
+      - recipe[base_test_setup::dev_install]
     attributes:
     provisioner:
       client_rb:
