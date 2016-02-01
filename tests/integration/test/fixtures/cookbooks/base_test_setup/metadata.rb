@@ -8,4 +8,5 @@ version          '0.1.0'
 
 depends 'build-essential', '~> 2.2.4'
 depends 'hostsfile'
+depends 'mysql-mha'
 depends 'python'

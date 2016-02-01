@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: base_test_setup
-# Recipe:: dev
+# Recipe:: dev_install
 #
 # Copyright 2015, Ovais Tariq <me@ovaistariq.net>
 #
@@ -19,7 +19,14 @@
 
 include_recipe 'python::pip'
 
+# Remove the mha-helper package installed via yum
+package node["mysql_mha"]["helper"]["package"] do
+  action :remove
+end
+
 python_pip '/tmp/mha-helper' do
   version 'latest'
   options '-e'
 end
+
+include_recipe 'base_test_setup::sysbench'
