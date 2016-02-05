@@ -20,5 +20,5 @@
 __name__ = 'mha_helper'
 __author__ = 'Ovais Tariq'
 __email__ = 'me@ovaistariq.net'
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 __url__ = 'https://github.com/ovaistariq/mha-helper'
