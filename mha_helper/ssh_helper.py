@@ -20,6 +20,8 @@ import paramiko
 import socket
 import os
 import pwd
+import optparse
+import shlex
 
 
 class SSHHelper(object):
@@ -35,6 +37,13 @@ class SSHHelper(object):
         self._ssh_port = ssh_port
         self._ssh_options = ssh_options
 
+        # Disable keep alive for SSH connection by default
+        self._keep_alive_interval_seconds = 0
+
+        # Timeout for initiating the connection, as well as the number of retries
+        self._ssh_connect_timeout_seconds = 30
+        self._ssh_connect_retries = 1
+
         self._ssh_client = None
 
     def make_ssh_connection(self):
@@ -42,9 +51,88 @@ class SSHHelper(object):
             return True
 
         self._ssh_client = paramiko.SSHClient()
-        self._ssh_client.load_system_host_keys()
-        self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
+        # We first load the SSH options from user's SSH config file
+        ssh_options = self._get_options_from_ssh_config()
+
+        # Parse SSH options passed in by MHA to the Helper
+        # Any options passed over the command-line overrides the options that are set in the user's SSH config file
+        parser = optparse.OptionParser()
+        parser.add_option('-o', '--additional_options', action='append', type='string')
+        parser.add_option('-i', '--key_file_path', type='string')
+
+        (options, args) = parser.parse_args(shlex.split(self._ssh_options))
+
+        if options.key_file_path is not None:
+            ssh_options['key_filename'] = options.key_file_path
+
+        # Load the host keys and set the default policy, later on we may do strict host key checking
+        self._ssh_client.load_system_host_keys()
+        self._ssh_client.set_missing_host_key_policy(paramiko.WarningPolicy())
+
+        # Handle additional options that are passed to ssh via the '-o' flag
+        # Some of the common options that are ignored are 'PasswordAuthentication' and 'BatchMode'
+        for ssh_opt in options.additional_options:
+            (opt_name, opt_value) = ssh_opt.split('=')
+
+            if opt_name == 'StrictHostKeyChecking':
+                if opt_value == 'no':
+                    self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                else:
+                    self._ssh_client.set_missing_host_key_policy(paramiko.RejectPolicy())
+
+            if opt_name == 'ServerAliveInterval':
+                self._keep_alive_interval_seconds = int(opt_value)
+
+            if opt_name == 'ConnectionAttempts':
+                self._ssh_connect_retries = int(opt_value)
+
+        # Calculate the SSH connection timeout
+        ssh_options['timeout'] = self._ssh_connect_timeout_seconds * self._ssh_connect_retries
+
+        # Make the SSH connection
+        try:
+            print("Connecting to '%s'@'%s'" % (self._ssh_user, self._host))
+            self._ssh_client.connect(**ssh_options)
+        except paramiko.SSHException as e:
+            print("Error connecting to '%s': %s" % (self._host, repr(e)))
+            return False
+        except socket.error as e:
+            print("Failed to connect to '%s': %s" % (self._host, repr(e)))
+            return False
+
+        # If the user asked for keep alive then we configure it here after the SSH connection has been made
+        transport = self._ssh_client.get_transport()
+        transport.set_keepalive(self._keep_alive_interval_seconds)
+
+        return True
+
+    def execute_ssh_command(self, cmd):
+        cmd_exec_status = True
+        stdout_lines = []
+        stderr_lines = []
+
+        try:
+            print("Executing command on '%s': %s" % (self._host, cmd))
+            stdin, stdout, stderr = self._ssh_client.exec_command(cmd, get_pty=True,
+                                                                  timeout=SSHHelper.SSH_CMD_TIMEOUT)
+
+            stdout_lines = stdout.readlines()
+            stderr_lines = stderr.readlines()
+
+            if stdout.channel.recv_exit_status() != 0:
+                raise paramiko.SSHException()
+
+        except paramiko.SSHException as e:
+            print("Failed to execute the command on '%s': %s" % (self._host, str(e)))
+            if len(stderr_lines) > 0:
+                print("Error reported by %s: %s" % (self._host, "\n".join(stderr_lines)))
+
+            cmd_exec_status = False
+
+        return cmd_exec_status, stdout_lines
+
+    def _get_options_from_ssh_config(self):
         # Merge any configuration present in ssh-config with the ones passed on the command-line
         ssh_config = paramiko.SSHConfig()
         user_config_file = os.path.expanduser("~/.ssh/config")
@@ -78,39 +166,4 @@ class SSHHelper(object):
         if 'identityfile' in user_config:
             cfg['key_filename'] = user_config['identityfile']
 
-        try:
-            print("Connecting to '%s'@'%s'" % (self._ssh_user, self._host))
-            self._ssh_client.connect(**cfg)
-        except paramiko.SSHException as e:
-            print("Error connecting to '%s': %s" % (self._host, repr(e)))
-            return False
-        except socket.error as e:
-            print("Failed to connect to '%s': %s" % (self._host, repr(e)))
-            return False
-
-        return True
-
-    def execute_ssh_command(self, cmd):
-        cmd_exec_status = True
-        stdout_lines = []
-        stderr_lines = []
-
-        try:
-            print("Executing command on '%s': %s" % (self._host, cmd))
-            stdin, stdout, stderr = self._ssh_client.exec_command(cmd, get_pty=True,
-                                                                  timeout=SSHHelper.SSH_CMD_TIMEOUT)
-
-            stdout_lines = stdout.readlines()
-            stderr_lines = stderr.readlines()
-
-            if stdout.channel.recv_exit_status() != 0:
-                raise paramiko.SSHException()
-
-        except paramiko.SSHException as e:
-            print("Failed to execute the command on '%s': %s" % (self._host, str(e)))
-            if len(stderr_lines) > 0:
-                print("Error reported by %s: %s" % (self._host, "\n".join(stderr_lines)))
-
-            cmd_exec_status = False
-
-        return cmd_exec_status, stdout_lines
+        return cfg
