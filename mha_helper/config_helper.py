@@ -26,7 +26,7 @@ import ConfigParser
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
     MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo',
-                                 'super_read_only', 'cluster_interface']
+                                 'super_read_only', 'cluster_interface', 'kill_after_timeout']
     VIP_PROVIDER_TYPE_NONE = 'none'
     VIP_PROVIDER_TYPE_METAL = 'metal'
     VIP_PROVIDER_TYPE_AWS = 'aws'
@@ -35,7 +35,6 @@ class ConfigHelper(object):
 
     # This stores the configuration for every host
     host_config = dict()
-
 
     @staticmethod
     def load_config():
@@ -112,6 +111,9 @@ class ConfigHelper(object):
         if config_key == 'smtp_host':
             return ConfigHelper.validate_hostname(config_value)
 
+        if config_key == 'kill_after_timeout':
+            return ConfigHelper.validate_integer(config_value)
+
         if config_key == 'requires_sudo':
             return config_value in ['yes', 'no']
 
@@ -130,6 +132,15 @@ class ConfigHelper(object):
     def validate_email_address(email_address):
         pattern = '^.+\\@(\\[?)[a-zA-Z0-9\\-\\.]+\\.([a-zA-Z]{2,3}|[0-9]{1,3})(\\]?)$'
         return bool(re.match(pattern, email_address))
+
+    @staticmethod
+    def validate_integer(potential_integer):
+        try:
+            int(potential_integer)
+        except ValueError:
+            return False
+
+        return True
 
     @staticmethod
     def validate_hostname(hostname):
@@ -176,6 +187,9 @@ class ConfigHelper(object):
 
     def get_smtp_host(self):
         return self._host_config['smtp_host']
+
+    def get_kill_after_timeout(self):
+        return int(self._host_config['kill_after_timeout'])
 
     def get_requires_sudo(self):
         if self._host_config['requires_sudo'] == 'yes':
