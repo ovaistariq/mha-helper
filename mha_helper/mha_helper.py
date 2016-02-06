@@ -132,7 +132,8 @@ class MHAHelper(object):
                 if not mysql_orig_master.set_read_only() or not mysql_orig_master.is_read_only():
                     return False
 
-            if not self.__mysql_kill_threads(self.orig_master_host, mysql_orig_master):
+            if not self.__mysql_kill_threads(self.orig_master_host, mysql_orig_master,
+                                             self.orig_master_config.get_kill_after_timeout()):
                 return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
@@ -422,8 +423,7 @@ class MHAHelper(object):
         return True
 
     @classmethod
-    def __mysql_kill_threads(cls, host, mysql_connection):
-        timeout = 5
+    def __mysql_kill_threads(cls, host, mysql_connection, timeout):
         sleep_interval = 0.1
         start = datetime.datetime.now()
 

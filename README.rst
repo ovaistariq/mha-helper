@@ -94,6 +94,8 @@ requires_sudo
     Some of the system commands executed as part of the failover process require either the use of a privileged user or a user with sudo privileges. Set this to *no* when the system user does not need to execute commands using sudo, set to *yes* otherwise
 cluster_interface
     The ethernet interface on the machine that gets the Virtual IP assigned or removed
+kill_after_timeout
+    How many seconds do we want to give the application to close MySQL connections gracefully before killing still active connections on the old master. Set this to *0* to disable waiting and kill all connections immediately.
 
 All the options above can be specified either in the default section or in the host specific sections. Values specified in host specific sections override the values specified in the *default* section.
 
@@ -109,6 +111,7 @@ Let me show you an example configuration file:
     super_read_only             = no
     report_email                = me@ovaistariq.net
     smtp_host                   = localhost
+    kill_after_timeout          = 5
 
     [db10]
     cluster_interface           = eth10
