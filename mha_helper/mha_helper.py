@@ -97,6 +97,7 @@ class MHAHelper(object):
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
             orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
+            orig_master_ssh_options = getattr(self, "ssh_options", None)
             orig_master_mysql_user = self.__unescape_from_shell(getattr(self, "orig_master_user"))
             orig_master_mysql_pass = self.__unescape_from_shell(getattr(self, "orig_master_password"))
         except AttributeError as e:
@@ -118,7 +119,7 @@ class MHAHelper(object):
                       (vip_type, self.orig_master_host))
 
                 if not self.__remove_vip_from_host(vip_type, self.orig_master_host, orig_master_ssh_ip,
-                                                   orig_master_ssh_user, orig_master_ssh_port,
+                                                   orig_master_ssh_user, orig_master_ssh_port, orig_master_ssh_options,
                                                    self.FAILOVER_TYPE_ONLINE):
                     return False
 
@@ -155,6 +156,7 @@ class MHAHelper(object):
             orig_master_ip = getattr(self, "orig_master_ip", self.orig_master_host)
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
+            orig_master_ssh_options = getattr(self, "ssh_options", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
@@ -166,7 +168,8 @@ class MHAHelper(object):
                       (vip_type, self.orig_master_host))
 
                 if not self.__remove_vip_from_host(vip_type, self.orig_master_host, orig_master_ssh_ip, None,
-                                                   orig_master_ssh_port, self.FAILOVER_TYPE_HARD):
+                                                   orig_master_ssh_port, orig_master_ssh_options,
+                                                   self.FAILOVER_TYPE_HARD):
                     return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
@@ -188,6 +191,7 @@ class MHAHelper(object):
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
             orig_master_ssh_user = getattr(self, "ssh_user", None)
+            orig_master_ssh_options = getattr(self, "ssh_options", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
@@ -199,7 +203,7 @@ class MHAHelper(object):
                       (vip_type, self.orig_master_host))
 
                 if not self.__remove_vip_from_host(vip_type, self.orig_master_host, orig_master_ssh_ip,
-                                                   orig_master_ssh_user, orig_master_ssh_port,
+                                                   orig_master_ssh_user, orig_master_ssh_port, orig_master_ssh_options,
                                                    self.FAILOVER_TYPE_ONLINE):
                     return False
         except Exception as e:
@@ -231,6 +235,7 @@ class MHAHelper(object):
             new_master_mysql_pass = self.__unescape_from_shell(getattr(self, "new_master_password"))
             new_master_ssh_ip = getattr(self, "new_master_ssh_ip", new_master_ip)
             new_master_ssh_port = getattr(self, "new_master_ssh_port", None)
+            new_master_ssh_options = getattr(self, "ssh_options", None)
 
             if self.failover_type == self.FAILOVER_TYPE_HARD:
                 new_master_ssh_user = getattr(self, "ssh_user", None)
@@ -259,7 +264,7 @@ class MHAHelper(object):
                       (vip_type, self.new_master_host))
 
                 if not self.__add_vip_to_host(vip_type, self.new_master_host, new_master_ssh_ip, new_master_ssh_user,
-                                              new_master_ssh_port):
+                                              new_master_ssh_port, new_master_ssh_options):
                     return False
         except Exception as e:
             print("Unexpected error: %s" % str(e))
@@ -284,6 +289,7 @@ class MHAHelper(object):
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
             orig_master_ssh_user = getattr(self, "ssh_user", None)
+            orig_master_ssh_options = getattr(self, "ssh_options", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
@@ -295,7 +301,7 @@ class MHAHelper(object):
                       (vip_type, self.orig_master_host))
 
                 if not self.__check_vip_on_host(vip_type, self.orig_master_host, orig_master_ssh_ip,
-                                                orig_master_ssh_user, orig_master_ssh_port):
+                                                orig_master_ssh_user, orig_master_ssh_port, orig_master_ssh_options):
                     print("The VIP was not found on host %s" % self.orig_master_host)
                     return False
         except Exception as e:
@@ -321,6 +327,7 @@ class MHAHelper(object):
             orig_master_ssh_ip = getattr(self, "orig_master_ssh_ip", orig_master_ip)
             orig_master_ssh_port = getattr(self, "orig_master_ssh_port", None)
             orig_master_ssh_user = getattr(self, "orig_master_ssh_user", None)
+            orig_master_ssh_options = getattr(self, "ssh_options", None)
         except AttributeError as e:
             print("Failed to read one or more required original master parameter(s): %s" % str(e))
             return False
@@ -344,7 +351,7 @@ class MHAHelper(object):
             if self.orig_master_config.get_manage_vip():
                 vip_type = self.orig_master_config.get_vip_type()
                 if not self.__add_vip_to_host(vip_type, self.orig_master_host, orig_master_ssh_ip, orig_master_ssh_user,
-                                              orig_master_ssh_port):
+                                              orig_master_ssh_port, orig_master_ssh_options):
                     print("Failed to add back the vip using the '%s' provider to the original master '%s'" %
                           (vip_type, self.orig_master_host))
                     return False
@@ -359,9 +366,9 @@ class MHAHelper(object):
         return True
 
     @classmethod
-    def __remove_vip_from_host(cls, vip_type, host, host_ip, ssh_user, ssh_port, failover_type):
+    def __remove_vip_from_host(cls, vip_type, host, host_ip, ssh_user, ssh_port, ssh_options, failover_type):
         if vip_type == ConfigHelper.VIP_PROVIDER_TYPE_METAL:
-            vip_helper = VIPMetalHelper(host, host_ip, ssh_user, ssh_port)
+            vip_helper = VIPMetalHelper(host, host_ip, ssh_user, ssh_port, ssh_options)
 
             # If this is a hard failover and we cannot connect to the original master over SSH then we cannot really do
             # anything here at the moment.
@@ -383,9 +390,9 @@ class MHAHelper(object):
         return True
 
     @classmethod
-    def __add_vip_to_host(cls, vip_type, host, host_ip, ssh_user, ssh_port):
+    def __add_vip_to_host(cls, vip_type, host, host_ip, ssh_user, ssh_port, ssh_options):
         if vip_type == ConfigHelper.VIP_PROVIDER_TYPE_METAL:
-            vip_helper = VIPMetalHelper(host, host_ip, ssh_user, ssh_port)
+            vip_helper = VIPMetalHelper(host, host_ip, ssh_user, ssh_port, ssh_options)
             if not vip_helper.assign_vip():
                 return False
         elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_AWS:
@@ -400,9 +407,9 @@ class MHAHelper(object):
         return True
 
     @classmethod
-    def __check_vip_on_host(cls, vip_type, host, host_ip, ssh_user, ssh_port):
+    def __check_vip_on_host(cls, vip_type, host, host_ip, ssh_user, ssh_port, ssh_options):
         if vip_type == ConfigHelper.VIP_PROVIDER_TYPE_METAL:
-            return VIPMetalHelper(host, host_ip, ssh_user, ssh_port).has_vip()
+            return VIPMetalHelper(host, host_ip, ssh_user, ssh_port, ssh_options).has_vip()
         elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_AWS:
             pass
         elif vip_type == ConfigHelper.VIP_PROVIDER_TYPE_OS:

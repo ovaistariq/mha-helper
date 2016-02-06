@@ -81,8 +81,8 @@ class ConfigHelper(object):
                     # the default section because it has to be global for the entire replication cluster
                     # If the option is not defined in both default and host section, we throw an error
                     for opt in ConfigHelper.MHA_HELPER_CONFIG_OPTIONS:
-                        if (opt not in ConfigHelper.host_config[hostname] or opt == 'writer_vip_cidr'
-                            or opt == 'smtp_host'):
+                        if (opt not in ConfigHelper.host_config[hostname] or opt == 'writer_vip_cidr' or
+                                opt == 'smtp_host'):
                             # If the host section did not define the config option and the default config also does
                             # not define the config option then we bail out
                             if opt not in default_config:

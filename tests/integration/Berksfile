@@ -1,6 +1,6 @@
 source "https://supermarket.chef.io"
 
-cookbook "mysql-mha"
+cookbook "mysql-mha", git: "git://github.com/ovaistariq/cookbook-mysql-mha.git"
 
 # Testing cookbook used by test-kitchen
 cookbook "base_test_setup", path: "test/fixtures/cookbooks/base_test_setup"
