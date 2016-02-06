@@ -31,6 +31,7 @@ class VIPMetalHelper(object):
         self._writer_vip_cidr = config_helper.get_writer_vip_cidr()
         self._writer_vip = config_helper.get_writer_vip()
         self._requires_sudo = config_helper.get_requires_sudo()
+        self._requires_arping = config_helper.get_requires_arping()
 
         self._ssh_client = SSHHelper(host, host_ip, ssh_user, ssh_port, ssh_options)
 
@@ -54,11 +55,12 @@ class VIPMetalHelper(object):
             return False
 
         # Send ARP update requests to all the listening hosts
-        ret_code, stdout_lines = self._ssh_client.execute_ssh_command(arping_cmd)
-        if not ret_code:
-            if len(stdout_lines) > 0:
-                print("Command output: %s" % "\n".join(stdout_lines))
-            return False
+        if self._requires_arping:
+            ret_code, stdout_lines = self._ssh_client.execute_ssh_command(arping_cmd)
+            if not ret_code:
+                if len(stdout_lines) > 0:
+                    print("Command output: %s" % "\n".join(stdout_lines))
+                return False
 
         return True
 

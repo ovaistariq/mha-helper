@@ -26,7 +26,7 @@ import ConfigParser
 class ConfigHelper(object):
     MHA_HELPER_CONFIG_DIR = '/etc/mha-helper'
     MHA_HELPER_CONFIG_OPTIONS = ['writer_vip_cidr', 'vip_type', 'report_email', 'smtp_host', 'requires_sudo',
-                                 'super_read_only', 'cluster_interface', 'kill_after_timeout']
+                                 'super_read_only', 'requires_arping', 'cluster_interface', 'kill_after_timeout']
     VIP_PROVIDER_TYPE_NONE = 'none'
     VIP_PROVIDER_TYPE_METAL = 'metal'
     VIP_PROVIDER_TYPE_AWS = 'aws'
@@ -117,6 +117,9 @@ class ConfigHelper(object):
         if config_key == 'requires_sudo':
             return config_value in ['yes', 'no']
 
+        if config_key == 'requires_arping':
+            return config_value in ['yes', 'no']
+
         if config_key == 'cluster_interface':
             return config_value is not None and len(config_value) > 0
 
@@ -202,6 +205,12 @@ class ConfigHelper(object):
             return True
 
         return False
+
+    def get_requires_arping(self):
+        if self._host_config['requires_arping'] == 'no':
+            return False
+
+        return True
 
     def get_cluster_interface(self):
         return self._host_config['cluster_interface']
