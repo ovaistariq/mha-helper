@@ -61,7 +61,7 @@ class SSHHelper(object):
         parser.add_option('-o', '--additional_options', action='append', type='string')
         parser.add_option('-i', '--key_file_path', type='string')
 
-        (options, args) = parser.parse_args(shlex.split(self._ssh_options))
+        (options, args) = parser.parse_args(shlex.split(self._ssh_options) if self._ssh_options else [])
 
         if options.key_file_path is not None:
             ssh_options['key_filename'] = options.key_file_path
@@ -69,10 +69,10 @@ class SSHHelper(object):
         # Load the host keys and set the default policy, later on we may do strict host key checking
         self._ssh_client.load_system_host_keys()
         self._ssh_client.set_missing_host_key_policy(paramiko.WarningPolicy())
-
+        
         # Handle additional options that are passed to ssh via the '-o' flag
         # Some of the common options that are ignored are 'PasswordAuthentication' and 'BatchMode'
-        for ssh_opt in options.additional_options:
+        for ssh_opt in options.additional_options or []:
             (opt_name, opt_value) = ssh_opt.split('=')
 
             if opt_name == 'StrictHostKeyChecking':
