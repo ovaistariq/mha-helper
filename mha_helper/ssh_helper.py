@@ -63,7 +63,7 @@ class SSHHelper(object):
 
         if self._ssh_options is not None:
             (options, args) = parser.parse_args(shlex.split(self._ssh_options))
-        else
+        else:
             (options, args) = parser.parse_args()
 
         if options.key_file_path is not None:
