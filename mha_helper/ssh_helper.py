@@ -61,7 +61,10 @@ class SSHHelper(object):
         parser.add_option('-o', '--additional_options', action='append', type='string')
         parser.add_option('-i', '--key_file_path', type='string')
 
-        (options, args) = parser.parse_args(shlex.split(self._ssh_options))
+        if self._ssh_options is not None:
+            (options, args) = parser.parse_args(shlex.split(self._ssh_options))
+        else
+            (options, args) = parser.parse_args()
 
         if options.key_file_path is not None:
             ssh_options['key_filename'] = options.key_file_path
