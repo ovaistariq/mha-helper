@@ -55,37 +55,38 @@ class SSHHelper(object):
         # We first load the SSH options from user's SSH config file
         ssh_options = self._get_options_from_ssh_config()
 
-        # Parse SSH options passed in by MHA to the Helper
-        # Any options passed over the command-line overrides the options that are set in the user's SSH config file
-        parser = optparse.OptionParser()
-        parser.add_option('-o', '--additional_options', action='append', type='string')
-        parser.add_option('-i', '--key_file_path', type='string')
-
-        (options, args) = parser.parse_args(shlex.split(self._ssh_options) if self._ssh_options else [])
-
-        if options.key_file_path is not None:
-            ssh_options['key_filename'] = options.key_file_path
-
         # Load the host keys and set the default policy, later on we may do strict host key checking
         self._ssh_client.load_system_host_keys()
         self._ssh_client.set_missing_host_key_policy(paramiko.WarningPolicy())
-        
-        # Handle additional options that are passed to ssh via the '-o' flag
-        # Some of the common options that are ignored are 'PasswordAuthentication' and 'BatchMode'
-        for ssh_opt in options.additional_options or []:
-            (opt_name, opt_value) = ssh_opt.split('=')
 
-            if opt_name == 'StrictHostKeyChecking':
-                if opt_value == 'no':
-                    self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-                else:
-                    self._ssh_client.set_missing_host_key_policy(paramiko.RejectPolicy())
+        # Parse SSH options passed in by MHA to the Helper
+        # Any options passed over the command-line overrides the options that are set in the user's SSH config file
+        if self._ssh_options:
+            parser = optparse.OptionParser()
+            parser.add_option('-o', '--additional_options', action='append', type='string')
+            parser.add_option('-i', '--key_file_path', type='string')
 
-            if opt_name == 'ServerAliveInterval':
-                self._keep_alive_interval_seconds = int(opt_value)
+            (options, args) = parser.parse_args(shlex.split(self._ssh_options))
 
-            if opt_name == 'ConnectionAttempts':
-                self._ssh_connect_retries = int(opt_value)
+            if options.key_file_path is not None:
+                ssh_options['key_filename'] = options.key_file_path
+
+            # Handle additional options that are passed to ssh via the '-o' flag
+            # Some of the common options that are ignored are 'PasswordAuthentication' and 'BatchMode'
+            for ssh_opt in options.additional_options:
+                (opt_name, opt_value) = ssh_opt.split('=')
+
+                if opt_name == 'StrictHostKeyChecking':
+                    if opt_value == 'no':
+                        self._ssh_client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+                    else:
+                        self._ssh_client.set_missing_host_key_policy(paramiko.RejectPolicy())
+
+                if opt_name == 'ServerAliveInterval':
+                    self._keep_alive_interval_seconds = int(opt_value)
+
+                if opt_name == 'ConnectionAttempts':
+                    self._ssh_connect_retries = int(opt_value)
 
         # Calculate the SSH connection timeout
         ssh_options['timeout'] = self._ssh_connect_timeout_seconds * self._ssh_connect_retries
